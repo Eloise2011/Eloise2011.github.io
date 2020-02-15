@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>springboot_02</title>
+    <url>/2020/02/15/springboot-02/</url>
+    <content><![CDATA[<p>Please stay tuned. Great show will be Contenued in 5 mins.</p>
+<a id="more"></a>
+
+
+<p><img src="/2020/02/15/springboot-02/mypic.png" alt="图片"></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>SpringBoot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hello World</title>
     <url>/2020/02/15/hello-world/</url>
     <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
@@ -53,11 +71,7 @@
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">profile</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">id</span>&gt;</span>jdk-1.8<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">activation</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">activeByDefault</span>&gt;</span>true<span class="tag">&lt;/<span class="name">activeByDefault</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">jdk</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">jdk</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">activation</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.compilerVersion</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.compilerVersion</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="2、IDEA设置"><a href="#2、IDEA设置" class="headerlink" title="2、IDEA设置"></a>2、IDEA设置</h3><p>整合maven进来；</p>
-<p><img src="" alt="idea设置"></p>
-<img src="img/springboot-01/搜狗截图20180129151045.png">
-
-
-
+<p><img src="/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129151045.png" alt="idea设置"></p>
 <p><img src="images/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129151112.png" alt="images/"></p>
 <h2 id="4、Spring-Boot-HelloWorld"><a href="#4、Spring-Boot-HelloWorld" class="headerlink" title="4、Spring Boot HelloWorld"></a>4、Spring Boot HelloWorld</h2><p>一个功能：</p>
 <p>浏览器发送hello请求，服务器接受请求并处理，响应Hello World字符串；</p>
