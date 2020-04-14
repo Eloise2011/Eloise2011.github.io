@@ -1,7 +1,388 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Springboot_02</title>
+    <title>Shiro框架简介</title>
+    <url>/2020/04/13/Shiro/</url>
+    <content><![CDATA[<p><strong>Apache Shiro™</strong> is a powerful and easy-to-use Java security framework that performs authentication, authorization, cryptography, and session management. With Shiro’s easy-to-understand API, you can quickly and easily secure any application – from the smallest mobile applications to the largest web and enterprise applications.</p>
+<a id="more"></a>
+
+
+
+
+
+
+
+<p>Reference: </p>
+<p><a href="https://cloud.tencent.com/developer/article/1062698" target="_blank" rel="noopener">腾讯文档:Shiro</a></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Shiro</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Shiro</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring Security OAuth2.0认证授权</title>
+    <url>/2020/04/13/Spring-security/</url>
+    <content><![CDATA[<p>Spring Security  is</p>
+<p>OAuth2.0 is</p>
+<a id="more"></a>
+
+
+
+<h1 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.  基本概念"></a>1.  基本概念</h1><h2 id="1-1-什么是认证"><a href="#1-1-什么是认证" class="headerlink" title="1.1 什么是认证"></a>1.1 什么是认证</h2><p>进入移动互联网时代，大家每天都在刷手机，常用的软件有微信、支付宝、头条等，下边拿微信来举例子说明认证 相关的基本概念，在初次使用微信前需要注册成为微信用户，然后输入账号和密码即可登录微信，输入账号和密码 登录微信的过程就是认证。</p>
+<p>系统为什么要认证？</p>
+<p>认证是为了保护系统的隐私数据与资源，用户的身份合法方可访问该系统的资源。</p>
+<p>认证 ：用户认证就是判断一个用户的身份是否合法的过程，用户去访问系统资源时系统要求验证用户的身份信 息，身份合法方可继续访问，不合法则拒绝访问。常见的用户身份认证方式有：用户名密码登录，二维码登录，手 机短信登录，指纹认证等方式。</p>
+<h2 id="1-2-什么是会话"><a href="#1-2-什么是会话" class="headerlink" title="1.2 什么是会话"></a>1.2 什么是会话</h2><p>用户认证通过后，为了避免用户的每次操作都进行认证可将用户的信息保证在会话中。会话就是系统为了保持当前 用户的登录状态所提供的机制，常见的有基于session方式、基于token方式等。</p>
+<p>基于session的认证方式如下图：</p>
+<p><img src="/2020/04/13/Spring-security/session_authentication.png" alt="session认证"></p>
+<p>它的交互流程是，用户认证成功后，在服务端生成用户相关的数据保存在session(当前会话)中，发给客户端的 sesssion_id 存放到 cookie 中，这样用户客户端请求时带上 session_id 就可以验证服务器端是否存在 session 数 据，以此完成用户的合法校验，当用户退出系统或session过期销毁时,客户端的session_id也就无效了。</p>
+<p>基于token方式如下图：</p>
+<p><img src="/2020/04/13/Spring-security/token_authentication.png" alt="token认证"></p>
+<p>它的交互流程是，用户认证成功后，服务端生成一个token发给客户端，客户端可以放到 cookie 或 localStorage 等存储中，每次请求时带上 token，服务端收到token通过验证后即可确认用户身份。</p>
+<p>基于session的认证方式由Servlet规范定制，服务端要存储session信息需要占用内存资源，客户端需要支持 cookie；基于token的方式则一般不需要服务端存储token，并且不限制客户端的存储方式。如今移动互联网时代 更多类型的客户端需要接入系统，系统多是采用前后端分离的架构进行实现，所以基于token的方式更适合。</p>
+<h2 id="1-3-什么是授权"><a href="#1-3-什么是授权" class="headerlink" title="1.3 什么是授权"></a>1.3 什么是授权</h2><p>还拿微信来举例子，微信登录成功后用户即可使用微信的功能，比如，发红包、发朋友圈、添加好友等，没有绑定 银行卡的用户是无法发送红包的，绑定银行卡的用户才可以发红包，发红包功能、发朋友圈功能都是微信的资源即 功能资源，用户拥有发红包功能的权限才可以正常使用发送红包功能，拥有发朋友圈功能的权限才可以使用发朋友 圈功能，这个根据用户的权限来控制用户使用资源的过程就是授权。</p>
+<p>为什么要授权？</p>
+<p>认证是为了保证用户身份的合法性，授权则是为了更细粒度的对隐私数据进行划分，授权是在认证通过后发生的， 控制不同的用户能够访问不同的资源。</p>
+<p>授权： 授权是用户认证通过根据用户的权限来控制用户访问资源的过程，拥有资源的访问权限则正常访问，没有 权限则拒绝访问。</p>
+<h2 id="1-4-授权的数据模型"><a href="#1-4-授权的数据模型" class="headerlink" title="1.4 授权的数据模型"></a>1.4 授权的数据模型</h2><p>如何进行授权即如何对用户访问资源进行控制，首先需要学习授权相关的数据模型。</p>
+<p>授权可简单理解为Who对What(which)进行How操作，包括如下：</p>
+<p>Who，即主体（Subject），主体一般是指用户，也可以是程序，需要访问系统中的资源。 What，即资源 （Resource），如系统菜单、页面、按钮、代码方法、系统商品信息、系统订单信息等。系统菜单、页面、按 钮、代码方法都属于系统功能资源，对于web系统每个功能资源通常对应一个URL；系统商品信息、系统订单信息 都属于实体资源（数据资源），实体资源由资源类型和资源实例组成，比如商品信息为资源类型，商品编号 为001 的商品为资源实例。 How，权限/许可（Permission），规定了用户对资源的操作许可，权限离开资源没有意义， 如用户查询权限、用户添加权限、某个代码方法的调用权限、编号为001的用户的修改权限等，通过权限可知用户 对哪些资源都有哪些操作许可。</p>
+<p><font color="red">主体、资源、权限关系如下图：</font></p>
+<p><img src="/2020/04/13/Spring-security/entity_resource_access.png" alt="主体_资源_权限关系图 "></p>
+<p>主体、资源、权限相关的数据模型如下：</p>
+<p>主体（用户id、账号、密码、…）</p>
+<p>资源（资源id、资源名称、访问地址、…）</p>
+<p>权限（权限id、权限标识、权限名称、资源id、…）</p>
+<p>角色（角色id、角色名称、…）</p>
+<p>角色和权限关系（角色id、权限id、…） 主体（用户）和角色关系（用户id、角色id、…）</p>
+<p>主体（用户）、资源、权限关系如下图：</p>
+<p><img src="/2020/04/13/Spring-security/role_resource_access.png" alt="角色_资源_权限关系图 "></p>
+<p>通常企业开发中将资源和权限表合并为一张权限表，如下： </p>
+<p>资源（资源id、资源名称、访问地址、…）</p>
+<p> 权限（权限id、权限标识、权限名称、资源id、…） </p>
+<p>合并为： 权限（权限id、权限标识、权限名称、资源名称、资源访问地址、…） </p>
+<p>修改后数据模型之间的关系如下图：</p>
+<p><img src="/2020/04/13/Spring-security/enterprise_user_role_access_model.png" alt="企业用户角色权限关系图"></p>
+<h2 id="1-5-RBAC"><a href="#1-5-RBAC" class="headerlink" title="1.5 RBAC"></a>1.5 RBAC</h2><h3 id="1-5-1-基于角色的访问控制"><a href="#1-5-1-基于角色的访问控制" class="headerlink" title="1.5.1 基于角色的访问控制"></a>1.5.1 基于角色的访问控制</h3><p>RBAC基于角色的访问控制（Role-Based Access Control）是按角色进行授权，比如：主体的角色为总经理可以查</p>
+<p>询企业运营报表，查询员工工资信息等，访问控制流程如下：</p>
+<p><img src="/2020/04/13/Spring-security/RBAC_logic_flow1.png" alt="基于角色访问控制的流程图"></p>
+<p>根据上图中的判断逻辑，授权代码可表示如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(主体.hasRole(<span class="string">"总经理角色id"</span>))&#123;</span><br><span class="line">  	查询工资 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果上图中查询工资所需要的角色变化为总经理和部门经理，此时就需要修改判断逻辑为“判断用户的角色是否是 总经理或部门经理”，修改代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">if</span>(主体.hasRole(<span class="string">"总经理角色id"</span>) || 主体.hasRole(<span class="string">"部门经理角色id"</span>))&#123;</span><br><span class="line">  		查询工资 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据上边的例子发现，当需要修改角色的权限时就需要修改授权的相关代码，系统可扩展性差。</p>
+<h3 id="1-5-2-基于资源的访问控制"><a href="#1-5-2-基于资源的访问控制" class="headerlink" title="1.5.2 基于资源的访问控制"></a>1.5.2 基于资源的访问控制</h3><p>RBAC基于资源的访问控制（Resource-Based Access Control）是按资源（或权限）进行授权，比如：用户必须</p>
+<p>具有查询工资权限才可以查询员工工资信息等，访问控制流程如下：</p>
+<p><img src="/2020/04/13/Spring-security/RBAC_logic_flow2.png" alt="基于资源访问控制的流程图"></p>
+<p>根据上图中的判断，授权代码可以表示为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if(主体.hasPermission(&quot;查询工资权限标识&quot;))&#123;</span><br><span class="line">		查询工资</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>优点：系统设计时定义好查询工资的权限标识，即使查询工资所需要的角色变化为总经理和部门经理也不需要修改 授权代码，系统可扩展性强。</p>
+<h1 id="2-基于session的认证"><a href="#2-基于session的认证" class="headerlink" title="2. 基于session的认证"></a>2. 基于session的认证</h1><h2 id="2-1认证流程"><a href="#2-1认证流程" class="headerlink" title="2.1认证流程"></a>2.1认证流程</h2><p>基于Session认证方式的流程是，用户认证成功后，在服务端生成用户相关的数据保存在session(当前会话)，而发 给客户端的 sesssion_id 存放到 cookie 中，这样用客户端请求时带上 session_id 就可以验证服务器端是否存在 session 数据，以此完成用户的合法校验。当用户退出系统或session过期销毁时,客户端的session_id也就无效了。<br>下图是session认证方式的流程图：<br><img src="/2020/04/13/Spring-security/session_authentication.png" alt="session认证"></p>
+<p>基于Session的认证机制由Servlet规范定制，Servlet容器已实现，用户通过HttpSession的操作方法即可实现，如 下是HttpSession相关的操作API。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HttpSession getSession(Boolean create)</td>
+<td>获取当前HttpSession对象</td>
+</tr>
+<tr>
+<td>void setAttribute(String name,Object value)</td>
+<td>向session中存放对象</td>
+</tr>
+<tr>
+<td>object getAttribute(String name)</td>
+<td>从session中获取对象</td>
+</tr>
+<tr>
+<td>void removeAttribute(String name);</td>
+<td>移除session中对象</td>
+</tr>
+<tr>
+<td>void invalidate()</td>
+<td>使HttpSession失效</td>
+</tr>
+<tr>
+<td>…</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="2-2-创建工程"><a href="#2-2-创建工程" class="headerlink" title="2.2 创建工程"></a>2.2 创建工程</h2><p>本案例工程使用maven进行构建，使用SpringMVC、Servlet3.0实现。</p>
+<h3 id="2-2-1-创建maven工程"><a href="#2-2-1-创建maven工程" class="headerlink" title="2.2.1 创建maven工程"></a>2.2.1 创建maven工程</h3><p>创建maven工程 security-springmvc，工程结构如下：</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>Spring-security</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Spring-security</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JVM-02</title>
+    <url>/2020/04/10/JVM-02/</url>
+    <content><![CDATA[<p>JVM is </p>
+<a id="more"></a>
+
+
+
+
+
+<h1 id="一、ClassLoader"><a href="#一、ClassLoader" class="headerlink" title="一、ClassLoader"></a><strong>一、</strong>ClassLoader</h1><h2 id="3：类加载-初始化"><a href="#3：类加载-初始化" class="headerlink" title="3：类加载-初始化"></a>3：类加载-初始化</h2><ol>
+<li><p>加载过程</p>
+<ol>
+<li><p>Loading</p>
+<ol>
+<li><p>双亲委派，主要出于安全来考虑(如: 用户密码), 也有其他原因, 比如效率(但是次要)</p>
+<p><img src="/2020/04/10/JVM-02/parent_delegate_mechanism.png" alt="双亲委派机制"></p>
+</li>
+<li><p>LazyLoading 五种情况</p>
+<ol>
+<li><p>–new getstatic putstatic invokestatic指令，访问final变量除外</p>
+<p>–java.lang.reflect对类进行反射调用时</p>
+<p>–初始化子类的时候，父类首先初始化</p>
+<p>–虚拟机启动时，被执行的主类必须初始化</p>
+<p>–动态语言支持java.lang.invoke.MethodHandle解析的结果为REF_getstatic REF_putstatic REF_invokestatic的方法句柄时，该类必须初始化</p>
+</li>
+</ol>
+</li>
+<li><p>ClassLoader的源码</p>
+<ol>
+<li>findInCache -&gt; parent.loadClass -&gt; findClass()</li>
+</ol>
+</li>
+<li><p>自定义类加载器</p>
+<ol>
+<li>extends ClassLoader</li>
+<li>overwrite findClass() -&gt; defineClass(byte[] -&gt; Class clazz)</li>
+<li>加密</li>
+<li><font color="red">第一节课遗留问题：parent是如何指定的，打破双亲委派，学生问题桌面图片</font><ol>
+<li>用super(parent)指定</li>
+<li>双亲委派的打破<ol>
+<li>如何打破：重写loadClass（）</li>
+<li>何时打破过？<ol>
+<li>JDK1.2之前，自定义ClassLoader都必须重写loadClass()</li>
+<li>ThreadContextClassLoader可以实现基础类调用实现类代码，通过thread.setContextClassLoader指定</li>
+<li>热启动，热部署<ol>
+<li>osgi tomcat 都有自己的模块指定classloader（可以加载同一类库的不同版本）</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>混合执行 编译执行 解释执行</p>
+<ol>
+<li>检测热点代码：-XX:CompileThreshold = 10000</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>Linking </p>
+<ol>
+<li>Verification<ol>
+<li>验证文件是否符合JVM规定</li>
+</ol>
+</li>
+<li>Preparation<ol>
+<li>静态成员变量赋默认值</li>
+</ol>
+</li>
+<li>Resolution<ol>
+<li>将类、方法、属性等符号引用解析为直接引用<br>常量池中的各种符号引用解析为指针、偏移量等内存地址的直接引用</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>Initializing</p>
+<ol>
+<li>调用类初始化代码 <clinit>，给静态成员变量赋初始值</clinit></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>小总结：</p>
+<ol>
+<li>load - 默认值 - 初始值</li>
+<li>new - 申请内存 - 默认值 - 初始值</li>
+</ol>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Springboot_03 整合消息队列-高级</title>
+    <url>/2020/03/03/springboot-03/</url>
+    <content><![CDATA[<p>大多数应用中, 可通过引入消息中间件来提升系统异步通信,扩展系统解耦能力.<br>消息代理(broker):<br>消息目的地(destination):<br>当消息发送者发送消息后, 将由消息代理接管,消息代理保证消息传递到指定的目的地.</p>
+<a id="more"></a>
+
+
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>SpringBoot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python爬虫教程_01</title>
+    <url>/2020/02/24/python-crawler/</url>
+    <content><![CDATA[<p>简单介绍Curl &amp; wget 命令行工具的使用. 参数使用说明具体可以参考curl –help / man curl.</p>
+<p>[curl官网] (<a href="https://curl.haxx.se/" target="_blank" rel="noopener">https://curl.haxx.se/</a>)<br>[wget官网] (<a href="http://www.gnu.org/software/wget/" target="_blank" rel="noopener">http://www.gnu.org/software/wget/</a>)</p>
+<a id="more"></a>
+
+
+
+
+
+<h2 id="curl的使用"><a href="#curl的使用" class="headerlink" title="curl的使用"></a>curl的使用</h2><p>注意：安装的时候可能会遇到报错，有可能是openssl没装，</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt install curl</span><br><span class="line">apt install openssl</span><br><span class="line">apt install openssl-dev</span><br></pre></td></tr></table></figure>
+
+<p>一些常用参数的用法</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-A</td>
+<td>设置user-agent</td>
+<td>curl -A “Chrome” <a href="http://www.baidu.com" target="_blank" rel="noopener">http://www.baidu.com</a></td>
+</tr>
+<tr>
+<td>-X</td>
+<td>用指定方法请求</td>
+<td>curl -X POST <a href="http://httpbin.org/post" target="_blank" rel="noopener">http://httpbin.org/post</a></td>
+</tr>
+<tr>
+<td>-I</td>
+<td>只返回请求的头信息</td>
+<td></td>
+</tr>
+<tr>
+<td>-d</td>
+<td>以POST方法请求url，并发送相应的参数</td>
+<td>-d a=1 -d b=2 -d c=3<br>-d “a=1&amp;b=2&amp;c=3”<br>-d @filename</td>
+</tr>
+<tr>
+<td>-O</td>
+<td>下载文件并以远程的文件名保存</td>
+<td></td>
+</tr>
+<tr>
+<td>-o</td>
+<td>下载文件并以指定的文件名保存</td>
+<td>curl -o fox.jpeg <a href="http://httpbin.org/image/jpeg" target="_blank" rel="noopener">http://httpbin.org/image/jpeg</a></td>
+</tr>
+<tr>
+<td>-L</td>
+<td>跟随重定向请求</td>
+<td>curl -IL <a href="https://baidu.com" target="_blank" rel="noopener">https://baidu.com</a></td>
+</tr>
+<tr>
+<td>-H</td>
+<td>设置头信息</td>
+<td>curl -o image.webp -H “accept:image/webp” <a href="http://httpbin.org/image" target="_blank" rel="noopener">http://httpbin.org/image</a></td>
+</tr>
+<tr>
+<td>-k</td>
+<td>允许发起不安全的SSL请求</td>
+<td></td>
+</tr>
+<tr>
+<td>-b</td>
+<td>设置cookies</td>
+<td>curl -b a=test <a href="http://httpbin.org/cookies" target="_blank" rel="noopener">http://httpbin.org/cookies</a></td>
+</tr>
+<tr>
+<td>-s</td>
+<td>不显示其他无关信息</td>
+<td></td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示连接过程中的所有信息</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>自定义一个命令，查看本机外网IP</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alias myip&#x3D;&quot;curl http:&#x2F;&#x2F;httpbin.org&#x2F;get|grep -E &#39;\d+&#39;|grep -v User-Agent|cut -d &#39;\&quot;&#39; -f4&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="wget"><a href="#wget" class="headerlink" title="wget"></a>wget</h2><p>安装：</p>
+<figure class="highlight plain"><figcaption><span>install wget```</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">参数说明</span><br><span class="line"></span><br><span class="line">| A            | B                            | C                                             |</span><br><span class="line">| ------------ | ---------------------------- | --------------------------------------------- |</span><br><span class="line">| -O           | 以指定文件名保存下载的文件   | wget -O test.png http:&#x2F;&#x2F;httpbin.org&#x2F;image&#x2F;png |</span><br><span class="line">| --limit-rate | 以指定的速度下载目标文件     | --limit-rate&#x3D;200k                             |</span><br><span class="line">| -c           | 断点续传                     |                                               |</span><br><span class="line">| -b           | 后台下载                     |                                               |</span><br><span class="line">| -U           | 设置User-Agent               |                                               |</span><br><span class="line">| --mirror     | 镜像某个目标网站             |                                               |</span><br><span class="line">| -p           | 下载页面中的所有相关资源     |                                               |</span><br><span class="line">| -r           | 递归下载所有网页中所有的链接 |                                               |</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;bash</span><br><span class="line"># 镜像下载整个网站并保存到本地</span><br><span class="line">wget -c --mirror -U &quot;Mozilla&quot; -p --convert-links http:&#x2F;&#x2F;docs.python-requests.org</span><br></pre></td></tr></table></figure>
+
+<h2 id="httpie"><a href="#httpie" class="headerlink" title="httpie"></a>httpie</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt install httpie</span><br><span class="line">pip install httpie</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Python</category>
+        <category>Crawler</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Crawler</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Springboot_02-整合缓存(Redis)-高级</title>
     <url>/2020/02/15/springboot-02/</url>
     <content><![CDATA[<p>Please stay tuned. Great show will be Contenued in 5 mins.</p>
 <a id="more"></a>
@@ -397,10 +778,8 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">=========================</span><br><span class="line">AUTO-CONFIGURATION REPORT</span><br><span class="line">=========================</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Positive matches:（自动配置类启用的）</span><br><span class="line">-----------------</span><br><span class="line"></span><br><span class="line">   DispatcherServletAutoConfiguration matched:</span><br><span class="line">      - <span class="meta">@ConditionalOnClass</span> found required <span class="class"><span class="keyword">class</span> '<span class="title">org</span>.<span class="title">springframework</span>.<span class="title">web</span>.<span class="title">servlet</span>.<span class="title">DispatcherServlet</span>'</span>; <span class="meta">@ConditionalOnMissingClass</span> <span class="function">did not find unwanted <span class="title">class</span> <span class="params">(OnClassCondition)</span></span></span><br><span class="line"><span class="function">      - @<span class="title">ConditionalOnWebApplication</span> <span class="params">(required)</span> found <span class="title">StandardServletEnvironment</span> <span class="params">(OnWebApplicationCondition)</span></span></span><br><span class="line"><span class="function">        </span></span><br><span class="line"><span class="function">    </span></span><br><span class="line"><span class="function">Negative matches:（没有启动，没有匹配成功的自动配置类）</span></span><br><span class="line"><span class="function">-----------------</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">   ActiveMQAutoConfiguration:</span></span><br><span class="line"><span class="function">      Did not match:</span></span><br><span class="line"><span class="function">         - @ConditionalOnClass did not find required classes 'javax.jms.ConnectionFactory', 'org.apache.activemq.ActiveMQConnectionFactory' <span class="params">(OnClassCondition)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">   AopAutoConfiguration:</span></span><br><span class="line"><span class="function">      Did not match:</span></span><br><span class="line"><span class="function">         - @ConditionalOnClass did not find required classes 'org.aspectj.lang.annotation.Aspect', 'org.aspectj.lang.reflect.Advice' <span class="params">(OnClassCondition)</span></span></span><br></pre></td></tr></table></figure>
 
 
-
-
-
-<h1 id="三、日志"><a href="#三、日志" class="headerlink" title="三、日志"></a>三、日志</h1><h2 id="1、日志框架"><a href="#1、日志框架" class="headerlink" title="1、日志框架"></a>1、日志框架</h2><p> 小张；开发一个大型系统；</p>
+<hr>
+<h1 id="三、日志"><a href="#三、日志" class="headerlink" title="三、日志"></a><strong>三、</strong>日志</h1><h2 id="1、日志框架"><a href="#1、日志框架" class="headerlink" title="1、日志框架"></a>1、日志框架</h2><p> 小张；开发一个大型系统；</p>
 <p>​   1、System.out.println(“”)；将关键数据打印在控制台；去掉？写在一个文件？</p>
 <p>​   2、框架来记录系统的一些运行时信息；日志框架 ；  zhanglogging.jar；</p>
 <p>​   3、高大上的几个功能？异步模式？自动归档？xxxx？  zhanglogging-good.jar？</p>
@@ -436,7 +815,7 @@
 <p>每一个日志的实现框架都有自己的配置文件。使用slf4j以后，<strong>配置文件还是做成日志实现框架自己本身的配置文件；</strong></p>
 <h3 id="2、遗留问题"><a href="#2、遗留问题" class="headerlink" title="2、遗留问题"></a>2、遗留问题</h3><p>a（slf4j+logback）: Spring（commons-logging）、Hibernate（jboss-logging）、MyBatis、xxxx</p>
 <p>统一日志记录，即使是别的框架和我一起统一使用slf4j进行输出？</p>
-<p><img src="images/legacy.png" alt></p>
+<p><img src="/2020/02/14/springboot-01/legacy.png" alt></p>
 <p><strong>如何让系统中所有的日志都统一到slf4j；</strong></p>
 <p>==1、将系统中其他日志框架先排除出去；==</p>
 <p>==2、用中间包来替换原有的日志框架；==</p>
@@ -550,7 +929,7 @@
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">   <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-log4j2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <hr>
-<h1 id="四、Web开发"><a href="#四、Web开发" class="headerlink" title="四、Web开发"></a>四、Web开发</h1><h2 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h2><p>使用SpringBoot；</p>
+<h1 id="四、Web开发"><a href="#四、Web开发" class="headerlink" title="四、Web开发"></a><strong>四、</strong>Web开发</h1><h2 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h2><p>使用SpringBoot；</p>
 <p><strong>1）、创建SpringBoot应用，选中我们需要的模块；</strong></p>
 <p><strong>2）、SpringBoot已经默认将这些场景配置好了，只需要在配置文件中指定少量配置就可以运行起来</strong></p>
 <p><strong>3）、自己编写业务代码；</strong></p>
@@ -585,7 +964,7 @@
 <p>​ localhost:8080/   找index页面</p>
 <p>==4）、所有的 **/favicon.ico  都是在静态资源文件下找；==</p>
 <h2 id="3、模板引擎"><a href="#3、模板引擎" class="headerlink" title="3、模板引擎"></a>3、模板引擎</h2><p>JSP、Velocity、Freemarker、Thymeleaf</p>
-<p><img src="images/template-engine.png" alt></p>
+<p><img src="/2020/02/14/springboot-01/template-engine.png" alt></p>
 <p>SpringBoot推荐的Thymeleaf；</p>
 <p>语法更简单，功能更强大；</p>
 <h3 id="1、引入thymeleaf；"><a href="#1、引入thymeleaf；" class="headerlink" title="1、引入thymeleaf；"></a>1、引入thymeleaf；</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            2.1.6</span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">切换thymeleaf版本</span><br><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">thymeleaf.version</span>&gt;</span>3.0.9.RELEASE<span class="tag">&lt;/<span class="name">thymeleaf.version</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 布局功能的支持程序  thymeleaf3主程序  layout2以上版本 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- thymeleaf2   layout1--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">thymeleaf-layout-dialect.version</span>&gt;</span>2.2.2<span class="tag">&lt;/<span class="name">thymeleaf-layout-dialect.version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -604,7 +983,7 @@
 
 <h3 id="3、语法规则"><a href="#3、语法规则" class="headerlink" title="3、语法规则"></a>3、语法规则</h3><p>1）、th:text；改变当前元素里面的文本内容；</p>
 <p>​ th：任意html属性；来替换原生属性的值</p>
-<p><img src="images/2018-02-04_123955.png" alt></p>
+<p><img src="/2020/02/14/springboot-01/2018-02-04_123955.png" alt></p>
 <p>2）、表达式？</p>
 <figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">Simple</span> <span class="string">expressions:（表达式语法）</span></span><br><span class="line">    <span class="attr">Variable</span> <span class="string">Expressions: $&#123;...&#125;：获取变量值；OGNL；</span></span><br><span class="line">        <span class="attr">1）、获取对象的属性、调用方法</span></span><br><span class="line">        <span class="attr">2）、使用内置的基本对象：</span></span><br><span class="line"><span class="comment">          #ctx : the context object.</span></span><br><span class="line"><span class="comment">          #vars: the context variables.</span></span><br><span class="line"><span class="comment">                #locale : the context locale.</span></span><br><span class="line"><span class="comment">                #request : (only in Web Contexts) the HttpServletRequest object.</span></span><br><span class="line"><span class="comment">                #response : (only in Web Contexts) the HttpServletResponse object.</span></span><br><span class="line"><span class="comment">                #session : (only in Web Contexts) the HttpSession object.</span></span><br><span class="line"><span class="comment">                #servletContext : (only in Web Contexts) the ServletContext object.</span></span><br><span class="line">                </span><br><span class="line">                <span class="attr">$&#123;session.foo&#125;</span></span><br><span class="line">            <span class="attr">3）、内置的一些工具对象：</span></span><br><span class="line"><span class="comment">#execInfo : information about the template being processed.</span></span><br><span class="line"><span class="comment">#messages : methods for obtaining externalized messages inside variables expressions, in the same way as they would be obtained using #&#123;…&#125; syntax.</span></span><br><span class="line"><span class="comment">#uris : methods for escaping parts of URLs/URIs</span></span><br><span class="line"><span class="comment">#conversions : methods for executing the configured conversion service (if any).</span></span><br><span class="line"><span class="comment">#dates : methods for java.util.Date objects: formatting, component extraction, etc.</span></span><br><span class="line"><span class="comment">#calendars : analogous to #dates , but for java.util.Calendar objects.</span></span><br><span class="line"><span class="comment">#numbers : methods for formatting numeric objects.</span></span><br><span class="line"><span class="comment">#strings : methods for String objects: contains, startsWith, prepending/appending, etc.</span></span><br><span class="line"><span class="comment">#objects : methods for objects in general.</span></span><br><span class="line"><span class="comment">#bools : methods for boolean evaluation.</span></span><br><span class="line"><span class="comment">#arrays : methods for arrays.</span></span><br><span class="line"><span class="comment">#lists : methods for lists.</span></span><br><span class="line"><span class="comment">#sets : methods for sets.</span></span><br><span class="line"><span class="comment">#maps : methods for maps.</span></span><br><span class="line"><span class="comment">#aggregates : methods for creating aggregates on arrays or collections.</span></span><br><span class="line"><span class="comment">#ids : methods for dealing with id attributes that might be repeated (for example, as a result of an iteration).</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">Selection</span> <span class="string">Variable Expressions: *&#123;...&#125;：选择表达式：和$&#123;&#125;在功能上是一样；</span></span><br><span class="line">      <span class="meta">补充：配合</span> <span class="string">th:object="$&#123;session.user&#125;：</span></span><br><span class="line">   <span class="meta">&lt;div</span> <span class="string">th:object="$&#123;session.user&#125;"&gt;</span></span><br><span class="line">    <span class="meta">&lt;p&gt;Name</span>: <span class="string">&lt;span th:text="*&#123;firstName&#125;"&gt;Sebastian&lt;/span&gt;.&lt;/p&gt;</span></span><br><span class="line">    <span class="meta">&lt;p&gt;Surname</span>: <span class="string">&lt;span th:text="*&#123;lastName&#125;"&gt;Pepper&lt;/span&gt;.&lt;/p&gt;</span></span><br><span class="line">    <span class="meta">&lt;p&gt;Nationality</span>: <span class="string">&lt;span th:text="*&#123;nationality&#125;"&gt;Saturn&lt;/span&gt;.&lt;/p&gt;</span></span><br><span class="line">    <span class="attr">&lt;/div&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="attr">Message</span> <span class="string">Expressions: #&#123;...&#125;：获取国际化内容</span></span><br><span class="line">    <span class="attr">Link</span> <span class="string">URL Expressions: @&#123;...&#125;：定义URL；</span></span><br><span class="line">        <span class="meta">@&#123;/order/process(execId</span>=<span class="string">$&#123;execId&#125;,execType='FAST')&#125;</span></span><br><span class="line">    <span class="attr">Fragment</span> <span class="string">Expressions: ~&#123;...&#125;：片段引用表达式</span></span><br><span class="line">        <span class="meta">&lt;div</span> <span class="string">th:insert="~&#123;commons :: main&#125;"&gt;...&lt;/div&gt;</span></span><br><span class="line">        </span><br><span class="line"><span class="attr">Literals（字面量）</span></span><br><span class="line">      <span class="attr">Text</span> <span class="string">literals: 'one text' , 'Another one!' ,…</span></span><br><span class="line">      <span class="attr">Number</span> <span class="string">literals: 0 , 34 , 3.0 , 12.3 ,…</span></span><br><span class="line">      <span class="attr">Boolean</span> <span class="string">literals: true , false</span></span><br><span class="line">      <span class="attr">Null</span> <span class="string">literal: null</span></span><br><span class="line">      <span class="attr">Literal</span> <span class="string">tokens: one , sometext , main ,…</span></span><br><span class="line"><span class="attr">Text</span> <span class="string">operations:（文本操作）</span></span><br><span class="line">    <span class="attr">String</span> <span class="string">concatenation: +</span></span><br><span class="line">    <span class="attr">Literal</span> <span class="string">substitutions: |The name is $&#123;name&#125;|</span></span><br><span class="line"><span class="attr">Arithmetic</span> <span class="string">operations:（数学运算）</span></span><br><span class="line">    <span class="attr">Binary</span> <span class="string">operators: + , - , * , / , %</span></span><br><span class="line">    <span class="attr">Minus</span> <span class="string">sign (unary operator): -</span></span><br><span class="line"><span class="attr">Boolean</span> <span class="string">operations:（布尔运算）</span></span><br><span class="line">    <span class="attr">Binary</span> <span class="string">operators: and , or</span></span><br><span class="line">    <span class="attr">Boolean</span> <span class="string">negation (unary operator): ! , not</span></span><br><span class="line"><span class="attr">Comparisons</span> <span class="string">and equality:（比较运算）</span></span><br><span class="line">    <span class="attr">Comparators</span>: <span class="string">&gt; , &lt; , &gt;= , &lt;= ( gt , lt , ge , le )</span></span><br><span class="line">    <span class="attr">Equality</span> <span class="string">operators: == , != ( eq , ne )</span></span><br><span class="line"><span class="attr">Conditional</span> <span class="string">operators:条件运算（三元运算符）</span></span><br><span class="line">    <span class="meta">If-then</span>: <span class="string">(if) ? (then)</span></span><br><span class="line">    <span class="meta">If-then-else</span>: <span class="string">(if) ? (then) : (else)</span></span><br><span class="line">    <span class="attr">Default</span>: <span class="string">(value) ?: (defaultvalue)</span></span><br><span class="line"><span class="attr">Special</span> <span class="string">tokens:</span></span><br><span class="line">    <span class="meta">No-Operation</span>: <span class="string">_</span></span><br></pre></td></tr></table></figure>
 
@@ -816,7 +1195,8 @@
 </tr>
 </tbody></table>
 <p>3）、员工列表：</p>
-<h4 id="thymeleaf公共页面元素抽取"><a href="#thymeleaf公共页面元素抽取" class="headerlink" title="thymeleaf公共页面元素抽取"></a>thymeleaf公共页面元素抽取</h4><figure class="highlight html"><table><tr><td class="code"><pre><span class="line">1、抽取公共片段</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:fragment</span>=<span class="string">"copy"</span>&gt;</span></span><br><span class="line"><span class="symbol">&amp;copy;</span> 2011 The Good Thymes Virtual Grocery</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">2、引入公共片段</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:insert</span>=<span class="string">"~&#123;footer :: copy&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">~&#123;templatename::selector&#125;：模板名::选择器</span><br><span class="line">~&#123;templatename::fragmentname&#125;:模板名::片段名</span><br><span class="line"></span><br><span class="line">3、默认效果：</span><br><span class="line">insert的公共片段在div标签中</span><br><span class="line">如果使用th:insert等属性进行引入，可以不用写~&#123;&#125;：</span><br><span class="line">行内写法可以加上：[[~&#123;&#125;]];[(~&#123;&#125;)]；</span><br></pre></td></tr></table></figure>
+<h4 id="thymeleaf公共页面元素抽取"><a href="#thymeleaf公共页面元素抽取" class="headerlink" title="thymeleaf公共页面元素抽取"></a>thymeleaf公共页面元素抽取</h4><p>详细文档见: <a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#including-template-fragments" target="_blank" rel="noopener">Thymeleaf Chapter8.1</a></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">1、抽取公共片段</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:fragment</span>=<span class="string">"copy"</span>&gt;</span></span><br><span class="line"><span class="symbol">&amp;copy;</span> 2011 The Good Thymes Virtual Grocery</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">2、引入公共片段</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">th:insert</span>=<span class="string">"~&#123;footer :: copy&#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">~&#123;templatename::selector&#125;：模板名::选择器</span><br><span class="line">~&#123;templatename::fragmentname&#125;:模板名::片段名</span><br><span class="line"></span><br><span class="line">3、默认效果：</span><br><span class="line">insert的公共片段在div标签中</span><br><span class="line">如果使用th:insert等属性进行引入，可以不用写~&#123;&#125;：</span><br><span class="line">行内写法可以加上：[[~&#123;&#125;]];[(~&#123;&#125;)]；</span><br></pre></td></tr></table></figure>
 
 
 
@@ -1026,7 +1406,7 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ConfigurableApplicationContext <span class="title">run</span><span class="params">(String... args)</span> </span>&#123;</span><br><span class="line">   StopWatch stopWatch = <span class="keyword">new</span> StopWatch();</span><br><span class="line">   stopWatch.start();</span><br><span class="line">   ConfigurableApplicationContext context = <span class="keyword">null</span>;</span><br><span class="line">   FailureAnalyzers analyzers = <span class="keyword">null</span>;</span><br><span class="line">   configureHeadlessProperty();</span><br><span class="line">   SpringApplicationRunListeners listeners = getRunListeners(args);</span><br><span class="line">   listeners.starting();</span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">      ApplicationArguments applicationArguments = <span class="keyword">new</span> DefaultApplicationArguments(</span><br><span class="line">            args);</span><br><span class="line">      ConfigurableEnvironment environment = prepareEnvironment(listeners,</span><br><span class="line">            applicationArguments);</span><br><span class="line">      Banner printedBanner = printBanner(environment);</span><br><span class="line">      context = createApplicationContext();</span><br><span class="line">      analyzers = <span class="keyword">new</span> FailureAnalyzers(context);</span><br><span class="line">      prepareContext(context, environment, listeners, applicationArguments,</span><br><span class="line">            printedBanner);</span><br><span class="line">       </span><br><span class="line">       <span class="comment">//刷新IOC容器</span></span><br><span class="line">      refreshContext(context);</span><br><span class="line">      afterRefresh(context, applicationArguments);</span><br><span class="line">      listeners.finished(context, <span class="keyword">null</span>);</span><br><span class="line">      stopWatch.stop();</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.logStartupInfo) &#123;</span><br><span class="line">         <span class="keyword">new</span> StartupInfoLogger(<span class="keyword">this</span>.mainApplicationClass)</span><br><span class="line">               .logStarted(getApplicationLog(), stopWatch);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> context;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">      handleRunFailure(context, listeners, analyzers, ex);</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(ex);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>==启动Servlet容器，再启动SpringBoot应用==</strong></p>
-<h1 id="五、Docker"><a href="#五、Docker" class="headerlink" title="五、Docker"></a>五、Docker</h1><h2 id="1、简介-1"><a href="#1、简介-1" class="headerlink" title="1、简介"></a>1、简介</h2><p><strong>Docker</strong>是一个开源的应用容器引擎；是一个轻量级容器技术；</p>
+<h1 id="五、Docker"><a href="#五、Docker" class="headerlink" title="五、Docker"></a><strong>五、</strong>Docker</h1><h2 id="1、简介-1"><a href="#1、简介-1" class="headerlink" title="1、简介"></a>1、简介</h2><p><strong>Docker</strong>是一个开源的应用容器引擎；是一个轻量级容器技术；</p>
 <p>Docker支持将软件编译成一个镜像；然后在镜像中各种软件做好配置，将镜像发布出去，其他使用者可以直接使用这个镜像；</p>
 <p>运行中的这个镜像称为容器，容器启动是非常快速的。</p>
 <p><img src="/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180303145450.png" alt></p>
@@ -1114,7 +1494,7 @@
 
 
 
-<h1 id="六、SpringBoot与数据访问"><a href="#六、SpringBoot与数据访问" class="headerlink" title="六、SpringBoot与数据访问"></a>六、SpringBoot与数据访问</h1><h2 id="1、JDBC"><a href="#1、JDBC" class="headerlink" title="1、JDBC"></a>1、JDBC</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="六、SpringBoot与数据访问"><a href="#六、SpringBoot与数据访问" class="headerlink" title="六、SpringBoot与数据访问"></a><strong>六、</strong>SpringBoot与数据访问</h1><h2 id="1、JDBC"><a href="#1、JDBC" class="headerlink" title="1、JDBC"></a>1、JDBC</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 
 
@@ -1176,7 +1556,7 @@
 
 
 
-<h1 id="七、启动配置原理"><a href="#七、启动配置原理" class="headerlink" title="七、启动配置原理"></a>七、启动配置原理</h1><p>几个重要的事件回调机制</p>
+<h1 id="七、启动配置原理"><a href="#七、启动配置原理" class="headerlink" title="七、启动配置原理"></a><strong>七、</strong>启动配置原理</h1><p>几个重要的事件回调机制</p>
 <p>配置在META-INF/spring.factories</p>
 <p><strong>ApplicationContextInitializer</strong></p>
 <p><strong>SpringApplicationRunListener</strong></p>
@@ -1215,7 +1595,7 @@
 
 
 
-<h1 id="八、自定义starter"><a href="#八、自定义starter" class="headerlink" title="八、自定义starter"></a>八、自定义starter</h1><p>starter：</p>
+<h1 id="八、自定义starter"><a href="#八、自定义starter" class="headerlink" title="八、自定义starter"></a><strong>八、</strong>自定义starter</h1><p>starter：</p>
 <p>​ 1、这个场景需要使用到的依赖是什么？</p>
 <p>​ 2、如何编写自动配置</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span>  <span class="comment">//指定这个类是一个配置类</span></span><br><span class="line"><span class="meta">@ConditionalOnXXX</span>  <span class="comment">//在指定条件成立的情况下自动配置类生效</span></span><br><span class="line"><span class="meta">@AutoConfigureAfter</span>  <span class="comment">//指定自动配置类的顺序</span></span><br><span class="line"><span class="meta">@Bean</span>  <span class="comment">//给容器中添加组件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@ConfigurationPropertie</span>结合相关xxxProperties类来绑定相关的配置</span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span> <span class="comment">//让xxxProperties生效加入到容器中</span></span><br><span class="line"></span><br><span class="line">自动配置类要能加载</span><br><span class="line">将需要启动就加载的自动配置类，配置在META-INF/spring.factories</span><br><span class="line">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span><br><span class="line">org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration,\</span><br><span class="line">org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\</span><br></pre></td></tr></table></figure>
@@ -1240,7 +1620,7 @@
 
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.atguigu.starter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.context.properties.EnableConfigurationProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnWebApplication</span> <span class="comment">//web应用才生效</span></span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span>(HelloProperties<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">HelloServiceAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    HelloProperties helloProperties;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> HelloService <span class="title">helloService</span><span class="params">()</span></span>&#123;</span><br><span class="line">        HelloService service = <span class="keyword">new</span> HelloService();</span><br><span class="line">        service.setHelloProperties(helloProperties);</span><br><span class="line">        <span class="keyword">return</span> service;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="更多SpringBoot整合示例"><a href="#更多SpringBoot整合示例" class="headerlink" title="更多SpringBoot整合示例"></a>更多SpringBoot整合示例</h1><p><img src="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples" alt="Official Spring Boot Samples"></p>
+<h1 id="九、-整合示例"><a href="#九、-整合示例" class="headerlink" title="九、 整合示例"></a><strong>九、</strong> 整合示例</h1><p><img src="https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples" alt="Official Spring Boot Samples"></p>
 ]]></content>
       <categories>
         <category>Java</category>

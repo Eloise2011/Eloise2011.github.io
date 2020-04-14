@@ -1218,7 +1218,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #822642;
+  background: #40b6f4;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2462,7 +2462,7 @@ embed {
   transition-timing-function: ease-out;
 }
 body {
-  background: url("https://source.unsplash.com/random/1600x900");
+  background: url("https://images.unsplash.com/photo-1579741385509-1e6e827f672e?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=900&ixlib=rb-1.2.1&q=80&w=1600");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;

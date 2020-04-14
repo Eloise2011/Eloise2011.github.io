@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"liweian.co.uk","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Spring Security  is OAuth2.0 is">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Security OAuth2.0认证授权">
+<meta property="og:url" content="https://liweian.co.uk/2020/04/13/Spring-security/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="Spring Security  is OAuth2.0 is">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://liweian.co.uk/2020/04/13/Spring-security/session_authentication.png">
+<meta property="og:image" content="https://liweian.co.uk/2020/04/13/Spring-security/token_authentication.png">
+<meta property="og:image" content="https://liweian.co.uk/2020/04/13/Spring-security/entity_resource_access.png">
+<meta property="og:image" content="https://liweian.co.uk/2020/04/13/Spring-security/role_resource_access.png">
+<meta property="og:image" content="https://liweian.co.uk/2020/04/13/Spring-security/enterprise_user_role_access_model.png">
+<meta property="og:image" content="https://liweian.co.uk/2020/04/13/Spring-security/RBAC_logic_flow1.png">
+<meta property="og:image" content="https://liweian.co.uk/2020/04/13/Spring-security/RBAC_logic_flow2.png">
+<meta property="og:image" content="https://liweian.co.uk/2020/04/13/Spring-security/session_authentication.png">
+<meta property="article:published_time" content="2020-04-13T06:24:10.000Z">
+<meta property="article:modified_time" content="2020-04-14T07:14:08.618Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring-security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://liweian.co.uk/2020/04/13/Spring-security/session_authentication.png">
+
+<link rel="canonical" href="https://liweian.co.uk/2020/04/13/Spring-security/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring Security OAuth2.0认证授权 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">9</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://liweian.co.uk/2020/04/13/Spring-security/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring Security OAuth2.0认证授权
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-04-13 14:24:10" itemprop="dateCreated datePublished" datetime="2020-04-13T14:24:10+08:00">2020-04-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-04-14 15:14:08" itemprop="dateModified" datetime="2020-04-14T15:14:08+08:00">2020-04-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Spring-security/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring-security</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+
+           
+          
+          <div class="out-img-topic">
+          <img src=/image/post_cover_image_spring_security.jpeg class="img-topic">
+          </div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Spring Security  is</p>
+<p>OAuth2.0 is</p>
+<a id="more"></a>
+
+
+
+<h1 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.  基本概念"></a>1.  基本概念</h1><h2 id="1-1-什么是认证"><a href="#1-1-什么是认证" class="headerlink" title="1.1 什么是认证"></a>1.1 什么是认证</h2><p>进入移动互联网时代，大家每天都在刷手机，常用的软件有微信、支付宝、头条等，下边拿微信来举例子说明认证 相关的基本概念，在初次使用微信前需要注册成为微信用户，然后输入账号和密码即可登录微信，输入账号和密码 登录微信的过程就是认证。</p>
+<p>系统为什么要认证？</p>
+<p>认证是为了保护系统的隐私数据与资源，用户的身份合法方可访问该系统的资源。</p>
+<p>认证 ：用户认证就是判断一个用户的身份是否合法的过程，用户去访问系统资源时系统要求验证用户的身份信 息，身份合法方可继续访问，不合法则拒绝访问。常见的用户身份认证方式有：用户名密码登录，二维码登录，手 机短信登录，指纹认证等方式。</p>
+<h2 id="1-2-什么是会话"><a href="#1-2-什么是会话" class="headerlink" title="1.2 什么是会话"></a>1.2 什么是会话</h2><p>用户认证通过后，为了避免用户的每次操作都进行认证可将用户的信息保证在会话中。会话就是系统为了保持当前 用户的登录状态所提供的机制，常见的有基于session方式、基于token方式等。</p>
+<p>基于session的认证方式如下图：</p>
+<p><img src="/2020/04/13/Spring-security/session_authentication.png" alt="session认证"></p>
+<p>它的交互流程是，用户认证成功后，在服务端生成用户相关的数据保存在session(当前会话)中，发给客户端的 sesssion_id 存放到 cookie 中，这样用户客户端请求时带上 session_id 就可以验证服务器端是否存在 session 数 据，以此完成用户的合法校验，当用户退出系统或session过期销毁时,客户端的session_id也就无效了。</p>
+<p>基于token方式如下图：</p>
+<p><img src="/2020/04/13/Spring-security/token_authentication.png" alt="token认证"></p>
+<p>它的交互流程是，用户认证成功后，服务端生成一个token发给客户端，客户端可以放到 cookie 或 localStorage 等存储中，每次请求时带上 token，服务端收到token通过验证后即可确认用户身份。</p>
+<p>基于session的认证方式由Servlet规范定制，服务端要存储session信息需要占用内存资源，客户端需要支持 cookie；基于token的方式则一般不需要服务端存储token，并且不限制客户端的存储方式。如今移动互联网时代 更多类型的客户端需要接入系统，系统多是采用前后端分离的架构进行实现，所以基于token的方式更适合。</p>
+<h2 id="1-3-什么是授权"><a href="#1-3-什么是授权" class="headerlink" title="1.3 什么是授权"></a>1.3 什么是授权</h2><p>还拿微信来举例子，微信登录成功后用户即可使用微信的功能，比如，发红包、发朋友圈、添加好友等，没有绑定 银行卡的用户是无法发送红包的，绑定银行卡的用户才可以发红包，发红包功能、发朋友圈功能都是微信的资源即 功能资源，用户拥有发红包功能的权限才可以正常使用发送红包功能，拥有发朋友圈功能的权限才可以使用发朋友 圈功能，这个根据用户的权限来控制用户使用资源的过程就是授权。</p>
+<p>为什么要授权？</p>
+<p>认证是为了保证用户身份的合法性，授权则是为了更细粒度的对隐私数据进行划分，授权是在认证通过后发生的， 控制不同的用户能够访问不同的资源。</p>
+<p>授权： 授权是用户认证通过根据用户的权限来控制用户访问资源的过程，拥有资源的访问权限则正常访问，没有 权限则拒绝访问。</p>
+<h2 id="1-4-授权的数据模型"><a href="#1-4-授权的数据模型" class="headerlink" title="1.4 授权的数据模型"></a>1.4 授权的数据模型</h2><p>如何进行授权即如何对用户访问资源进行控制，首先需要学习授权相关的数据模型。</p>
+<p>授权可简单理解为Who对What(which)进行How操作，包括如下：</p>
+<p>Who，即主体（Subject），主体一般是指用户，也可以是程序，需要访问系统中的资源。 What，即资源 （Resource），如系统菜单、页面、按钮、代码方法、系统商品信息、系统订单信息等。系统菜单、页面、按 钮、代码方法都属于系统功能资源，对于web系统每个功能资源通常对应一个URL；系统商品信息、系统订单信息 都属于实体资源（数据资源），实体资源由资源类型和资源实例组成，比如商品信息为资源类型，商品编号 为001 的商品为资源实例。 How，权限/许可（Permission），规定了用户对资源的操作许可，权限离开资源没有意义， 如用户查询权限、用户添加权限、某个代码方法的调用权限、编号为001的用户的修改权限等，通过权限可知用户 对哪些资源都有哪些操作许可。</p>
+<p><font color="red">主体、资源、权限关系如下图：</font></p>
+<p><img src="/2020/04/13/Spring-security/entity_resource_access.png" alt="主体_资源_权限关系图 "></p>
+<p>主体、资源、权限相关的数据模型如下：</p>
+<p>主体（用户id、账号、密码、…）</p>
+<p>资源（资源id、资源名称、访问地址、…）</p>
+<p>权限（权限id、权限标识、权限名称、资源id、…）</p>
+<p>角色（角色id、角色名称、…）</p>
+<p>角色和权限关系（角色id、权限id、…） 主体（用户）和角色关系（用户id、角色id、…）</p>
+<p>主体（用户）、资源、权限关系如下图：</p>
+<p><img src="/2020/04/13/Spring-security/role_resource_access.png" alt="角色_资源_权限关系图 "></p>
+<p>通常企业开发中将资源和权限表合并为一张权限表，如下： </p>
+<p>资源（资源id、资源名称、访问地址、…）</p>
+<p> 权限（权限id、权限标识、权限名称、资源id、…） </p>
+<p>合并为： 权限（权限id、权限标识、权限名称、资源名称、资源访问地址、…） </p>
+<p>修改后数据模型之间的关系如下图：</p>
+<p><img src="/2020/04/13/Spring-security/enterprise_user_role_access_model.png" alt="企业用户角色权限关系图"></p>
+<h2 id="1-5-RBAC"><a href="#1-5-RBAC" class="headerlink" title="1.5 RBAC"></a>1.5 RBAC</h2><h3 id="1-5-1-基于角色的访问控制"><a href="#1-5-1-基于角色的访问控制" class="headerlink" title="1.5.1 基于角色的访问控制"></a>1.5.1 基于角色的访问控制</h3><p>RBAC基于角色的访问控制（Role-Based Access Control）是按角色进行授权，比如：主体的角色为总经理可以查</p>
+<p>询企业运营报表，查询员工工资信息等，访问控制流程如下：</p>
+<p><img src="/2020/04/13/Spring-security/RBAC_logic_flow1.png" alt="基于角色访问控制的流程图"></p>
+<p>根据上图中的判断逻辑，授权代码可表示如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(主体.hasRole(<span class="string">"总经理角色id"</span>))&#123;</span><br><span class="line">  	查询工资 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果上图中查询工资所需要的角色变化为总经理和部门经理，此时就需要修改判断逻辑为“判断用户的角色是否是 总经理或部门经理”，修改代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">if</span>(主体.hasRole(<span class="string">"总经理角色id"</span>) || 主体.hasRole(<span class="string">"部门经理角色id"</span>))&#123;</span><br><span class="line">  		查询工资 </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>根据上边的例子发现，当需要修改角色的权限时就需要修改授权的相关代码，系统可扩展性差。</p>
+<h3 id="1-5-2-基于资源的访问控制"><a href="#1-5-2-基于资源的访问控制" class="headerlink" title="1.5.2 基于资源的访问控制"></a>1.5.2 基于资源的访问控制</h3><p>RBAC基于资源的访问控制（Resource-Based Access Control）是按资源（或权限）进行授权，比如：用户必须</p>
+<p>具有查询工资权限才可以查询员工工资信息等，访问控制流程如下：</p>
+<p><img src="/2020/04/13/Spring-security/RBAC_logic_flow2.png" alt="基于资源访问控制的流程图"></p>
+<p>根据上图中的判断，授权代码可以表示为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if(主体.hasPermission(&quot;查询工资权限标识&quot;))&#123;</span><br><span class="line">		查询工资</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>优点：系统设计时定义好查询工资的权限标识，即使查询工资所需要的角色变化为总经理和部门经理也不需要修改 授权代码，系统可扩展性强。</p>
+<h1 id="2-基于session的认证"><a href="#2-基于session的认证" class="headerlink" title="2. 基于session的认证"></a>2. 基于session的认证</h1><h2 id="2-1认证流程"><a href="#2-1认证流程" class="headerlink" title="2.1认证流程"></a>2.1认证流程</h2><p>基于Session认证方式的流程是，用户认证成功后，在服务端生成用户相关的数据保存在session(当前会话)，而发 给客户端的 sesssion_id 存放到 cookie 中，这样用客户端请求时带上 session_id 就可以验证服务器端是否存在 session 数据，以此完成用户的合法校验。当用户退出系统或session过期销毁时,客户端的session_id也就无效了。<br>下图是session认证方式的流程图：<br><img src="/2020/04/13/Spring-security/session_authentication.png" alt="session认证"></p>
+<p>基于Session的认证机制由Servlet规范定制，Servlet容器已实现，用户通过HttpSession的操作方法即可实现，如 下是HttpSession相关的操作API。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HttpSession getSession(Boolean create)</td>
+<td>获取当前HttpSession对象</td>
+</tr>
+<tr>
+<td>void setAttribute(String name,Object value)</td>
+<td>向session中存放对象</td>
+</tr>
+<tr>
+<td>object getAttribute(String name)</td>
+<td>从session中获取对象</td>
+</tr>
+<tr>
+<td>void removeAttribute(String name);</td>
+<td>移除session中对象</td>
+</tr>
+<tr>
+<td>void invalidate()</td>
+<td>使HttpSession失效</td>
+</tr>
+<tr>
+<td>…</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="2-2-创建工程"><a href="#2-2-创建工程" class="headerlink" title="2.2 创建工程"></a>2.2 创建工程</h2><p>本案例工程使用maven进行构建，使用SpringMVC、Servlet3.0实现。</p>
+<h3 id="2-2-1-创建maven工程"><a href="#2-2-1-创建maven工程" class="headerlink" title="2.2.1 创建maven工程"></a>2.2.1 创建maven工程</h3><p>创建maven工程 security-springmvc，工程结构如下：</p>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://liweian.co.uk/2020/04/13/Spring-security/" title="Spring Security OAuth2.0认证授权">https://liweian.co.uk/2020/04/13/Spring-security/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i>Java</a>
+              <a href="/tags/Spring-security/" rel="tag"><i class="fa fa-tag"></i>Spring-security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/10/JVM-02/" rel="prev" title="JVM-02">
+      <i class="fa fa-chevron-left"></i> JVM-02
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/13/Shiro/" rel="next" title="Shiro框架简介">
+      Shiro框架简介 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-基本概念"><span class="nav-number">1.</span> <span class="nav-text">1.  基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-什么是认证"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 什么是认证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-什么是会话"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 什么是会话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-什么是授权"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 什么是授权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-授权的数据模型"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 授权的数据模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-RBAC"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 RBAC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-1-基于角色的访问控制"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.5.1 基于角色的访问控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-2-基于资源的访问控制"><span class="nav-number">1.5.2.</span> <span class="nav-text">1.5.2 基于资源的访问控制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-基于session的认证"><span class="nav-number">2.</span> <span class="nav-text">2. 基于session的认证</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1认证流程"><span class="nav-number">2.1.</span> <span class="nav-text">2.1认证流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-创建工程"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 创建工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-创建maven工程"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 创建maven工程</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">103k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">1:34</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>
