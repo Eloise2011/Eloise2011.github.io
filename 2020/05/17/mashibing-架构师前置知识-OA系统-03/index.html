@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"liweian.co.uk","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="张一明架构师前置知识- Chapter 13">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mashibing_架构师前置知识_OA系统_03">
+<meta property="og:url" content="https://liweian.co.uk/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="张一明架构师前置知识- Chapter 13">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://liweian.co.uk/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/RBAC_logic_flow1.png">
+<meta property="og:image" content="https://liweian.co.uk/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/RBAC_logic_flow2.png">
+<meta property="article:published_time" content="2020-05-16T23:13:37.000Z">
+<meta property="article:modified_time" content="2020-05-17T08:55:27.822Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="SpringBoot">
+<meta property="article:tag" content="mashibing">
+<meta property="article:tag" content="ArchetectPre">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://liweian.co.uk/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/RBAC_logic_flow1.png">
+
+<link rel="canonical" href="https://liweian.co.uk/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>mashibing_架构师前置知识_OA系统_03 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">14</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://liweian.co.uk/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mashibing_架构师前置知识_OA系统_03
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-05-17 07:13:37 / Modified: 16:55:27" itemprop="dateCreated datePublished" datetime="2020-05-17T07:13:37+08:00">2020-05-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/SpringBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">SpringBoot</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.9k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>张一明架构师前置知识- Chapter 13</p>
+<a id="more"></a>
+
+
+
+<h2 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h2><h3 id="RBAC"><a href="#RBAC" class="headerlink" title="RBAC"></a>RBAC</h3><p>基于角色的权限访问控制（Role-Based Access Control）作为传统访问控制（自主访问，强制访问）的有前景的代替受到广泛的关注。在RBAC中，权限与角色相关联，用户通过成为适当角色的成员而得到这些角色的权限。这就极大地简化了权限的管理。在一个组织中，角色是为了完成各种工作而创造，用户则依据它的责任和资格来被指派相应的角色，用户可以很容易地从一个角色被指派到另一个角色。角色可依新的需求和系统的合并而赋予新的权限，而权限也可根据需要而从某角色中回收。角色与角色的关系可以建立起来以囊括更广泛的客观情况。</p>
+<p><img src="/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/RBAC_logic_flow1.png" alt="1562154499822"></p>
+<p><img src="/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/RBAC_logic_flow2.png" alt="1562154499822"></p>
+<h4 id="permission-权限"><a href="#permission-权限" class="headerlink" title="permission 权限"></a>permission 权限</h4><h5 id="异步JSON提交表单"><a href="#异步JSON提交表单" class="headerlink" title="异步JSON提交表单"></a>异步JSON提交表单</h5><p>js:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">function add()&#123;</span><br><span class="line">	</span><br><span class="line">	var data &#x3D; $(&quot;#add&quot;).serializeArray();</span><br><span class="line">	</span><br><span class="line">	var formObject &#x3D; &#123;&#125;;</span><br><span class="line">	 $.each(data,function(i,item)&#123;</span><br><span class="line">            formObject[item.name] &#x3D; item.value;</span><br><span class="line">        &#125;);</span><br><span class="line">	 </span><br><span class="line">$.ajax(&#123;</span><br><span class="line">       type: &quot;POST&quot;,</span><br><span class="line">       url: &quot;permissionAdd&quot;,</span><br><span class="line">       contentType: &quot;application&#x2F;json; charset&#x3D;utf-8&quot;,</span><br><span class="line">       data: JSON.stringify(formObject),</span><br><span class="line">       dataType: &quot;json&quot;,</span><br><span class="line">       success: function (message) &#123;</span><br><span class="line">           if (message &gt; 0) &#123;</span><br><span class="line">               alert(&quot;请求已提交！我们会尽快与您取得联系&quot;);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;,</span><br><span class="line">       error: function (message) &#123;</span><br><span class="line">         alert(&quot;提交数据失败！&quot;);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>controller:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;permissionAdd&quot;)</span><br><span class="line">public String permissionAdd(Model model,@RequestBody(required &#x3D; false) Map&lt;String, String&gt; map) &#123;</span><br><span class="line">	</span><br><span class="line">	System.out.println(&quot;map:&quot; + map);</span><br><span class="line">	return &quot;manager&#x2F;permissionAdd&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>复选框</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;input type&#x3D;&quot;checkbox&quot; name&#x3D;&quot;r&quot;   th:checked&#x3D;&quot;$&#123;p&#125;&#x3D;&#x3D;null?&#39;&#39;:$&#123;p.r &#125;   &quot; value&#x3D;&quot;true&quot;&gt;查看  </span><br><span class="line">&lt;input type&#x3D;&quot;checkbox&quot; name&#x3D;&quot;c&quot;   th:checked&#x3D;&quot;$&#123;p&#125;&#x3D;&#x3D;null?&#39;&#39;:$&#123;p.c &#125;   &quot; value&#x3D;&quot;true&quot;&gt;添加  </span><br><span class="line">&lt;input type&#x3D;&quot;checkbox&quot; name&#x3D;&quot;d&quot;   th:checked&#x3D;&quot;$&#123;p&#125;&#x3D;&#x3D;null?&#39;&#39;:$&#123;p.d &#125;   &quot; value&#x3D;&quot;true&quot;&gt;删除 </span><br><span class="line">&lt;input type&#x3D;&quot;checkbox&quot; name&#x3D;&quot;u&quot;   th:checked&#x3D;&quot;$&#123;p&#125;&#x3D;&#x3D;null?&#39;&#39;:$&#123;p.u&#125;   &quot; value&#x3D;&quot;true&quot;&gt;修改</span><br></pre></td></tr></table></figure>
+
+<h3 id="表设计"><a href="#表设计" class="headerlink" title="表设计"></a>表设计</h3><p>多对多</p>
+<p>SELECT r.id, r.name,p.name,p.uri FROM role r inner join role_permission m on r.id = m.role_id inner join permission p on m.permission_id = p.id;</p>
+<p><strong>Inner Join</strong> 交集部分</p>
+<p><strong>LEFT OUTER JOIN</strong></p>
+<p>RIGHT OUTER JOIN</p>
+<p>一方全部</p>
+<h3 id="踢下线-单用户登录"><a href="#踢下线-单用户登录" class="headerlink" title="踢下线 单用户登录"></a>踢下线 单用户登录</h3><h2 id="表单校验"><a href="#表单校验" class="headerlink" title="表单校验"></a>表单校验</h2><h3 id="实体注解："><a href="#实体注解：" class="headerlink" title="实体注解："></a>实体注解：</h3><p>controller</p>
+<p>@Valid @RequestBody Permission p,BindingResult bindingResult</p>
+<p>@NotBlank:判断字符创是否是null或者是空串(去掉首尾空格)。</p>
+<p>@NotEmpty判断字符串是否为null会者是空串。</p>
+<p>@Length判断字符的长度（最大或最小）</p>
+<p>@Min判断数值最小值</p>
+<p>@Max判断数值最大值</p>
+<p>@Email判断邮箱是否合法</p>
+<p>@Null 限制只能为null @NotNull 限制必须不为null @AssertFalse 限制必须为false @AssertTrue 限制必须为true @DecimalMax(value) 限制必须为一个不大于指定值的数字 @DecimalMin(value) 限制必须为一个不小于指定值的数字 @Digits(integer,fraction) 限制必须为一个小数，且整数部分的位数不能超过integer，小数部分的位数不能超过fraction @Max(value) 限制必须为一个不大于指定值的数字 @Min(value) 限制必须为一个不小于指定值的数字 @Future 限制必须是一个将来的日期 @Past 限制必须是一个过去的日期 @Pattern(value) 限制必须符合指定的正则表达式 @Size(max,min) 限制字符长度必须在min到max之间 @NotEmpty 验证注解的元素值不为null且不为空（字符串长度不为0、集合大小不为0） @NotBlank 验证注解的元素值不为空（不为null、去除首尾空格后长度不为0），不同于@NotEmpty，@NotBlank只应用于字符串且在比较时会去除字符串的空格 @Email 验证注解的元素值是Email，也可以通过正则表达式和flag指定自定义的email格式</p>
+<p>文件上传</p>
+<p>代码生成</p>
+<h2 id="MockMvc"><a href="#MockMvc" class="headerlink" title="MockMvc"></a>MockMvc</h2><p>本文为本人整理的听课笔记, 稍有修改.<br>自学之用, 不作任何商业用途.如有侵权, 请联系删除</p>
+<p>原文引用于如下原创内容 :</p>
+<p><a href>Original</a></p>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://liweian.co.uk/2020/05/17/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-03/" title="mashibing_架构师前置知识_OA系统_03">https://liweian.co.uk/2020/05/17/mashibing-架构师前置知识-OA系统-03/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i>Java</a>
+              <a href="/tags/SpringBoot/" rel="tag"><i class="fa fa-tag"></i>SpringBoot</a>
+              <a href="/tags/mashibing/" rel="tag"><i class="fa fa-tag"></i>mashibing</a>
+              <a href="/tags/ArchetectPre/" rel="tag"><i class="fa fa-tag"></i>ArchetectPre</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/16/mashibing-%E6%9E%B6%E6%9E%84%E5%B8%88%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86-OA%E7%B3%BB%E7%BB%9F-02/" rel="prev" title="OA系统_02">
+      <i class="fa fa-chevron-left"></i> OA系统_02
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/27/springboot-json/" rel="next" title="Springboot-Json">
+      Springboot-Json <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#权限管理"><span class="nav-number">1.</span> <span class="nav-text">权限管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RBAC"><span class="nav-number">1.1.</span> <span class="nav-text">RBAC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#permission-权限"><span class="nav-number">1.1.1.</span> <span class="nav-text">permission 权限</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#异步JSON提交表单"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">异步JSON提交表单</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表设计"><span class="nav-number">1.2.</span> <span class="nav-text">表设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#踢下线-单用户登录"><span class="nav-number">1.3.</span> <span class="nav-text">踢下线 单用户登录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表单校验"><span class="nav-number">2.</span> <span class="nav-text">表单校验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体注解："><span class="nav-number">2.1.</span> <span class="nav-text">实体注解：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MockMvc"><span class="nav-number">3.</span> <span class="nav-text">MockMvc</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">143k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">2:10</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>
