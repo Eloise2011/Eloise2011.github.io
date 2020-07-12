@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"liweian.co.uk","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Apache ActiveMQ™ is the most popular open source, multi-protocol, Java-based messaging server. It supports industry standard protocols so users get the benefits of client choices across a broad range">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ActiveMQ_02">
+<meta property="og:url" content="https://liweian.co.uk/2020/07/12/ActiveMQ-02/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="Apache ActiveMQ™ is the most popular open source, multi-protocol, Java-based messaging server. It supports industry standard protocols so users get the benefits of client choices across a broad range">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-12T03:41:37.000Z">
+<meta property="article:modified_time" content="2020-07-12T03:55:23.518Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="MQ">
+<meta property="article:tag" content="ActiveMQ">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://liweian.co.uk/2020/07/12/ActiveMQ-02/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>ActiveMQ_02 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">15</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">22</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://liweian.co.uk/2020/07/12/ActiveMQ-02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ActiveMQ_02
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-07-12 11:41:37 / Modified: 11:55:23" itemprop="dateCreated datePublished" datetime="2020-07-12T11:41:37+08:00">2020-07-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/MQ/" itemprop="url" rel="index">
+                    <span itemprop="name">MQ</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>9 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Apache ActiveMQ™ is the most popular <strong>open source, multi-protocol, Java-based messaging server</strong>. It supports industry standard protocols so users get the benefits of client choices across a broad range of languages and platforms. Connectivity from C, C++, Python, .Net, and more is available. Integrate your multi-platform applications using the ubiquitous <strong>AMQP</strong> protocol. Exchange messages between your web applications using <strong>STOMP</strong> over websockets. Manage your IoT devices using <strong>MQTT</strong>. Support your existing <strong>JMS</strong> infrastructure and beyond. ActiveMQ offers the power and flexibility to support any messaging use-case.</p>
+<p>There are currently two “flavors” of ActiveMQ available - the “classic” 5.x broker and the “next generation” Artemis broker. Once Artemis reaches a sufficient level of feature parity with the 5.x code-base it will become ActiveMQ 6. Initial <a href="http://activemq.apache.org/components/artemis/migration" target="_blank" rel="noopener">migration documentation</a> is available.</p>
+<a id="more"></a>
+
+<h1 id="Active-MQ-02"><a href="#Active-MQ-02" class="headerlink" title="Active MQ 02"></a>Active MQ 02</h1><h2 id="常用API"><a href="#常用API" class="headerlink" title="常用API"></a>常用API</h2><h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">session.commit();</span></span><br><span class="line"><span class="attr">session.rollback();</span></span><br></pre></td></tr></table></figure>
+
+<p>用来提交/回滚事务</p>
+<h3 id="Purge"><a href="#Purge" class="headerlink" title="Purge"></a>Purge</h3><p>清理消息</p>
+<h3 id="签收模式"><a href="#签收模式" class="headerlink" title="签收模式"></a>签收模式</h3><p>签收代表接收端的session已收到消息的一次确认，反馈给broker</p>
+<p>ActiveMQ支持自动签收与手动签收</p>
+<h4 id="Session-AUTO-ACKNOWLEDGE"><a href="#Session-AUTO-ACKNOWLEDGE" class="headerlink" title="Session.AUTO_ACKNOWLEDGE"></a>Session.AUTO_ACKNOWLEDGE</h4><p>当客户端从receiver或onMessage成功返回时，Session自动签收客户端的这条消息的收条。</p>
+<h4 id="Session-CLIENT-ACKNOWLEDGE"><a href="#Session-CLIENT-ACKNOWLEDGE" class="headerlink" title="Session.CLIENT_ACKNOWLEDGE"></a>Session.CLIENT_ACKNOWLEDGE</h4><p>客户端通过调用消息(Message)的acknowledge方法签收消息。在这种情况下，签收发生在Session层面：签收一个已经消费的消息会自动地签收这个Session所有已消费的收条。</p>
+<h4 id="Session-DUPS-OK-ACKNOWLEDGE"><a href="#Session-DUPS-OK-ACKNOWLEDGE" class="headerlink" title="Session.DUPS_OK_ACKNOWLEDGE"></a>Session.DUPS_OK_ACKNOWLEDGE</h4><p>Session不必确保对传送消息的签收，这个模式可能会引起消息的重复，但是降低了Session的开销，所以只有客户端能容忍重复的消息，才可使用。</p>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>默认持久化是开启的</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h3><p>可以打乱消费顺序</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">producer.setPriority</span></span><br></pre></td></tr></table></figure>
+
+<p>配置文件需要指定使用优先级的目的地</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">policyEntry</span> <span class="attr">queue</span>=<span class="string">"queue1"</span> <span class="attr">prioritizedMessages</span>=<span class="string">"true"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="消息超时-过期"><a href="#消息超时-过期" class="headerlink" title="消息超时/过期"></a>消息超时/过期</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">producer.setTimeToLive</span></span><br></pre></td></tr></table></figure>
+
+<p>设置了消息超时的消息，消费端在超时后无法在消费到此消息。</p>
+<p>给消息设置一个超时时间 -&gt; 死信队列 -&gt; 拿出来 -&gt; 重发</p>
+<h4 id="死信"><a href="#死信" class="headerlink" title="死信"></a>死信</h4><p>此类消息会进入到<code>ActiveMQ.DLQ</code>队列且不会自动清除，称为死信</p>
+<p>此处有消息堆积的风险</p>
+<h4 id="修改死信队列名称"><a href="#修改死信队列名称" class="headerlink" title="修改死信队列名称"></a>修改死信队列名称</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">policyEntry</span> <span class="attr">queue</span>=<span class="string">"f"</span> <span class="attr">prioritizedMessages</span>=<span class="string">"true"</span> &gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">deadLetterStrategy</span>&gt;</span> </span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">individualDeadLetterStrategy</span>   <span class="attr">queuePrefix</span>=<span class="string">"DLxxQ."</span> <span class="attr">useQueueForQueueMessages</span>=<span class="string">"true"</span> /&gt;</span> </span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">deadLetterStrategy</span>&gt;</span> </span><br><span class="line"> <span class="tag">&lt;/<span class="name">policyEntry</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>useQueueForQueueMessages: 设置使用队列保存死信，还可以设置useQueueForTopicMessages，使用Topic来保存死信 </p>
+<h4 id="让非持久化的消息也进入死信队列"><a href="#让非持久化的消息也进入死信队列" class="headerlink" title="让非持久化的消息也进入死信队列"></a>让非持久化的消息也进入死信队列</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">individualDeadLetterStrategy</span>   <span class="attr">queuePrefix</span>=<span class="string">"DLxxQ."</span> <span class="attr">useQueueForQueueMessages</span>=<span class="string">"true"</span>  <span class="attr">processNonPersistent</span>=<span class="string">"true"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>processNonPersistent=”true”</p>
+<h4 id="过期消息不进死信队列"><a href="#过期消息不进死信队列" class="headerlink" title="过期消息不进死信队列"></a>过期消息不进死信队列</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">individualDeadLetterStrategy</span>   <span class="attr">processExpired</span>=<span class="string">"false"</span>  /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="独占消费者"><a href="#独占消费者" class="headerlink" title="独占消费者"></a>独占消费者</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Queue queue = session.createQueue(<span class="string">"xxoo?consumer.exclusive=true"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>还可以设置优先级</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Queue queue = session.createQueue(<span class="string">"xxoo?consumer.exclusive=true&amp;consumer.priority=10"</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="消息类型"><a href="#消息类型" class="headerlink" title="消息类型"></a>消息类型</h2><h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><h4 id="发送端"><a href="#发送端" class="headerlink" title="发送端"></a>发送端</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Girl girl = <span class="keyword">new</span> Girl(<span class="string">"qiqi"</span>,<span class="number">25</span>,<span class="number">398.0</span>);</span><br><span class="line"></span><br><span class="line">Message message = session.createObjectMessage(girl);</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="接受端"><a href="#接受端" class="headerlink" title="接受端"></a>接受端</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(message <span class="keyword">instanceof</span> ActiveMQObjectMessage) &#123;</span><br><span class="line">	</span><br><span class="line">	Girl girl = (Girl)((ActiveMQObjectMessage)message).getObject();</span><br><span class="line">	</span><br><span class="line">	System.out.println(girl);</span><br><span class="line">	System.out.println(girl.getName());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>如果遇到此类报错</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread "main" javax.jms.JMSException: Failed to build body from content. Serializable class not available to broker. Reason: java.lang.ClassNotFoundException: Forbidden class com.mashibing.mq.Girl! This class is not trusted to be serialized as ObjectMessage payload. Please take a look at http://activemq.apache.org/objectmessage.html for more information on how to configure trusted classes.</span><br><span class="line">	at org.apache.activemq.util.JMSExceptionSupport.create(JMSExceptionSupport.java:<span class="number">36</span>)</span><br><span class="line">	at org.apache.activemq.command.ActiveMQObjectMessage.getObject(ActiveMQObjectMessage.java:<span class="number">213</span>)</span><br><span class="line">	at com.mashibing.mq.Receiver.main(Receiver.java:<span class="number">65</span>)</span><br><span class="line">Caused by: java.lang.ClassNotFoundException: Forbidden class com.mashibing.mq.Girl! This class is not trusted to be serialized as ObjectMessage payload. Please take a look at http://activemq.apache.org/objectmessage.html for more information on how to configure trusted classes.</span><br><span class="line">	at org.apache.activemq.util.ClassLoadingAwareObjectInputStream.checkSecurity(ClassLoadingAwareObjectInputStream.java:<span class="number">112</span>)</span><br><span class="line">	at org.apache.activemq.util.ClassLoadingAwareObjectInputStream.resolveClass(ClassLoadingAwareObjectInputStream.java:<span class="number">57</span>)</span><br><span class="line">	at java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:<span class="number">1868</span>)</span><br><span class="line">	at java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:<span class="number">1751</span>)</span><br><span class="line">	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:<span class="number">2042</span>)</span><br><span class="line">	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:<span class="number">1573</span>)</span><br><span class="line">	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:<span class="number">431</span>)</span><br><span class="line">	at org.apache.activemq.command.ActiveMQObjectMessage.getObject(ActiveMQObjectMessage.java:<span class="number">211</span>)</span><br><span class="line">	... <span class="number">1</span> more</span><br></pre></td></tr></table></figure>
+
+<p><strong>需要添加信任</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">connectionFactory.setTrustedPackages(</span><br><span class="line">		<span class="keyword">new</span> ArrayList&lt;String&gt;(</span><br><span class="line">				Arrays.asList(</span><br><span class="line">						<span class="keyword">new</span> String[]&#123;</span><br><span class="line">								Girl<span class="class">.<span class="keyword">class</span>.<span class="title">getPackage</span>().<span class="title">getName</span>()</span></span><br><span class="line"><span class="class">								&#125;</span></span><br><span class="line"><span class="class">						</span></span><br><span class="line"><span class="class">						)</span></span><br><span class="line"><span class="class">				)</span></span><br><span class="line"><span class="class">		</span></span><br><span class="line"><span class="class">		)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="bytesMessage"><a href="#bytesMessage" class="headerlink" title="bytesMessage"></a>bytesMessage</h3><h4 id="发送端-1"><a href="#发送端-1" class="headerlink" title="发送端"></a>发送端</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BytesMessage bytesMessage = session.createBytesMessage();</span><br><span class="line">      bytesMessage.writeBytes(<span class="string">"str"</span>.getBytes());</span><br><span class="line">      bytesMessage.writeUTF(<span class="string">"哈哈"</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="接受端-1"><a href="#接受端-1" class="headerlink" title="接受端"></a>接受端</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(message <span class="keyword">instanceof</span> BytesMessage) &#123;</span><br><span class="line">	BytesMessage bm = (BytesMessage)message;</span><br><span class="line">	</span><br><span class="line">	 <span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">           <span class="keyword">int</span> len = -<span class="number">1</span>;</span><br><span class="line">           <span class="keyword">while</span> ((len = bm.readBytes(b)) != -<span class="number">1</span>) &#123;</span><br><span class="line">               System.out.println(<span class="keyword">new</span> String(b, <span class="number">0</span>, len));</span><br><span class="line">           &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>还可以使用ActiveMQ给提供的便捷方法,但要注意读取和写入的顺序</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bm.readBoolean()</span><br><span class="line">bm.readUTF()</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="写入文件"><a href="#写入文件" class="headerlink" title="写入文件"></a>写入文件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FileOutputStream out = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    out = <span class="keyword">new</span> FileOutputStream(<span class="string">"d:/aa.txt"</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (FileNotFoundException e2) &#123;</span><br><span class="line">    e2.printStackTrace();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">byte</span>[] by = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line"><span class="keyword">int</span> len = <span class="number">0</span> ;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span>((len = bm.readBytes(by))!= -<span class="number">1</span>)&#123;</span><br><span class="line">        out.write(by,<span class="number">0</span>,len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e1) &#123;</span><br><span class="line">    e1.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MapMessage"><a href="#MapMessage" class="headerlink" title="MapMessage"></a>MapMessage</h3><h4 id="发送端-2"><a href="#发送端-2" class="headerlink" title="发送端"></a>发送端</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">MapMessage mapMessage = session.createMapMessage();</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">mapMessage.setString(<span class="string">"name"</span>,<span class="string">"lucy"</span>);</span><br><span class="line">      mapMessage.setBoolean(<span class="string">"yihun"</span>,<span class="keyword">false</span>);</span><br><span class="line">mapMessage.setInt(<span class="string">"age"</span>, <span class="number">17</span>);</span><br><span class="line"></span><br><span class="line">producer.send(mapMessage);</span><br></pre></td></tr></table></figure>
+
+<h4 id="接收端"><a href="#接收端" class="headerlink" title="接收端"></a>接收端</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Message message = consumer.receive();</span><br><span class="line">MapMessage mes = (MapMessage) message;</span><br><span class="line"></span><br><span class="line">System.out.println(mes);</span><br><span class="line"></span><br><span class="line">System.out.println(mes.getString(<span class="string">"name"</span>));</span><br></pre></td></tr></table></figure>
+
+<h2 id="消息发送原理"><a href="#消息发送原理" class="headerlink" title="消息发送原理"></a>消息发送原理</h2><h3 id="同步与异步"><a href="#同步与异步" class="headerlink" title="同步与异步"></a>同步与异步</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>开启事务</th>
+<th>关闭事务</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>持久化</td>
+<td>异步</td>
+<td>同步</td>
+</tr>
+<tr>
+<td>非持久化</td>
+<td>异步</td>
+<td>异步</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>我们可以通过以下几种方式来设置异步发送：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ActiveMQConnectionFactory connectionFactory = <span class="keyword">new</span> ActiveMQConnectionFactory(</span><br><span class="line">		<span class="string">"admin"</span>,</span><br><span class="line">		<span class="string">"admin"</span>,</span><br><span class="line">		<span class="string">"tcp://localhost:61616"</span></span><br><span class="line">		);</span><br><span class="line"><span class="comment">// 2.获取一个向ActiveMQ的连接</span></span><br><span class="line">connectionFactory.setUseAsyncSend(<span class="keyword">true</span>);</span><br><span class="line">ActiveMQConnection connection = (ActiveMQConnection)connectionFactory.createConnection();</span><br><span class="line">connection.setUseAsyncSend(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="消息堆积"><a href="#消息堆积" class="headerlink" title="消息堆积"></a>消息堆积</h3><p>producer每发送一个消息，统计一下发送的字节数，当字节数达到ProducerWindowSize值时，需要等待broker的确认，才能继续发送。</p>
+<p>brokerUrl中设置: <code>tcp://localhost:61616?jms.producerWindowSize=1048576</code></p>
+<p>destinationUri中设置: <code>myQueue?producer.windowSize=1048576</code></p>
+<h3 id="延迟消息投递"><a href="#延迟消息投递" class="headerlink" title="延迟消息投递"></a>延迟消息投递</h3><p>首先在配置文件中开启延迟和调度</p>
+<p><strong>schedulerSupport=”true”</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;broker xmlns=<span class="string">"http://activemq.apache.org/schema/core"</span> brokerName=<span class="string">"localhost"</span> dataDirectory=<span class="string">"$&#123;activemq.data&#125;"</span> schedulerSupport=<span class="string">"true"</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="延迟发送"><a href="#延迟发送" class="headerlink" title="延迟发送"></a>延迟发送</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, <span class="number">10</span>*<span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="带间隔的重复发送"><a href="#带间隔的重复发送" class="headerlink" title="带间隔的重复发送"></a>带间隔的重复发送</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> delay = <span class="number">10</span> * <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">long</span> period = <span class="number">2</span> * <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">int</span> repeat = <span class="number">9</span>;</span><br><span class="line">message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, delay);</span><br><span class="line">message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_PERIOD, period);</span><br><span class="line">message.setIntProperty(ScheduledMessage.AMQ_SCHEDULED_REPEAT, repeat);</span><br><span class="line">createProducer.send(message);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Cron表达式定时发送"><a href="#Cron表达式定时发送" class="headerlink" title="Cron表达式定时发送"></a>Cron表达式定时发送</h3><p>Cron表达式是一个字符串，字符串以5或6个空格隔开，分为6或7个域，每一个域代表一个含义，Cron有如下两种语法格式： </p>
+<p><em>Seconds Minutes Hours DayofMonth Month DayofWeek Year或</em> </p>
+<p>Seconds Minutes Hours DayofMonth Month DayofWeek</p>
+<p>每一个域可出现的字符如下： </p>
+<p>Seconds:可出现”, - * /“四个字符，有效范围为0-59的整数 </p>
+<p>Minutes:可出现”, - * /“四个字符，有效范围为0-59的整数 </p>
+<p>Hours:可出现”, - * /“四个字符，有效范围为0-23的整数 </p>
+<p>DayofMonth:可出现”, - * / ? L W C”八个字符，有效范围为0-31的整数 </p>
+<p>Month:可出现”, - * /“四个字符，有效范围为1-12的整数或JAN-DEc </p>
+<p>DayofWeek:可出现”, - * / ? L C #”四个字符，有效范围为1-7的整数或SUN-SAT两个范围。1表示星期天，2表示星期一， 依次类推 </p>
+<p>Year:可出现”, - * /“四个字符，有效范围为1970-2099年</p>
+<p>每一个域都使用数字，但还可以出现如下特殊字符，它们的含义是： </p>
+<p>(1)<em>：表示匹配该域的任意值，假如在Minutes域使用</em>, 即表示每分钟都会触发事件。</p>
+<p>(2)?:只能用在DayofMonth和DayofWeek两个域。它也匹配域的任意值，但实际不会。因为DayofMonth和 DayofWeek会相互影响。例如想在每月的20日触发调度，不管20日到底是星期几，则只能使用如下写法： 13 13 15 20 * ?, 其中最后一位只能用？，而不能使用<em>，如果使用</em>表示不管星期几都会触发，实际上并不是这样。 </p>
+<p>(3)-:表示范围，例如在Minutes域使用5-20，表示从5分到20分钟每分钟触发一次 </p>
+<p>(4)/：表示起始时间开始触发，然后每隔固定时间触发一次，例如在Minutes域使用5/20,则意味着5分钟触发一次，而25，45等分别触发一次. </p>
+<p>(5),:表示列出枚举值值。例如：在Minutes域使用5,20，则意味着在5和20分每分钟触发一次。 </p>
+<p>(6)L:表示最后，只能出现在DayofWeek和DayofMonth域，如果在DayofWeek域使用5L,意味着在最后的一个星期四触发。 </p>
+<p>(7)W: 表示有效工作日(周一到周五),只能出现在DayofMonth域，系统将在离指定日期的最近的有效工作日触发事件。例如：在 DayofMonth使用5W，如果5日是星期六，则将在最近的工作日：星期五，即4日触发。如果5日是星期天，则在6日(周一)触发；如果5日在星期一 到星期五中的一天，则就在5日触发。另外一点，W的最近寻找不会跨过月份 </p>
+<p>(8)LW:这两个字符可以连用，表示在某个月最后一个工作日，即最后一个星期五。 </p>
+<p>(9)#:用于确定每个月第几个星期几，只能出现在DayofMonth域。例如在4#2，表示某月的第二个星期三。</p>
+<p>举几个例子: </p>
+<p>0 0 2 1 * ? * 表示在每月的1日的凌晨2点调度任务 </p>
+<p>0 15 10 ? * MON-FRI 表示周一到周五每天上午10：15执行作业 </p>
+<p>0 15 10 ? 6L 2002-2006 表示2002-2006年的每个月的最后一个星期五上午10:15执行作</p>
+<p>一个cron表达式有至少6个（也可能7个）有空格分隔的时间元素。 </p>
+<p>按顺序依次为 </p>
+<p>秒（0~59） </p>
+<p>分钟（0~59） </p>
+<p>小时（0~23） </p>
+<p>天（月）（0~31，但是你需要考虑你月的天数） </p>
+<p>月（0~11） </p>
+<p>天（星期）（1~7 1=SUN 或 SUN，MON，TUE，WED，THU，FRI，SAT） </p>
+<p>年份（1970－2099）</p>
+<p>其中每个元素可以是一个值(如6),一个连续区间(9-12),一个间隔时间(8-18/4)(/表示每隔4小时),一个列表(1,3,5),通配符。由于”月份中的日期”和”星期中的日期”这两个元素互斥的,必须要对其中一个设置?</p>
+<p>0 0 10,14,16 * * ? 每天上午10点，下午2点，4点 </p>
+<p>0 0/30 9-17 * * ? 朝九晚五工作时间内每半小时 </p>
+<p>0 0 12 ? * WED 表示每个星期三中午12点 </p>
+<p>“0 0 12 * * ?” 每天中午12点触发 </p>
+<p>“0 15 10 ? * *” 每天上午10:15触发 </p>
+<p>“0 15 10 * * ?” 每天上午10:15触发 </p>
+<p>“0 15 10 * * ? *” 每天上午10:15触发 </p>
+<p>“0 15 10 * * ? 2005” 2005年的每天上午10:15触发 </p>
+<p>“0 * 14 * * ?” 在每天下午2点到下午2:59期间的每1分钟触发 </p>
+<p>“0 0/5 14 * * ?” 在每天下午2点到下午2:55期间的每5分钟触发 </p>
+<p>“0 0/5 14,18 * * ?” 在每天下午2点到2:55期间和下午6点到6:55期间的每5分钟触发 </p>
+<p>“0 0-5 14 * * ?” 在每天下午2点到下午2:05期间的每1分钟触发 </p>
+<p>“0 10,44 14 ? 3 WED” 每年三月的星期三的下午2:10和2:44触发 </p>
+<p>“0 15 10 ? * MON-FRI” 周一至周五的上午10:15触发 </p>
+<p>“0 15 10 15 * ?” 每月15日上午10:15触发 </p>
+<p>“0 15 10 L * ?” 每月最后一日的上午10:15触发 </p>
+<p>“0 15 10 ? * 6L” 每月的最后一个星期五上午10:15触发 </p>
+<p>“0 15 10 ? * 6L 2002-2005” 2002年至2005年的每月的最后一个星期五上午10:15触发 </p>
+<p>“0 15 10 ? * 6#3” 每月的第三个星期五上午10:15触发</p>
+<h2 id="监听器"><a href="#监听器" class="headerlink" title="监听器"></a>监听器</h2><p>可以使用监听器来处理消息接收</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consumer.setMessageListener(new MyListener());</span><br></pre></td></tr></table></figure>
+
+<p>需要实现接口MessageListener</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyListener</span> <span class="keyword">implements</span> <span class="title">MessageListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		TextMessage textMessage = (TextMessage)message;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			System.out.println(<span class="string">"xxoo"</span> + textMessage.getText());</span><br><span class="line">		&#125; <span class="keyword">catch</span> (JMSException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当收到消息后会调起onMessage方法</p>
+<h2 id="消息过滤"><a href="#消息过滤" class="headerlink" title="消息过滤"></a>消息过滤</h2><h3 id="消息发送"><a href="#消息发送" class="headerlink" title="消息发送"></a>消息发送</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">MapMessage msg1 = session.createMapMessage();</span><br><span class="line">msg1.setString(<span class="string">"name"</span>, <span class="string">"qiqi"</span>);</span><br><span class="line">msg1.setString(<span class="string">"age"</span>, <span class="string">"18"</span>);</span><br><span class="line"></span><br><span class="line">msg1.setStringProperty(<span class="string">"name"</span>, <span class="string">"qiqi"</span>);</span><br><span class="line">msg1.setIntProperty(<span class="string">"age"</span>, <span class="number">18</span>);</span><br><span class="line">MapMessage msg2 = session.createMapMessage();</span><br><span class="line">msg2.setString(<span class="string">"name"</span>, <span class="string">"lucy"</span>);</span><br><span class="line">msg2.setString(<span class="string">"age"</span>, <span class="string">"18"</span>);</span><br><span class="line">msg2.setStringProperty(<span class="string">"name"</span>, <span class="string">"lucy"</span>);</span><br><span class="line">msg2.setIntProperty(<span class="string">"age"</span>, <span class="number">18</span>);</span><br><span class="line">MapMessage msg3 = session.createMapMessage();</span><br><span class="line">msg3.setString(<span class="string">"name"</span>, <span class="string">"qianqian"</span>);</span><br><span class="line">msg3.setString(<span class="string">"age"</span>, <span class="string">"17"</span>);</span><br><span class="line">msg3.setStringProperty(<span class="string">"name"</span>, <span class="string">"qianqian"</span>);</span><br><span class="line">msg3.setIntProperty(<span class="string">"age"</span>, <span class="number">17</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="消息接收"><a href="#消息接收" class="headerlink" title="消息接收"></a>消息接收</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">	</span><br><span class="line">String selector1 = <span class="string">"age &gt; 17"</span>;</span><br><span class="line">String selector2 = <span class="string">"name = 'lucy'"</span>;</span><br><span class="line">MessageConsumer consumer = session.createConsumer(queue,selector2);</span><br></pre></td></tr></table></figure>
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://liweian.co.uk/2020/07/12/ActiveMQ-02/" title="ActiveMQ_02">https://liweian.co.uk/2020/07/12/ActiveMQ-02/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i>Java</a>
+              <a href="/tags/MQ/" rel="tag"><i class="fa fa-tag"></i>MQ</a>
+              <a href="/tags/ActiveMQ/" rel="tag"><i class="fa fa-tag"></i>ActiveMQ</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/12/ActiveMQ-01/" rel="prev" title="ActiveMQ_01">
+      <i class="fa fa-chevron-left"></i> ActiveMQ_01
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/12/ActiveMQ-03/" rel="next" title="ActiveMQ_03">
+      ActiveMQ_03 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Active-MQ-02"><span class="nav-number">1.</span> <span class="nav-text">Active MQ 02</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用API"><span class="nav-number">1.1.</span> <span class="nav-text">常用API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务"><span class="nav-number">1.1.1.</span> <span class="nav-text">事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Purge"><span class="nav-number">1.1.2.</span> <span class="nav-text">Purge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#签收模式"><span class="nav-number">1.1.3.</span> <span class="nav-text">签收模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Session-AUTO-ACKNOWLEDGE"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">Session.AUTO_ACKNOWLEDGE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Session-CLIENT-ACKNOWLEDGE"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">Session.CLIENT_ACKNOWLEDGE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Session-DUPS-OK-ACKNOWLEDGE"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">Session.DUPS_OK_ACKNOWLEDGE</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持久化"><span class="nav-number">1.1.4.</span> <span class="nav-text">持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优先级"><span class="nav-number">1.1.5.</span> <span class="nav-text">优先级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息超时-过期"><span class="nav-number">1.1.6.</span> <span class="nav-text">消息超时&#x2F;过期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#死信"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">死信</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改死信队列名称"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">修改死信队列名称</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#让非持久化的消息也进入死信队列"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">让非持久化的消息也进入死信队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过期消息不进死信队列"><span class="nav-number">1.1.6.4.</span> <span class="nav-text">过期消息不进死信队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#独占消费者"><span class="nav-number">1.1.7.</span> <span class="nav-text">独占消费者</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息类型"><span class="nav-number">1.2.</span> <span class="nav-text">消息类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#object"><span class="nav-number">1.2.1.</span> <span class="nav-text">object</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发送端"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">发送端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接受端"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">接受端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bytesMessage"><span class="nav-number">1.2.2.</span> <span class="nav-text">bytesMessage</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发送端-1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">发送端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接受端-1"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">接受端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写入文件"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">写入文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapMessage"><span class="nav-number">1.2.3.</span> <span class="nav-text">MapMessage</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发送端-2"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">发送端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接收端"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">接收端</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息发送原理"><span class="nav-number">1.3.</span> <span class="nav-text">消息发送原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#同步与异步"><span class="nav-number">1.3.1.</span> <span class="nav-text">同步与异步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息堆积"><span class="nav-number">1.3.2.</span> <span class="nav-text">消息堆积</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延迟消息投递"><span class="nav-number">1.3.3.</span> <span class="nav-text">延迟消息投递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延迟发送"><span class="nav-number">1.3.4.</span> <span class="nav-text">延迟发送</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#带间隔的重复发送"><span class="nav-number">1.3.5.</span> <span class="nav-text">带间隔的重复发送</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cron表达式定时发送"><span class="nav-number">1.3.6.</span> <span class="nav-text">Cron表达式定时发送</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监听器"><span class="nav-number">1.4.</span> <span class="nav-text">监听器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息过滤"><span class="nav-number">1.5.</span> <span class="nav-text">消息过滤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消息发送"><span class="nav-number">1.5.1.</span> <span class="nav-text">消息发送</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息接收"><span class="nav-number">1.5.2.</span> <span class="nav-text">消息接收</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">231k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">3:30</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

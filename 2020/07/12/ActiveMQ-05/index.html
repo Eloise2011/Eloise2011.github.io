@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"liweian.co.uk","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Apache ActiveMQ™ is the most popular open source, multi-protocol, Java-based messaging server. It supports industry standard protocols so users get the benefits of client choices across a broad range">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ActiveMQ_05">
+<meta property="og:url" content="https://liweian.co.uk/2020/07/12/ActiveMQ-05/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="Apache ActiveMQ™ is the most popular open source, multi-protocol, Java-based messaging server. It supports industry standard protocols so users get the benefits of client choices across a broad range">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://liweian.co.uk/2020/07/12/ActiveMQ-05/image-20200207162242385.png">
+<meta property="article:published_time" content="2020-07-12T03:42:07.000Z">
+<meta property="article:modified_time" content="2020-07-12T03:51:16.576Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="MQ">
+<meta property="article:tag" content="ActiveMQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://liweian.co.uk/2020/07/12/ActiveMQ-05/image-20200207162242385.png">
+
+<link rel="canonical" href="https://liweian.co.uk/2020/07/12/ActiveMQ-05/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>ActiveMQ_05 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">15</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">22</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://liweian.co.uk/2020/07/12/ActiveMQ-05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ActiveMQ_05
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-07-12 11:42:07 / Modified: 11:51:16" itemprop="dateCreated datePublished" datetime="2020-07-12T11:42:07+08:00">2020-07-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/MQ/" itemprop="url" rel="index">
+                    <span itemprop="name">MQ</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Apache ActiveMQ™ is the most popular <strong>open source, multi-protocol, Java-based messaging server</strong>. It supports industry standard protocols so users get the benefits of client choices across a broad range of languages and platforms. Connectivity from C, C++, Python, .Net, and more is available. Integrate your multi-platform applications using the ubiquitous <strong>AMQP</strong> protocol. Exchange messages between your web applications using <strong>STOMP</strong> over websockets. Manage your IoT devices using <strong>MQTT</strong>. Support your existing <strong>JMS</strong> infrastructure and beyond. ActiveMQ offers the power and flexibility to support any messaging use-case.</p>
+<p>There are currently two “flavors” of ActiveMQ available - the “classic” 5.x broker and the “next generation” Artemis broker. Once Artemis reaches a sufficient level of feature parity with the 5.x code-base it will become ActiveMQ 6. Initial <a href="http://activemq.apache.org/components/artemis/migration" target="_blank" rel="noopener">migration documentation</a> is available.</p>
+<a id="more"></a>
+
+
+
+<h1 id="Active-MQ-05"><a href="#Active-MQ-05" class="headerlink" title="Active MQ 05"></a>Active MQ 05</h1><h2 id="高级使用"><a href="#高级使用" class="headerlink" title="高级使用"></a>高级使用</h2><h3 id="queue-browser"><a href="#queue-browser" class="headerlink" title="queue browser"></a>queue browser</h3><p>可以查看队列中的消息而不消费，没有订阅的功能</p>
+<h3 id="JMSCorrelationID"><a href="#JMSCorrelationID" class="headerlink" title="JMSCorrelationID"></a>JMSCorrelationID</h3><p>用于消息之间的关联，给人一种会话的感觉</p>
+<p><a href="http://activemq.apache.org/how-should-i-implement-request-response-with-jms.html" target="_blank" rel="noopener">http://activemq.apache.org/how-should-i-implement-request-response-with-jms.html</a></p>
+<hr>
+<h3 id="JMSReplyTo"><a href="#JMSReplyTo" class="headerlink" title="JMSReplyTo"></a><strong>JMSReplyTo</strong></h3><p>发送方可以接受到消息消费确认的地址</p>
+<h3 id="QueueRequestor同步消息"><a href="#QueueRequestor同步消息" class="headerlink" title="QueueRequestor同步消息"></a>QueueRequestor同步消息</h3><p>可以发送同步消息</p>
+<p>本质违背了mq的异步通讯原则</p>
+<p>但是mq还是能够提供应用解耦、异构系统的特性</p>
+<p>因为使用QueueRequestor发送消息后，会等待接收端的回复，如果收不到回复就会造成死等现象!而且该方法没有设置超时等待的功能 </p>
+<h3 id="生产环境中影响性能的几个因素"><a href="#生产环境中影响性能的几个因素" class="headerlink" title="生产环境中影响性能的几个因素"></a>生产环境中影响性能的几个因素</h3><h4 id="Out-of-memory"><a href="#Out-of-memory" class="headerlink" title="Out of memory"></a>Out of memory</h4><p>activemq启动脚本中配置内存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%ACTIVEMQ_OPTS%&quot; &#x3D;&#x3D; &quot;&quot; set ACTIVEMQ_OPTS&#x3D;-Xms1G -Xmx1G</span><br></pre></td></tr></table></figure>
+
+
+
+<p>以及配置文件中的百分比</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;memoryUsage percentOfJvmHeap&#x3D;&quot;70&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>SystemUsage配置设置了一些系统内存和硬盘容量，当系统消耗超过这些容量设置时，amq会“slow down producer”，还是很重要的。</p>
+<h4 id="持久化和非持久化"><a href="#持久化和非持久化" class="headerlink" title="持久化和非持久化"></a>持久化和非持久化</h4><h4 id="消息异步发送"><a href="#消息异步发送" class="headerlink" title="消息异步发送"></a>消息异步发送</h4><p>建议使用默认，强制开启有可能丢失消息</p>
+<p>异步发送丢失消息的场景是：生产者设置UseAsyncSend=true，使用producer.send(msg)持续发送消息。由于消息不阻塞，生产者会认为所有send的消息均被成功发送至MQ。如果服务端突然宕机，此时生产者端内存中尚未被发送至MQ的消息都会丢失。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new ActiveMQConnectionFactory(&quot;tcp:&#x2F;&#x2F;locahost:61616?jms.useAsyncSend&#x3D;true&quot;);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((ActiveMQConnectionFactory)connectionFactory).setUseAsyncSend(true);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((ActiveMQConnection)connection).setUseAsyncSend(true)</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="批量确认"><a href="#批量确认" class="headerlink" title="批量确认"></a>批量确认</h4><p>ActiveMQ缺省支持批量确认消息，批量确认可以提高系统性能</p>
+<p><strong>关闭方法</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new ActiveMQConnectionFactory(&quot;tcp:&#x2F;&#x2F;locahost:61616?jms.optimizeAcknowledge&#x3D;false&quot;);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((ActiveMQConnectionFactory)connectionFactory).setOptimizeAcknowledge(fase);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">((ActiveMQConnection)connection).setOptimizeAcknowledge(true);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="消费缓冲与消息积压prefetchSize"><a href="#消费缓冲与消息积压prefetchSize" class="headerlink" title="消费缓冲与消息积压prefetchSize"></a>消费缓冲与消息积压prefetchSize</h3><p>消费者端，一般来说消费的越快越好，broker的积压越小越好。</p>
+<p>但是考虑到事务性和客户端确认的情况，如果一个消费者一次获取到了很多消息却都不确认，这会造成事务上下文变大，broker端这种“半消费状态”的数据变多，所以ActiveMQ有一个prefetchSize参数来控制未确认情况下，最多可以预获取多少条记录。</p>
+<p><strong>Pre-fetch默认值</strong></p>
+<table>
+<thead>
+<tr>
+<th>consumer type</th>
+<th>default value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>queue</td>
+<td>1000</td>
+</tr>
+<tr>
+<td>queue browser</td>
+<td>500</td>
+</tr>
+<tr>
+<td>topic</td>
+<td>32766</td>
+</tr>
+<tr>
+<td>durable topic</td>
+<td>1000</td>
+</tr>
+</tbody></table>
+<h4 id="可以通过3中方式设置prefetchSize"><a href="#可以通过3中方式设置prefetchSize" class="headerlink" title="可以通过3中方式设置prefetchSize"></a>可以通过3中方式设置prefetchSize</h4><p><strong>创建连接时整体设置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ActiveMQConnectionFactory connectio nFactory &#x3D; new ActiveMQConnectionFactory(</span><br><span class="line">			&quot;admin&quot;,</span><br><span class="line">			&quot;admin&quot;,</span><br><span class="line">			&quot;tcp:&#x2F;&#x2F;localhost:5671?jms.prefetchPolicy.all&#x3D;50&quot;</span><br><span class="line">			);</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建连接时对topic和queue单独设置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ActiveMQConnectionFactory connectionFactory &#x3D; new ActiveMQConnectionFactory(</span><br><span class="line">		&quot;admin&quot;,</span><br><span class="line">		&quot;admin&quot;,</span><br><span class="line">		&quot;tcp:&#x2F;&#x2F;localhost:5671?jms.prefetchPolicy.queuePrefetch&#x3D;1&amp;jms.prefetchPolicy.topicPrefetch&#x3D;1&quot;</span><br><span class="line">		);</span><br></pre></td></tr></table></figure>
+
+<p><strong>针对destination单独设置</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Destination topic &#x3D; session.createTopic(&quot;user?consumer.prefetchSize&#x3D;10&quot;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意：对destination设置prefetchsize后会覆盖连接时的设置值</p>
+<h3 id="消息到底是推还是拉"><a href="#消息到底是推还是拉" class="headerlink" title="消息到底是推还是拉?"></a>消息到底是推还是拉?</h3><p>发送消息时是推向broker</p>
+<p>获取消息时：</p>
+<ul>
+<li>默认是一条一条的推</li>
+<li>当customer的prefetchSize满的时候停止推消息</li>
+<li>当customer的prefetchSize ==0时 拉取消息</li>
+</ul>
+<h3 id="EIP-Enterprise-Integration-Patterns"><a href="#EIP-Enterprise-Integration-Patterns" class="headerlink" title="EIP Enterprise Integration Patterns."></a>EIP Enterprise Integration Patterns.</h3><p>EIP系统是以数据为基础，应用为核心，以实现业务及业务流程的自动化为目的多功能企业信息平台。为企业的信息化建设提供一种循序渐进，逐步优化的路径</p>
+<p><img src="/2020/07/12/ActiveMQ-05/image-20200207162242385.png" alt="image-20200207162242385"></p>
+<p>一个围绕消息集成的企业应用集成场景基本在上面的图中描述的比较清楚的，简单说明如下</p>
+<p>1)消息发送方和接收方：可以是异构的业务系统，但是都需要提供Endpoint实现集成。<br>2)消息本身：两个应用系统通过channel连接，实现了消息本身的发送和接收操作<br>3)消息Channel：即消息传输的通道，消息本身必须要通过channel来实现传输，从源到达目标。<br>4)消息路由：当有多个目标接收方的时候，如果根据消息的特征来确定究竟发送到哪个接收方？<br>5)消息转换：消息在传输过程中是否需要进行转换和数据映射，包括报文格式转换和内容转换映射。<br>6)Pipe and Filter：在执行复杂的消息流处理时，如何维护消息本身的独立性和灵活性。</p>
+<p>常用实现Camel</p>
+<p>支持ActiveMQ、RabbitMQ、kafka、WebService</p>
+<p><strong>camel实现了客户端与服务端的解耦， 生产者和消费者的解耦。</strong></p>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://liweian.co.uk/2020/07/12/ActiveMQ-05/" title="ActiveMQ_05">https://liweian.co.uk/2020/07/12/ActiveMQ-05/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i>Java</a>
+              <a href="/tags/MQ/" rel="tag"><i class="fa fa-tag"></i>MQ</a>
+              <a href="/tags/ActiveMQ/" rel="tag"><i class="fa fa-tag"></i>ActiveMQ</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/12/ActiveMQ-04/" rel="prev" title="ActiveMQ_04">
+      <i class="fa fa-chevron-left"></i> ActiveMQ_04
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/12/ActiveMQ-06/" rel="next" title="ActiveMQ_06">
+      ActiveMQ_06 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Active-MQ-05"><span class="nav-number">1.</span> <span class="nav-text">Active MQ 05</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#高级使用"><span class="nav-number">1.1.</span> <span class="nav-text">高级使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#queue-browser"><span class="nav-number">1.1.1.</span> <span class="nav-text">queue browser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JMSCorrelationID"><span class="nav-number">1.1.2.</span> <span class="nav-text">JMSCorrelationID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JMSReplyTo"><span class="nav-number">1.1.3.</span> <span class="nav-text">JMSReplyTo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#QueueRequestor同步消息"><span class="nav-number">1.1.4.</span> <span class="nav-text">QueueRequestor同步消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产环境中影响性能的几个因素"><span class="nav-number">1.1.5.</span> <span class="nav-text">生产环境中影响性能的几个因素</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Out-of-memory"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">Out of memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#持久化和非持久化"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">持久化和非持久化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息异步发送"><span class="nav-number">1.1.5.3.</span> <span class="nav-text">消息异步发送</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#批量确认"><span class="nav-number">1.1.5.4.</span> <span class="nav-text">批量确认</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消费缓冲与消息积压prefetchSize"><span class="nav-number">1.1.6.</span> <span class="nav-text">消费缓冲与消息积压prefetchSize</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可以通过3中方式设置prefetchSize"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">可以通过3中方式设置prefetchSize</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息到底是推还是拉"><span class="nav-number">1.1.7.</span> <span class="nav-text">消息到底是推还是拉?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EIP-Enterprise-Integration-Patterns"><span class="nav-number">1.1.8.</span> <span class="nav-text">EIP Enterprise Integration Patterns.</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">231k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">3:30</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

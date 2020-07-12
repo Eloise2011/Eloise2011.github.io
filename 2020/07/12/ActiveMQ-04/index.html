@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"liweian.co.uk","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Apache ActiveMQ™ is the most popular open source, multi-protocol, Java-based messaging server. It supports industry standard protocols so users get the benefits of client choices across a broad range">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ActiveMQ_04">
+<meta property="og:url" content="https://liweian.co.uk/2020/07/12/ActiveMQ-04/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="Apache ActiveMQ™ is the most popular open source, multi-protocol, Java-based messaging server. It supports industry standard protocols so users get the benefits of client choices across a broad range">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-12T03:42:03.000Z">
+<meta property="article:modified_time" content="2020-07-12T03:49:27.073Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="MQ">
+<meta property="article:tag" content="ActiveMQ">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://liweian.co.uk/2020/07/12/ActiveMQ-04/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>ActiveMQ_04 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">15</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">22</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://liweian.co.uk/2020/07/12/ActiveMQ-04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ActiveMQ_04
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-07-12 11:42:03 / Modified: 11:49:27" itemprop="dateCreated datePublished" datetime="2020-07-12T11:42:03+08:00">2020-07-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/MQ/" itemprop="url" rel="index">
+                    <span itemprop="name">MQ</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>11 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Apache ActiveMQ™ is the most popular <strong>open source, multi-protocol, Java-based messaging server</strong>. It supports industry standard protocols so users get the benefits of client choices across a broad range of languages and platforms. Connectivity from C, C++, Python, .Net, and more is available. Integrate your multi-platform applications using the ubiquitous <strong>AMQP</strong> protocol. Exchange messages between your web applications using <strong>STOMP</strong> over websockets. Manage your IoT devices using <strong>MQTT</strong>. Support your existing <strong>JMS</strong> infrastructure and beyond. ActiveMQ offers the power and flexibility to support any messaging use-case.</p>
+<p>There are currently two “flavors” of ActiveMQ available - the “classic” 5.x broker and the “next generation” Artemis broker. Once Artemis reaches a sufficient level of feature parity with the 5.x code-base it will become ActiveMQ 6. Initial <a href="http://activemq.apache.org/components/artemis/migration" target="_blank" rel="noopener">migration documentation</a> is available.</p>
+<a id="more"></a>
+
+<h1 id="Active-MQ-04"><a href="#Active-MQ-04" class="headerlink" title="Active MQ 04"></a>Active MQ 04</h1><h2 id="Linux下安装"><a href="#Linux下安装" class="headerlink" title="Linux下安装"></a>Linux下安装</h2><p><strong>下载</strong></p>
+<p><strong>解压</strong></p>
+<p>在<code>init.d</code>下建立软连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s &#x2F;usr&#x2F;local&#x2F;activemq&#x2F;bin&#x2F;activemq .&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p><strong>设置开启启动</strong></p>
+<p><code>chkconfig activemq on</code></p>
+<p>服务管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service activemq start</span><br><span class="line">service activemq status</span><br><span class="line">service activemq stop</span><br></pre></td></tr></table></figure>
+
+<h3 id="NIO配置"><a href="#NIO配置" class="headerlink" title="NIO配置"></a>NIO配置</h3><p>默认配置为tcp，使用的是bio</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;transportConnector name&#x3D;&quot;openwire&quot; uri&#x3D;&quot;tcp:&#x2F;&#x2F;0.0.0.0:61616?maximumConnections&#x3D;1000&amp;wireFormat.maxFrameSize&#x3D;104857600&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://activemq.apache.org/configuring-version-5-transports" target="_blank" rel="noopener">http://activemq.apache.org/configuring-version-5-transports</a></p>
+<p>Nio是基于TCP的</p>
+<p>客户端使用连接时也应使用nio</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ActiveMQConnectionFactory connectionFactory &#x3D; new ActiveMQConnectionFactory(</span><br><span class="line">		&quot;admin&quot;,</span><br><span class="line">		&quot;admin&quot;,</span><br><span class="line">		&quot;nio:&#x2F;&#x2F;localhost:61617&quot;</span><br><span class="line">		);</span><br></pre></td></tr></table></figure>
+
+<p>Auto + Nio</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;transportConnector name&#x3D;&quot;auto+nio&quot; uri&#x3D;&quot;auto+nio:&#x2F;&#x2F;localhost:5671&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>自动适配协议</p>
+<h3 id="OpenWire-可用配置选项"><a href="#OpenWire-可用配置选项" class="headerlink" title="OpenWire 可用配置选项"></a>OpenWire 可用配置选项</h3><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>cacheEnabled</code></td>
+<td><code>true</code></td>
+<td>Should commonly repeated values be cached so that less marshaling occurs?</td>
+</tr>
+<tr>
+<td><code>cacheSize</code></td>
+<td><code>1024</code></td>
+<td>When <code>cacheEnabled=true</code> then this parameter is used to specify the number of values to be cached.</td>
+</tr>
+<tr>
+<td><code>maxInactivityDuration</code></td>
+<td><code>30000</code></td>
+<td>The maximum <a href="http://activemq.apache.org/activemq-inactivitymonitor" target="_blank" rel="noopener">inactivity</a> duration (before which the socket is considered dead) in milliseconds. On some platforms it can take a long time for a socket to die. Therefore allow the broker to kill connections when they have been inactive for the configured period of time. Used by some transports to enable a keep alive heart beat feature. Inactivity monitoring is disabled when set to a value <code>&lt;= 0</code>.</td>
+</tr>
+<tr>
+<td><code>maxInactivityDurationInitalDelay</code></td>
+<td><code>10000</code></td>
+<td>The initial delay before starting <a href="http://activemq.apache.org/activemq-inactivitymonitor" target="_blank" rel="noopener">inactivity</a> checks. Yes, the word <code>&#39;Inital&#39;</code> is supposed to be misspelled like that.</td>
+</tr>
+<tr>
+<td><code>maxFrameSize</code></td>
+<td><code>MAX_LONG</code></td>
+<td>Maximum allowed frame size. Can help help prevent OOM DOS attacks.</td>
+</tr>
+<tr>
+<td><code>sizePrefixDisabled</code></td>
+<td><code>false</code></td>
+<td>Should the size of the packet be prefixed before each packet is marshaled?</td>
+</tr>
+<tr>
+<td><code>stackTraceEnabled</code></td>
+<td><code>true</code></td>
+<td>Should the stack trace of exception that occur on the broker be sent to the client?</td>
+</tr>
+<tr>
+<td><code>tcpNoDelayEnabled</code></td>
+<td><code>true</code></td>
+<td>Does not affect the wire format, but provides a hint to the peer that <code>TCP_NODELAY</code> should be enabled on the communications Socket.</td>
+</tr>
+<tr>
+<td><code>tightEncodingEnabled</code></td>
+<td><code>true</code></td>
+<td>Should wire size be optimized over CPU usage?</td>
+</tr>
+</tbody></table>
+<h3 id="Transport-可用配置选项"><a href="#Transport-可用配置选项" class="headerlink" title="Transport 可用配置选项"></a>Transport 可用配置选项</h3><table>
+<thead>
+<tr>
+<th>Option Name</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>backlog</td>
+<td>5000</td>
+<td>Specifies the maximum number of connections waiting to be accepted by the transport server socket.</td>
+</tr>
+<tr>
+<td>closeAsync</td>
+<td>true</td>
+<td>If <strong><code>true</code></strong> the socket close call happens asynchronously. This parameter should be set to <strong><code>false</code></strong> for protocols like STOMP, that are commonly used in situations where a new connection is created for each read or write. Doing so ensures the socket close call happens synchronously. A synchronous close prevents the broker from running out of available sockets owing to the rapid cycling of connections.</td>
+</tr>
+<tr>
+<td>connectionTimeout</td>
+<td>30000</td>
+<td>If <strong><code>&gt;=1</code></strong> the value sets the connection timeout in milliseconds. A value of <strong><code>0</code></strong> denotes no timeout. Negative values are ignored.</td>
+</tr>
+<tr>
+<td>daemon</td>
+<td>false</td>
+<td>If <strong><code>true</code></strong> the transport thread will run in daemon mode. Set this parameter to <strong><code>true</code></strong> when embedding the broker in a Spring container or a web container to allow the container to shut down correctly.</td>
+</tr>
+<tr>
+<td>dynamicManagement</td>
+<td>false</td>
+<td>If <strong><code>true</code></strong> the <strong><code>TransportLogger</code></strong> can be managed by JMX.</td>
+</tr>
+<tr>
+<td>ioBufferSize</td>
+<td>8 * 1024</td>
+<td>Specifies the size of the buffer to be used between the TCP layer and the OpenWire layer where <strong><code>wireFormat</code></strong> based marshaling occurs.</td>
+</tr>
+<tr>
+<td>jmxPort</td>
+<td>1099</td>
+<td>(Client Only) Specifies the port that will be used by the JMX server to manage the <strong><code>TransportLoggers</code></strong>. This should only be set, via URI, by either a client producer or consumer as the broker creates its own JMX server. Specifying an alternate JMX port is useful for developers that test a broker and client on the same machine and need to control both via JMX.</td>
+</tr>
+<tr>
+<td>keepAlive</td>
+<td>false</td>
+<td>If <strong><code>true</code>,</strong> enables <a href="http://tldp.org/HOWTO/TCP-Keepalive-HOWTOoverview" target="_blank" rel="noopener">TCP KeepAlive</a> on the broker connection to prevent connections from timing out at the TCP level. This should <em>not</em> be confused with <strong><code>KeepAliveInfo</code></strong> messages as used by the <strong><code>InactivityMonitor</code>.</strong></td>
+</tr>
+<tr>
+<td>logWriterName</td>
+<td>default</td>
+<td>Sets the name of the <strong><code>org.apache.activemq.transport.LogWriter</code></strong> implementation to use. Names are mapped to classes in the <strong><code>resources/META-INF/services/org/apache/activemq/transport/logwriters</code></strong> directory.</td>
+</tr>
+<tr>
+<td>maximumConnections</td>
+<td>Integer.MAX_VALUE</td>
+<td>The maximum number of sockets allowed for this broker.</td>
+</tr>
+<tr>
+<td>minmumWireFormatVersion</td>
+<td>0</td>
+<td>The minimum remote <strong><code>wireFormat</code></strong> version that will be accepted (note the misspelling). Note: when the remote <strong><code>wireFormat</code></strong> version is lower than the configured minimum acceptable version an exception will be thrown and the connection attempt will be refused. A value of <strong><code>0</code></strong> denotes no checking of the remote <strong><code>wireFormat</code></strong> version.</td>
+</tr>
+<tr>
+<td>socketBufferSize</td>
+<td>64 * 1024</td>
+<td>Sets the size, in bytes, for the accepted socket’s read and write buffers.</td>
+</tr>
+<tr>
+<td>soLinger</td>
+<td>Integer.MIN_VALUE</td>
+<td>Sets the socket’s option <strong><code>soLinger</code></strong> when the value is <strong><code>&gt; -1</code></strong>. When set to <strong><code>-1</code></strong> the <strong><code>soLinger</code></strong> socket option is disabled.</td>
+</tr>
+<tr>
+<td>soTimeout</td>
+<td>0</td>
+<td>Sets the socket’s read timeout in milliseconds. A value of <strong><code>0</code></strong> denotes no timeout.</td>
+</tr>
+<tr>
+<td>soWriteTimeout</td>
+<td>0</td>
+<td>Sets the socket’s write timeout in milliseconds. If the socket write operation does not complete before the specified timeout, the socket will be closed. A value of <strong>0</strong> denotes no timeout.</td>
+</tr>
+<tr>
+<td>stackSize</td>
+<td>0</td>
+<td>Set the stack size of the transport’s background reading thread. Must be specified in multiples of <strong><code>128K</code></strong>. A value of <strong><code>0</code></strong> indicates that this parameter is ignored.</td>
+</tr>
+<tr>
+<td>startLogging</td>
+<td>true</td>
+<td>If <strong><code>true</code></strong> the <strong><code>TransportLogger</code></strong> object of the Transport stack will initially write messages to the log. This parameter is ignored unless <strong><code>trace=true</code></strong>.</td>
+</tr>
+<tr>
+<td>tcpNoDelay</td>
+<td>false</td>
+<td>If <strong><code>true</code></strong> the socket’s option <strong><code>TCP_NODELAY</code></strong> is set. This disables Nagle’s algorithm for small packet transmission.</td>
+</tr>
+<tr>
+<td>threadName</td>
+<td>N/A</td>
+<td>When this parameter is specified the name of the thread is modified during the invocation of a transport. The remote address is appended so that a call stuck in a transport method will have the destination information in the thread name. This is extremely useful when using thread dumps for degugging.</td>
+</tr>
+<tr>
+<td>trace</td>
+<td>false</td>
+<td>Causes all commands that are sent over the transport to be logged. To view the logged output define the <strong><code>Log4j</code></strong> logger: <strong><code>log4j.logger.org.apache.activemq.transport.TransportLogger=DEBUG</code></strong>.</td>
+</tr>
+<tr>
+<td>trafficClass</td>
+<td>0</td>
+<td>The Traffic Class to be set on the socket.</td>
+</tr>
+<tr>
+<td>diffServ</td>
+<td>0</td>
+<td>(Client only) The preferred Differentiated Services traffic class to be set on outgoing packets, as described in RFC 2475. Valid integer values: <strong><code>[0,64]</code></strong>. Valid string values: <strong><code>EF</code>, <code>AF[1-3][1-4]</code></strong> or <strong><code>CS[0-7]</code></strong>. With JDK 6, only works when the JVM uses the IPv4 stack. To use the IPv4 stack set the system property <strong><code>java.net.preferIPv4Stack=true</code></strong>. Note: it’s invalid to specify both ‘<strong>diffServ</strong> and <strong>typeOfService</strong>’ at the same time as they share the same position in the TCP/IP packet headers</td>
+</tr>
+<tr>
+<td>typeOfService</td>
+<td>0</td>
+<td>(Client only) The preferred Type of Service value to be set on outgoing packets. Valid integer values: <strong><code>[0,256]</code></strong>. With JDK 6, only works when the JVM is configured to use the IPv4 stack. To use the IPv4 stack set the system property <strong><code>java.net.preferIPv4Stack=true</code></strong>. Note: it’s invalid to specify both ‘<strong>diffServ</strong> and <strong>typeOfService</strong>’ at the same time as they share the same position in the TCP/IP packet headers.</td>
+</tr>
+<tr>
+<td>useInactivityMonitor</td>
+<td>true</td>
+<td>When <strong><code>false</code></strong> the <strong><code>InactivityMonitor</code></strong> is disabled and connections will never time out.</td>
+</tr>
+<tr>
+<td>useKeepAlive</td>
+<td>true</td>
+<td>When <strong><code>true</code> <code>KeepAliveInfo</code></strong> messages are sent on an idle connection to prevent it from timing out. If this parameter is <strong><code>false</code></strong> connections will still timeout if no data was received on the connection for the specified amount of time.</td>
+</tr>
+<tr>
+<td>useLocalHost</td>
+<td>false</td>
+<td>When <strong><code>true</code></strong> local connections will be made using the value <strong><code>localhost</code></strong> instead of the actual local host name. On some operating systems, such as <strong><code>OS X</code></strong>, it’s not possible to connect as the local host name so <strong><code>localhost</code></strong> is better.</td>
+</tr>
+<tr>
+<td>useQueueForAccept</td>
+<td>true</td>
+<td>When <strong><code>true</code></strong> accepted sockets are placed onto a queue for asynchronous processing using a separate thread.</td>
+</tr>
+<tr>
+<td>wireFormat</td>
+<td>default</td>
+<td>The name of the <strong><code>wireFormat</code></strong> factory to use.</td>
+</tr>
+<tr>
+<td>wireFormat.*</td>
+<td>N/A</td>
+<td>Properties with this prefix are used to configure the <strong><code>wireFormat</code></strong>.</td>
+</tr>
+</tbody></table>
+<h2 id="ActiveMQ服务监控-Hawtio"><a href="#ActiveMQ服务监控-Hawtio" class="headerlink" title="ActiveMQ服务监控 Hawtio"></a>ActiveMQ服务监控 Hawtio</h2><h3 id="官方网站"><a href="#官方网站" class="headerlink" title="官方网站"></a>官方网站</h3><p><a href="https://hawt.io/" target="_blank" rel="noopener">https://hawt.io/</a></p>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><h4 id="独立jar包的形式运行"><a href="#独立jar包的形式运行" class="headerlink" title="独立jar包的形式运行"></a>独立jar包的形式运行</h4><p>java -jar</p>
+<p>hawtio单程序运行，可以对多个远程ActiveMQ服务器进行监控</p>
+<h4 id="嵌入ActiveMQ"><a href="#嵌入ActiveMQ" class="headerlink" title="嵌入ActiveMQ"></a>嵌入ActiveMQ</h4><ul>
+<li>下载war包</li>
+<li>复制到webapps下</li>
+</ul>
+<p><strong>jetty.xml bean标签下添加</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean class&#x3D;&quot;org.eclipse.jetty.webapp.WebAppContext&quot;&gt;        </span><br><span class="line">	&lt;property name&#x3D;&quot;contextPath&quot; value&#x3D;&quot;&#x2F;hawtio&quot; &#x2F;&gt;        </span><br><span class="line">	&lt;property name&#x3D;&quot;war&quot; value&#x3D;&quot;$&#123;activemq.home&#125;&#x2F;webapps&#x2F;hawtio.war&quot; &#x2F;&gt;        </span><br><span class="line">	&lt;property name&#x3D;&quot;logUrlOnStart&quot; value&#x3D;&quot;true&quot; &#x2F;&gt;  </span><br><span class="line">&lt;&#x2F;bean&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>ActiveMQ.bat下添加</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if &quot;%ACTIVEMQ_OPTS%&quot; &#x3D;&#x3D; &quot;&quot; set ACTIVEMQ_OPTS&#x3D;-Xms1G -Xmx1G -Dhawtio.realm&#x3D;activemq -Dhawtio.role&#x3D;admins -Dhawtio.rolePrincipalClasses&#x3D;org.apache.activemq.jaas.GroupPrincipal -Djava.util.logging.config.file&#x3D;logging.properties -Djava.security.auth.login.config&#x3D;&quot;%ACTIVEMQ_CONF%\login.config&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="JMS消息结构（Message）"><a href="#JMS消息结构（Message）" class="headerlink" title="JMS消息结构（Message）"></a>JMS消息结构（Message）</h2><p>Message主要由三部分组成，分别是Header，Properties，Body， 详细如下：</p>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>消息头，所有类型的这部分格式都是一样的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Properties</td>
+<td>属性，按类型可以分为应用设置的属性，标准属性和消息中间件定义的属性</td>
+</tr>
+<tr>
+<td>Body</td>
+<td>消息正文，指我们具体需要消息传输的内容。</td>
+</tr>
+</tbody></table>
+<h3 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h3><p>JMS消息头使用的所有方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Message</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Destination <span class="title">getJMSDestination</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSDestination</span><span class="params">(Destination destination)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getJMSDeliveryMode</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span></span><br><span class="line"><span class="function">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSDeliveryMode</span><span class="params">(<span class="keyword">int</span> deliveryMode)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getJMSMessageID</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSMessageID</span><span class="params">(String id)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getJMSTimestamp</span><span class="params">()</span> <span class="keyword">throws</span> JMSException'</span></span><br><span class="line"><span class="function">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSTimestamp</span><span class="params">(<span class="keyword">long</span> timestamp)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getJMSExpiration</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSExpiration</span><span class="params">(<span class="keyword">long</span> expiration)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">getJMSRedelivered</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSRedelivered</span><span class="params">(<span class="keyword">boolean</span> redelivered)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getJMSPriority</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSPriority</span><span class="params">(<span class="keyword">int</span> priority)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Destination <span class="title">getJMSReplyTo</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSReplyTo</span><span class="params">(Destination replyTo)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getJMScorrelationID</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSCorrelationID</span><span class="params">(String correlationID)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] getJMSCorrelationIDAsBytes() <span class="keyword">throws</span> JMSException;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSCorrelationIDAsBytes</span><span class="params">(<span class="keyword">byte</span>[] correlationID)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getJMSType</span><span class="params">()</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setJMSType</span><span class="params">(String type)</span> <span class="keyword">throws</span> JMSException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>消息头分为自动设置和手动设置的内容</strong></p>
+<h4 id="自动头信息"><a href="#自动头信息" class="headerlink" title="自动头信息"></a>自动头信息</h4><p>有一部分可以在创建Session和MessageProducer时设置</p>
+<table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th>说明</th>
+<th>设置者</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JMSDeliveryMode</td>
+<td>消息的发送模式，分为<strong>NON_PERSISTENT</strong>和<strong>PERSISTENT</strong>，即非持久性模式的和持久性模式。默认设置为<strong>PERSISTENT（持久性）。</strong>一条<strong>持久性消息</strong>应该被传送一次（就一次），这就意味着如果JMS提供者出现故障，该消息并不会丢失； 它会在服务器恢复正常之后再次传送。一条<strong>非持久性消息</strong>最多只会传送一次，这意味着如果JMS提供者出现故障，该消息可能会永久丢失。在持久性和非持久性这两种传送模式中，消息服务器都不会将一条消息向同一消息者发送一次以上（成功算一次）。</td>
+<td>send</td>
+</tr>
+<tr>
+<td>JMSMessageID</td>
+<td>消息ID，需要以ID:开头，用于唯一地标识了一条消息</td>
+<td>send</td>
+</tr>
+<tr>
+<td>JMSTimestamp</td>
+<td>消息发送时的时间。这条消息头用于确定发送消息和它被消费者实际接收的时间间隔。时间戳是一个以毫秒来计算的Long类型时间值（自1970年1月1日算起）。</td>
+<td>send</td>
+</tr>
+<tr>
+<td>JMSExpiration</td>
+<td>消息的过期时间，以毫秒为单位，用来防止把过期的消息传送给消费者。任何直接通过编程方式来调用setJMSExpiration()方法都会被忽略。</td>
+<td>send</td>
+</tr>
+<tr>
+<td>JMSRedelivered</td>
+<td>消息是否重复发送过，如果该消息之前发送过，那么这个属性的值需要被设置为true, 客户端可以根据这个属性的值来确认这个消息是否重复发送过，以避免重复处理。</td>
+<td>Provider</td>
+</tr>
+<tr>
+<td>JMSPriority</td>
+<td>消息的优先级,0-4为普通的优化级，而5-9为高优先级，通常情况下，高优化级的消息需要优先发送。任何直接通过编程方式调用setJMSPriority()方法都将被忽略。</td>
+<td>send</td>
+</tr>
+<tr>
+<td>JMSDestination</td>
+<td>消息发送的目的地，是一个Topic或Queue</td>
+<td>send</td>
+</tr>
+</tbody></table>
+<p><strong>JMSDeliveryMode</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MessageProducer producer = session.createProducer(topic);</span><br><span class="line">producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);</span><br></pre></td></tr></table></figure>
+<p><strong>JMSExpiration</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//将过期时间设置为1小时（1000毫秒 ＊60 ＊60）</span></span><br><span class="line">producer.setTimeToLive(<span class="number">1000</span> * <span class="number">60</span> * <span class="number">60</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>JMSPriority</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">producer.setPriority(9);</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="手动头信息"><a href="#手动头信息" class="headerlink" title="手动头信息"></a>手动头信息</h4><table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th>说明</th>
+<th>设置者</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JMSCorrelationID</td>
+<td>关联的消息ID，这个通常用在需要回传消息的时候</td>
+<td>client</td>
+</tr>
+<tr>
+<td>JMSReplyTo</td>
+<td>消息回复的目的地，其值为一个Topic或Queue, 这个由发送者设置，但是接收者可以决定是否响应</td>
+<td>client</td>
+</tr>
+<tr>
+<td>JMSType</td>
+<td>由消息发送者设置的消息类型，代表消息的结构，有的消息中间件可能会用到这个，但这个并不是是批消息的种类，比如TextMessage之类的</td>
+<td>client</td>
+</tr>
+</tbody></table>
+<p>从上表中我们可以看到，系统提供的标准头信息一共有10个属性，其中有6个是由send方法在调用时设置的，有三个是由客户端（client）设置的，还有一个是由消息中间件（Provider）设置的。</p>
+<p>需要注意的是，这里</p>
+<h2 id="下一代-ActiveMQ-6？Artemis"><a href="#下一代-ActiveMQ-6？Artemis" class="headerlink" title="下一代 ActiveMQ 6？Artemis"></a>下一代 ActiveMQ 6？Artemis</h2><p>为下一代事件驱动的消息传递应用程序提供高性能、无阻塞的体系结构。</p>
+<ul>
+<li>包含JNDI，具有完整的JMS 1.1 &amp; 2.0客户端实现</li>
+<li>高可用性共享存储、网络复制能力</li>
+<li>简单而强大的寻址模型协议</li>
+<li>灵活的负载均衡分配能力</li>
+<li>针对低延迟持久性和JDBC的高级日志实现</li>
+<li>与ActiveMQ 5的高功能奇偶校验，以简化迁移</li>
+</ul>
+<p>官方文档：<a href="http://activemq.apache.org/components/artemis/migration" target="_blank" rel="noopener">http://activemq.apache.org/components/artemis/migration</a></p>
+<ul>
+<li>netty</li>
+<li>自己的存储</li>
+<li>优化传输流程</li>
+<li>更高的性能</li>
+<li>不再把所有的协议转换成openwire</li>
+</ul>
+<h2 id="高级使用"><a href="#高级使用" class="headerlink" title="高级使用"></a>高级使用</h2><h3 id="JMSCorrelationID"><a href="#JMSCorrelationID" class="headerlink" title="JMSCorrelationID"></a>JMSCorrelationID</h3><p>用于消息之间的关联，给人一种会话的感觉</p>
+<hr>
+<h3 id="JMSReplyTo"><a href="#JMSReplyTo" class="headerlink" title="JMSReplyTo"></a><strong>JMSReplyTo</strong></h3><p>发送方可以接受到消息消费确认的地址</p>
+<p>ActiveMQ5.10.x 以上版本必须使用 JDK1.8 才能正常使用。 </p>
+<p>ActiveMQ5.9.x 及以下版本使用 JDK1.7 即可正常使用。</p>
+<h2 id="面试题"><a href="#面试题" class="headerlink" title="面试题"></a>面试题</h2><h3 id="ActiveMQ如何防止消息丢失？会不会丢消息？"><a href="#ActiveMQ如何防止消息丢失？会不会丢消息？" class="headerlink" title="ActiveMQ如何防止消息丢失？会不会丢消息？"></a>ActiveMQ如何防止消息丢失？会不会丢消息？</h3><p>做高可用</p>
+<p>死信队列</p>
+<p>持久化</p>
+<p>ack</p>
+<p>消息重投</p>
+<p>记录日志</p>
+<p>接收（消费）确认</p>
+<p>broker负载/限流</p>
+<h3 id="如何防止重复消费？"><a href="#如何防止重复消费？" class="headerlink" title="如何防止重复消费？"></a>如何防止重复消费？</h3><p>消息幂等处理</p>
+<p>map <em>ConcurrentHashMap</em> -&gt; putIfAbsent   guava cache</p>
+<h3 id="如何保证消费顺序？"><a href="#如何保证消费顺序？" class="headerlink" title="如何保证消费顺序？"></a>如何保证消费顺序？</h3><p>queue 优先级别设置</p>
+<p>多消费端 -&gt; </p>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://liweian.co.uk/2020/07/12/ActiveMQ-04/" title="ActiveMQ_04">https://liweian.co.uk/2020/07/12/ActiveMQ-04/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i>Java</a>
+              <a href="/tags/MQ/" rel="tag"><i class="fa fa-tag"></i>MQ</a>
+              <a href="/tags/ActiveMQ/" rel="tag"><i class="fa fa-tag"></i>ActiveMQ</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/12/ActiveMQ-03/" rel="prev" title="ActiveMQ_03">
+      <i class="fa fa-chevron-left"></i> ActiveMQ_03
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/12/ActiveMQ-05/" rel="next" title="ActiveMQ_05">
+      ActiveMQ_05 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Active-MQ-04"><span class="nav-number">1.</span> <span class="nav-text">Active MQ 04</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux下安装"><span class="nav-number">1.1.</span> <span class="nav-text">Linux下安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO配置"><span class="nav-number">1.1.1.</span> <span class="nav-text">NIO配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenWire-可用配置选项"><span class="nav-number">1.1.2.</span> <span class="nav-text">OpenWire 可用配置选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transport-可用配置选项"><span class="nav-number">1.1.3.</span> <span class="nav-text">Transport 可用配置选项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ActiveMQ服务监控-Hawtio"><span class="nav-number">1.2.</span> <span class="nav-text">ActiveMQ服务监控 Hawtio</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方网站"><span class="nav-number">1.2.1.</span> <span class="nav-text">官方网站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署"><span class="nav-number">1.2.2.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#独立jar包的形式运行"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">独立jar包的形式运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#嵌入ActiveMQ"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">嵌入ActiveMQ</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JMS消息结构（Message）"><span class="nav-number">1.3.</span> <span class="nav-text">JMS消息结构（Message）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Header"><span class="nav-number">1.3.1.</span> <span class="nav-text">Header</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自动头信息"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">自动头信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动头信息"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">手动头信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下一代-ActiveMQ-6？Artemis"><span class="nav-number">1.4.</span> <span class="nav-text">下一代 ActiveMQ 6？Artemis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高级使用"><span class="nav-number">1.5.</span> <span class="nav-text">高级使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JMSCorrelationID"><span class="nav-number">1.5.1.</span> <span class="nav-text">JMSCorrelationID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JMSReplyTo"><span class="nav-number">1.5.2.</span> <span class="nav-text">JMSReplyTo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面试题"><span class="nav-number">1.6.</span> <span class="nav-text">面试题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ActiveMQ如何防止消息丢失？会不会丢消息？"><span class="nav-number">1.6.1.</span> <span class="nav-text">ActiveMQ如何防止消息丢失？会不会丢消息？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何防止重复消费？"><span class="nav-number">1.6.2.</span> <span class="nav-text">如何防止重复消费？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何保证消费顺序？"><span class="nav-number">1.6.3.</span> <span class="nav-text">如何保证消费顺序？</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">231k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">3:30</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>
