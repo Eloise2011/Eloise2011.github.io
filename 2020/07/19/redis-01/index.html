@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"liweian.co.uk","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis_01">
+<meta property="og:url" content="https://liweian.co.uk/2020/07/19/redis-01/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-19T03:55:49.000Z">
+<meta property="article:modified_time" content="2020-07-20T15:17:49.612Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://liweian.co.uk/2020/07/19/redis-01/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Redis_01 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">17</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">11</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">25</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://liweian.co.uk/2020/07/19/redis-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis_01
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-07-19 11:55:49" itemprop="dateCreated datePublished" datetime="2020-07-19T11:55:49+08:00">2020-07-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-07-20 23:17:49" itemprop="dateModified" datetime="2020-07-20T23:17:49+08:00">2020-07-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NoSQL/" itemprop="url" rel="index">
+                    <span itemprop="name">NoSQL</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>6.9k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>6 mins.</span>
+            </span>
+
+
+           
+          
+          <div class="out-img-topic">
+          <img src=/image/post_cover_image_Redis-01.png class="img-topic">
+          </div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes with radius queries and streams. Redis has built-in replication, Lua scripting, LRU eviction, transactions and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster. <a href="https://redis.io/topics/introduction" target="_blank" rel="noopener">Learn more →</a></p>
+<a id="more"></a>
+
+<p><a href="https://redis.io/commands" target="_blank" rel="noopener">官网</a></p>
+<h1 id="1-String-类型操作"><a href="#1-String-类型操作" class="headerlink" title="1.  String 类型操作"></a>1.  <a href="https://redis.io/commands/get" target="_blank" rel="noopener">String</a> 类型操作</h1><h4 id="1-1APPEND"><a href="#1-1APPEND" class="headerlink" title="1.1APPEND"></a>1.1<a href="https://redis.io/commands/append" target="_blank" rel="noopener">APPEND</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">如果 key 已经存在并且是一个字符串， APPEND 命令将 value 追加到 key 原来的值的末尾。</span><br><span class="line">如果 key 不存在， APPEND 就简单地将给定 key 设为 value ，就像执行 SET key value 一样。</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-2-BITCOUNT"><a href="#1-2-BITCOUNT" class="headerlink" title="1.2 BITCOUNT"></a>1.2 <a href="https://redis.io/commands/bitcount" target="_blank" rel="noopener">BITCOUNT</a></h4><p><strong>Count the number of set bits (population counting) in a string.</strong></p>
+<p>By default all the bytes contained in the string are examined. It is possible to specify the counting operation only in an interval passing the additional arguments start and end.</p>
+<p>Like for the GETRANGE command start and end can contain negative values in order to index bytes starting from the end of the string, where -1 is the last byte, -2 is the penultimate, and so forth.</p>
+<p>Non-existent keys are treated as empty strings, so the command will return zero.</p>
+<h4 id="1-3-BITFIELD"><a href="#1-3-BITFIELD" class="headerlink" title="1.3 BITFIELD"></a>1.3 <a href="https://redis.io/commands/bitfield" target="_blank" rel="noopener">BITFIELD</a></h4><p><strong>The command treats a Redis string as a array of bits, and is capable of addressing specific integer fields of varying bit widths and arbitrary non (necessary) aligned offset. In practical terms using this command you can set, for example, a signed 5 bits integer at bit offset 1234 to a specific value, retrieve a 31 bit unsigned integer from offset 4567. Similarly the command handles increments and decrements of the specified integers, providing guaranteed and well specified overflow and underflow behavior that the user can configure.</strong></p>
+<p>BITFIELD is able to operate with multiple bit fields in the same command call. It takes a list of operations to perform, and returns an array of replies, where each array matches the corresponding operation in the list of arguments.</p>
+<p>For example the following command increments an 5 bit signed integer at bit offset 100, and gets the value of the 4 bit unsigned integer at bit offset 0:</p>
+<blockquote>
+<p>BITFIELD mykey INCRBY i5 100 1 GET u4 0</p>
+<p>1) (integer) 1<br>2) (integer) 0</p>
+</blockquote>
+<h4 id="1-4-BITOP"><a href="#1-4-BITOP" class="headerlink" title="1.4 BITOP"></a>1.4 <a href="https://redis.io/commands/bitop" target="_blank" rel="noopener">BITOP</a></h4><p><strong>Perform a bitwise operation between multiple keys (containing string values) and store the result in the destination key.</strong></p>
+<ul>
+<li><p><code>BITOP AND destkey srckey1 srckey2 srckey3 ... srckeyN</code></p>
+</li>
+<li><p><code>BITOP OR destkey srckey1 srckey2 srckey3 ... srckeyN</code></p>
+</li>
+<li><p><code>BITOP XOR destkey srckey1 srckey2 srckey3 ... srckeyN</code></p>
+</li>
+<li><p><code>BITOP NOT destkey srckey</code></p>
+</li>
+</ul>
+<p>  As you can see NOT is special as it only takes an input key, because it performs inversion of bits so it only makes sense as an unary operator.</p>
+<p>  The result of the operation is always stored at destkey.</p>
+<p>  Handling of strings with different lengths<br>  When an operation is performed between strings having different lengths, all the strings shorter than the longest string in the set are treated as if they were zero-padded up to the length of the longest string.</p>
+<p>  The same holds true for non-existent keys, that are considered as a stream of zero bytes up to the length of the longest string.</p>
+<h4 id="1-5-BITPOS"><a href="#1-5-BITPOS" class="headerlink" title="1.5 BITPOS"></a>1.5 <a href="https://redis.io/commands/bitpos" target="_blank" rel="noopener">BITPOS</a></h4><p><strong>Return the position of the first bit set to 1 or 0 in a string.</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">The position is returned, thinking of the string as an array of bits from left to right, where the first byte&#39;s most significant bit is at position 0, the second byte&#39;s most significant bit is at position 8, and so forth.</span><br><span class="line"></span><br><span class="line">The same bit position convention is followed by GETBIT and SETBIT.</span><br><span class="line"></span><br><span class="line">By default, all the bytes contained in the string are examined. It is possible to look for bits only in a specified interval passing the additional arguments start and end (it is possible to just pass start, the operation will assume that the end is the last byte of the string. However there are semantic differences as explained later). The range is interpreted as a range of bytes and not a range of bits, so start&#x3D;0 and end&#x3D;2 means to look at the first three bytes.</span><br><span class="line"></span><br><span class="line">Note that bit positions are returned always as absolute values starting from bit zero even when start and end are used to specify a range.</span><br><span class="line"></span><br><span class="line">Like for the GETRANGE command start and end can contain negative values in order to index bytes starting from the end of the string, where -1 is the last byte, -2 is the penultimate, and so forth.</span><br><span class="line"></span><br><span class="line">Non-existent keys are treated as empty strings.</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="1-6-DECR"><a href="#1-6-DECR" class="headerlink" title="1.6 DECR"></a>1.6 <a href="https://redis.io/commands/decr" target="_blank" rel="noopener">DECR</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将key对应的值减去1. 如果key不存在, 会在减之前将key的值设为0. 操作类型不对会报错. decrby只能作用于64位有符号整形数据(64-bit signed integer.)</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-7-DECRBY"><a href="#1-7-DECRBY" class="headerlink" title="1.7 DECRBY"></a>1.7 <a href="https://redis.io/commands/decrby" target="_blank" rel="noopener">DECRBY</a></h4> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将key对应的值减去步长decrement. 如果key不存在, 会在减之前将key的值设为0. 操作类型不对会报错. decrby只能作用于64位有符号整形数据(64-bit signed integer.)</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-8-GET"><a href="#1-8-GET" class="headerlink" title="1.8 GET"></a>1.8 <a href="https://redis.io/commands/get" target="_blank" rel="noopener">GET</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">获取key对应的value值. 若key不存在, 则返回nil.只能作用于string类型, 操作其他类型会报错.</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-9-GETBIT"><a href="#1-9-GETBIT" class="headerlink" title="1.9 GETBIT"></a>1.9 <a href="https://redis.io/commands/getbit" target="_blank" rel="noopener">GETBIT</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">字符串值指定偏移量上的位(bit)。</span><br><span class="line">当偏移量 OFFSET 比字符串值的长度大，或者 key 不存在时，返回 0 。</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-10-GETRANGE"><a href="#1-10-GETRANGE" class="headerlink" title="1.10 GETRANGE"></a>1.10 <a href="https://redis.io/commands/getrange" target="_blank" rel="noopener">GETRANGE</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Redis Getrange 命令用于获取存储在指定 key 中字符串的子字符串。字符串的截取范围由 start 和 end 两个偏移量决定(包括 start 和 end 在内)。</span><br><span class="line">SET mykey &quot;This is my test key&quot;</span><br><span class="line">GETRANGE mykey 0 3</span><br><span class="line">&gt; &quot;This&quot;</span><br><span class="line">GETRANGE mykey 0 -1</span><br><span class="line">&gt; &quot;This is my test key&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-11-GETSET"><a href="#1-11-GETSET" class="headerlink" title="1.11 GETSET"></a>1.11 <a href="https://redis.io/commands/getset" target="_blank" rel="noopener"><strong>GETSET</strong></a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当 key 存在但不是字符串类型时，返回一个错误。Redis Getset 命令用于设置指定 key 的值，并返回 key 的旧值。当 key 没有旧值时，即 key 不存在时，返回 nil 。</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-12-INCR"><a href="#1-12-INCR" class="headerlink" title="1.12 INCR"></a>1.12 <a href="https://redis.io/commands/incr" target="_blank" rel="noopener">INCR</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将key对应的值加上步长. 如果key不存在, 会在加之前将key的值设为0. 操作类型不对会报错. incrby只能作用于64位有符号整形数据(64-bit signed integer.)</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-13-INCRBY"><a href="#1-13-INCRBY" class="headerlink" title="1.13 INCRBY"></a>1.13 <a href="https://redis.io/commands/incrby" target="_blank" rel="noopener">INCRBY</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将key对应的值加上步长. 如果key不存在, 会在加之前将key的值设为0. 操作类型不对会报错. incrby只能作用于64位有符号整形数据(64-bit signed integer.)</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-14-INCRBYFLOAT"><a href="#1-14-INCRBYFLOAT" class="headerlink" title="1.14 INCRBYFLOAT"></a>1.14 <a href="https://redis.io/commands/incrbyfloat" target="_blank" rel="noopener">INCRBYFLOAT</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Redis Incrbyfloat 命令为 key 中所储存的值加上指定的浮点数增量值。</span><br><span class="line">如果 key 不存在，那么 INCRBYFLOAT 会先将 key 的值设为 0 ，再执行加法操作。</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意: 改命令只有incrbyfloat, 没有对应的减浮点数的操作</strong></p>
+<h4 id="1-15-MGET"><a href="#1-15-MGET" class="headerlink" title="1.15 MGET"></a>1.15 <a href="https://redis.io/commands/mget" target="_blank" rel="noopener">MGET</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis Mget 命令返回所有(一个或多个)给定 key 的值。 如果给定的 key 里面，有某个 key 不存在，那么这个 key 返回特殊值 nil 。</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-16-MSET"><a href="#1-16-MSET" class="headerlink" title="1.16 MSET"></a>1.16 <a href="https://redis.io/commands/mset" target="_blank" rel="noopener">MSET</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis Mset 命令用于同时设置一个或多个 key-value 对。</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-17-MSETNX"><a href="#1-17-MSETNX" class="headerlink" title="1.17 MSETNX"></a>1.17 <a href="https://redis.io/commands/msetnx" target="_blank" rel="noopener">MSETNX</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis Msetnx 命令用于所有给定 key 都不存在时，同时设置一个或多个 key-value 对。</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-18-PSETEX"><a href="#1-18-PSETEX" class="headerlink" title="1.18 PSETEX"></a>1.18 <a href="https://redis.io/commands/psetex" target="_blank" rel="noopener">PSETEX</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这个命令和 SETEX 命令相似，但它以毫秒为单位设置 key 的生存时间，而不是像 SETEX 命令那样，以秒为单位。</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-19-SET"><a href="#1-19-SET" class="headerlink" title="1.19 SET"></a>1.19 <a href="https://redis.io/commands/set" target="_blank" rel="noopener">SET</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis SET 命令用于设置给定 key 的值。如果 key 已经存储其他值， SET 就覆写旧值，且无视类型。</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-20-SETBIT"><a href="#1-20-SETBIT" class="headerlink" title="1.20 SETBIT"></a>1.20 <a href="https://redis.io/commands/setbit" target="_blank" rel="noopener">SETBIT</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis Setbit 命令用于对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-21-SETEX"><a href="#1-21-SETEX" class="headerlink" title="1.21 SETEX"></a>1.21 <a href="https://redis.io/commands/setex" target="_blank" rel="noopener">SETEX</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis Setex 命令为指定的 key 设置值及其过期时间。如果 key 已经存在， SETEX 命令将会替换旧的值。</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-22-SETNX"><a href="#1-22-SETNX" class="headerlink" title="1.22 SETNX"></a>1.22 <a href="https://redis.io/commands/setnx" target="_blank" rel="noopener">SETNX</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis Setnx（SET if Not eXists） 命令在指定的 key 不存在时，为 key 设置指定的值。</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-23-SETRANGE"><a href="#1-23-SETRANGE" class="headerlink" title="1.23 SETRANGE"></a>1.23 <a href="https://redis.io/commands/setrange" target="_blank" rel="noopener">SETRANGE</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis Setrange 命令用指定的字符串覆盖给定 key 所储存的字符串值，覆盖的位置从偏移量 offset 开始。</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-24-STRALGO"><a href="#1-24-STRALGO" class="headerlink" title="1.24 STRALGO"></a>1.24 <a href="https://redis.io/commands/stralgo" target="_blank" rel="noopener">STRALGO</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The STRALGO implements complex algorithms that operate on strings. Right now the only algorithm implemented is the LCS algorithm (longest common substring). However new algorithms could be implemented in the future. The goal of this command is to provide to Redis users algorithms that need fast implementations and are normally not provided in the standard library of most programming languages.</span><br><span class="line"></span><br><span class="line">The first argument of the command selects the algorithm to use, right now the argument must be &quot;LCS&quot;, since this is the only implemented one.</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1-25-STRLEN"><a href="#1-25-STRLEN" class="headerlink" title="1.25 STRLEN"></a>1.25 <a href="https://redis.io/commands/strlen" target="_blank" rel="noopener">STRLEN</a></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Redis Strlen 命令用于获取指定 key 所储存的字符串值的长度。当 key 储存的不是字符串值时，返回一个错误。</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="2-List-类型操作"><a href="#2-List-类型操作" class="headerlink" title="2.  List 类型操作"></a>2.  <a href="https://redis.io/commands/lrange" target="_blank" rel="noopener">List</a> 类型操作</h1><h4 id="2-1-BLPOP"><a href="#2-1-BLPOP" class="headerlink" title="2.1  BLPOP"></a>2.1  <a href="https://redis.io/commands/blpop" target="_blank" rel="noopener"><strong>BLPOP</strong></a></h4><h4 id="2-2-BRPOP"><a href="#2-2-BRPOP" class="headerlink" title="2.2 BRPOP"></a>2.2 <a href="https://redis.io/commands/brpop" target="_blank" rel="noopener">BRPOP</a></h4><h4 id="2-3-BRPOPLPUSH"><a href="#2-3-BRPOPLPUSH" class="headerlink" title="2.3 BRPOPLPUSH"></a>2.3 <a href="https://redis.io/commands/brpoplpush" target="_blank" rel="noopener">BRPOPLPUSH</a></h4><h4 id="2-4-LINDEX"><a href="#2-4-LINDEX" class="headerlink" title="2.4 LINDEX"></a>2.4 <a href="https://redis.io/commands/lindex" target="_blank" rel="noopener">LINDEX</a></h4><h4 id="2-5-LINSERT"><a href="#2-5-LINSERT" class="headerlink" title="2.5 LINSERT"></a>2.5 <a href="https://redis.io/commands/linsert" target="_blank" rel="noopener">LINSERT</a></h4><h4 id="2-6-LLEN"><a href="#2-6-LLEN" class="headerlink" title="2.6 LLEN"></a>2.6 <a href="https://redis.io/commands/llen" target="_blank" rel="noopener">LLEN</a></h4><h4 id="2-7-LPOP"><a href="#2-7-LPOP" class="headerlink" title="2.7 LPOP"></a>2.7 <a href="https://redis.io/commands/lpop" target="_blank" rel="noopener">LPOP</a></h4><h4 id="2-8-LPOS"><a href="#2-8-LPOS" class="headerlink" title="2.8 LPOS"></a>2.8 <a href="https://redis.io/commands/lpos" target="_blank" rel="noopener">LPOS</a></h4><h4 id="2-9-LPUSH"><a href="#2-9-LPUSH" class="headerlink" title="2.9 LPUSH"></a>2.9 <a href="https://redis.io/commands/lpush" target="_blank" rel="noopener">LPUSH</a></h4><h4 id="2-10-LPUSHX"><a href="#2-10-LPUSHX" class="headerlink" title="2.10 LPUSHX"></a>2.10 <a href="https://redis.io/commands/lpushx" target="_blank" rel="noopener">LPUSHX</a></h4><h4 id="2-11-LRANGE"><a href="#2-11-LRANGE" class="headerlink" title="2.11 LRANGE"></a>2.11 <a href="https://redis.io/commands/lrange" target="_blank" rel="noopener">LRANGE</a></h4><h4 id="2-12-LREM"><a href="#2-12-LREM" class="headerlink" title="2.12 LREM"></a>2.12 <a href="https://redis.io/commands/lrem" target="_blank" rel="noopener">LREM</a></h4><h4 id="2-13-LSET"><a href="#2-13-LSET" class="headerlink" title="2.13 LSET"></a>2.13 <a href="https://redis.io/commands/lset" target="_blank" rel="noopener">LSET</a></h4><h4 id="2-14-LTRIM"><a href="#2-14-LTRIM" class="headerlink" title="2.14 LTRIM"></a>2.14 <a href="https://redis.io/commands/ltrim" target="_blank" rel="noopener">LTRIM</a></h4><h4 id="2-15-RPOP"><a href="#2-15-RPOP" class="headerlink" title="2.15 RPOP"></a>2.15 <a href="https://redis.io/commands/rpop" target="_blank" rel="noopener">RPOP</a></h4><h4 id="2-16-RPOPLPUSH"><a href="#2-16-RPOPLPUSH" class="headerlink" title="2.16 RPOPLPUSH"></a>2.16 <a href="https://redis.io/commands/rpoplpush" target="_blank" rel="noopener">RPOPLPUSH</a></h4><h4 id="2-17-RPUSH"><a href="#2-17-RPUSH" class="headerlink" title="2.17 RPUSH"></a>2.17 <a href="https://redis.io/commands/rpush" target="_blank" rel="noopener">RPUSH</a></h4><h4 id="2-18-RPUSHX"><a href="#2-18-RPUSHX" class="headerlink" title="2.18 RPUSHX"></a>2.18 <a href="https://redis.io/commands/rpushx" target="_blank" rel="noopener">RPUSHX</a></h4><h1 id="3-Set-类型操作"><a href="#3-Set-类型操作" class="headerlink" title="3.  Set 类型操作"></a>3.  <a href="https://redis.io/commands/sadd" target="_blank" rel="noopener">Set</a> 类型操作</h1><h4 id="3-1-SADD"><a href="#3-1-SADD" class="headerlink" title="3.1 SADD"></a>3.1 <a href="https://redis.io/commands/sadd" target="_blank" rel="noopener"><strong>SADD</strong></a></h4><h4 id="3-2-SCARD"><a href="#3-2-SCARD" class="headerlink" title="3.2 SCARD"></a>3.2 <a href="https://redis.io/commands/scard" target="_blank" rel="noopener">SCARD</a></h4><h4 id="3-3-SDIFF"><a href="#3-3-SDIFF" class="headerlink" title="3.3 SDIFF"></a>3.3 <a href="https://redis.io/commands/sdiff" target="_blank" rel="noopener">SDIFF</a></h4><h4 id="3-4-SDIFFSTORE"><a href="#3-4-SDIFFSTORE" class="headerlink" title="3.4 SDIFFSTORE"></a>3.4 <a href="https://redis.io/commands/sdiffstore" target="_blank" rel="noopener">SDIFFSTORE</a></h4><h4 id="3-5-SINTER"><a href="#3-5-SINTER" class="headerlink" title="3.5 SINTER"></a>3.5 <a href="https://redis.io/commands/sinter" target="_blank" rel="noopener">SINTER</a></h4><h4 id="3-6-SINTERSTORE"><a href="#3-6-SINTERSTORE" class="headerlink" title="3.6 SINTERSTORE"></a>3.6 <a href="https://redis.io/commands/sinterstore" target="_blank" rel="noopener">SINTERSTORE</a></h4><h4 id="3-7-SISMEMBER"><a href="#3-7-SISMEMBER" class="headerlink" title="3.7 SISMEMBER"></a>3.7 <a href="https://redis.io/commands/sismember" target="_blank" rel="noopener">SISMEMBER</a></h4><h4 id="3-8-SMEMBERS"><a href="#3-8-SMEMBERS" class="headerlink" title="3.8 SMEMBERS"></a>3.8 <a href="https://redis.io/commands/smembers" target="_blank" rel="noopener">SMEMBERS</a></h4><h4 id="3-9-SMOVE"><a href="#3-9-SMOVE" class="headerlink" title="3.9 SMOVE"></a>3.9 <a href="https://redis.io/commands/smove" target="_blank" rel="noopener">SMOVE</a></h4><h4 id="3-10-SPOP"><a href="#3-10-SPOP" class="headerlink" title="3.10 SPOP"></a>3.10 <a href="https://redis.io/commands/spop" target="_blank" rel="noopener">SPOP</a></h4><h4 id="3-11-SRANDMEMBER"><a href="#3-11-SRANDMEMBER" class="headerlink" title="3.11 SRANDMEMBER"></a>3.11 <a href="https://redis.io/commands/srandmember" target="_blank" rel="noopener">SRANDMEMBER</a></h4><h4 id="3-12-SREM"><a href="#3-12-SREM" class="headerlink" title="3.12 SREM"></a>3.12 <a href="https://redis.io/commands/srem" target="_blank" rel="noopener">SREM</a></h4><h4 id="3-13-SSCAN"><a href="#3-13-SSCAN" class="headerlink" title="3.13 SSCAN"></a>3.13 <a href="https://redis.io/commands/sscan" target="_blank" rel="noopener">SSCAN</a></h4><h4 id="3-14-SUNION"><a href="#3-14-SUNION" class="headerlink" title="3.14 SUNION"></a>3.14 <a href="https://redis.io/commands/sunion" target="_blank" rel="noopener">SUNION</a></h4><h4 id="3-15-SUNIONSTORE"><a href="#3-15-SUNIONSTORE" class="headerlink" title="3.15 SUNIONSTORE"></a>3.15 <a href="https://redis.io/commands/sunionstore" target="_blank" rel="noopener">SUNIONSTORE</a></h4><h2 id="4-Hash-类型操作"><a href="#4-Hash-类型操作" class="headerlink" title="4.  Hash 类型操作"></a>4.  <a href="https://redis.io/commands/lrange" target="_blank" rel="noopener">Hash</a> 类型操作</h2><h4 id="4-1-HDEL"><a href="#4-1-HDEL" class="headerlink" title="4.1 HDEL"></a>4.1 <a href="https://redis.io/commands/hdel" target="_blank" rel="noopener">HDEL</a></h4><h4 id="4-2-HEXISTS"><a href="#4-2-HEXISTS" class="headerlink" title="4.2 HEXISTS"></a>4.2 <a href="https://redis.io/commands/hexists" target="_blank" rel="noopener">HEXISTS</a></h4><h4 id="4-3-HGET"><a href="#4-3-HGET" class="headerlink" title="4.3 HGET"></a>4.3 <a href="https://redis.io/commands/hget" target="_blank" rel="noopener">HGET</a></h4><h4 id="4-4-HGETALL"><a href="#4-4-HGETALL" class="headerlink" title="4.4 HGETALL"></a>4.4 <a href="https://redis.io/commands/hgetall" target="_blank" rel="noopener">HGETALL</a></h4><h4 id="4-5-HINCRBY"><a href="#4-5-HINCRBY" class="headerlink" title="4.5 HINCRBY"></a>4.5 <a href="https://redis.io/commands/hincrby" target="_blank" rel="noopener">HINCRBY</a></h4><h4 id="4-6-HINCRBYFLOAT"><a href="#4-6-HINCRBYFLOAT" class="headerlink" title="4.6 HINCRBYFLOAT"></a>4.6 <a href="https://redis.io/commands/hincrbyfloat" target="_blank" rel="noopener">HINCRBYFLOAT</a></h4><h4 id="4-7-HKEYS"><a href="#4-7-HKEYS" class="headerlink" title="4.7 HKEYS"></a>4.7 <a href="https://redis.io/commands/hkeys" target="_blank" rel="noopener">HKEYS</a></h4><h4 id="4-8-HLEN"><a href="#4-8-HLEN" class="headerlink" title="4.8 HLEN"></a>4.8 <a href="https://redis.io/commands/hlen" target="_blank" rel="noopener">HLEN</a></h4><h4 id="4-9-HMGET"><a href="#4-9-HMGET" class="headerlink" title="4.9 HMGET"></a>4.9 <a href="https://redis.io/commands/hmget" target="_blank" rel="noopener">HMGET</a></h4><h4 id="4-10-HMSET"><a href="#4-10-HMSET" class="headerlink" title="4.10 HMSET"></a>4.10 <a href="https://redis.io/commands/hmset" target="_blank" rel="noopener">HMSET</a></h4><h4 id="4-11-HSCAN"><a href="#4-11-HSCAN" class="headerlink" title="4.11 HSCAN"></a>4.11 <a href="https://redis.io/commands/hscan" target="_blank" rel="noopener">HSCAN</a></h4><h4 id="4-12-HSET"><a href="#4-12-HSET" class="headerlink" title="4.12 HSET"></a>4.12 <a href="https://redis.io/commands/hset" target="_blank" rel="noopener">HSET</a></h4><h4 id="4-13-HSETNX"><a href="#4-13-HSETNX" class="headerlink" title="4.13 HSETNX"></a>4.13 <a href="https://redis.io/commands/hsetnx" target="_blank" rel="noopener">HSETNX</a></h4><h4 id="4-14-HSTRLEN"><a href="#4-14-HSTRLEN" class="headerlink" title="4.14 HSTRLEN"></a>4.14 <a href="https://redis.io/commands/hstrlen" target="_blank" rel="noopener"><strong>HSTRLEN</strong></a></h4><h4 id="4-15-HVALS"><a href="#4-15-HVALS" class="headerlink" title="4.15 HVALS"></a>4.15 <a href="https://redis.io/commands/hvals" target="_blank" rel="noopener">HVALS</a></h4><h2 id="5-Zset-类型操作"><a href="#5-Zset-类型操作" class="headerlink" title="5.  Zset 类型操作"></a>5.  <a href="https://redis.io/commands/lrange" target="_blank" rel="noopener">Zset</a> 类型操作</h2><h4 id="5-1-BZPOPMAX"><a href="#5-1-BZPOPMAX" class="headerlink" title="5.1 BZPOPMAX"></a>5.1 <a href="https://redis.io/commands/bzpopmax" target="_blank" rel="noopener">BZPOPMAX</a></h4><h4 id="5-2-BZPOPMIN"><a href="#5-2-BZPOPMIN" class="headerlink" title="5.2 BZPOPMIN"></a>5.2 <a href="https://redis.io/commands/bzpopmin" target="_blank" rel="noopener">BZPOPMIN</a></h4><h4 id="5-3-ZADD"><a href="#5-3-ZADD" class="headerlink" title="5.3 ZADD"></a>5.3 <a href="https://redis.io/commands/zadd" target="_blank" rel="noopener"><strong>ZADD</strong></a></h4><h4 id="5-4-ZCARD"><a href="#5-4-ZCARD" class="headerlink" title="5.4 ZCARD"></a>5.4 <a href="https://redis.io/commands/zcard" target="_blank" rel="noopener">ZCARD</a></h4><h4 id="5-5-ZCOUNT"><a href="#5-5-ZCOUNT" class="headerlink" title="5.5 ZCOUNT"></a>5.5 <a href="https://redis.io/commands/zcount" target="_blank" rel="noopener">ZCOUNT</a></h4><h4 id="5-6-ZINCRBY"><a href="#5-6-ZINCRBY" class="headerlink" title="5.6 ZINCRBY"></a>5.6 <a href="https://redis.io/commands/zincrby" target="_blank" rel="noopener">ZINCRBY</a></h4><h4 id="5-7-ZINTERSTORE"><a href="#5-7-ZINTERSTORE" class="headerlink" title="5.7 ZINTERSTORE"></a>5.7 <a href="https://redis.io/commands/zinterstore" target="_blank" rel="noopener">ZINTERSTORE</a></h4><h4 id="5-8-ZLEXCOUNT"><a href="#5-8-ZLEXCOUNT" class="headerlink" title="5.8 ZLEXCOUNT"></a>5.8 <a href="https://redis.io/commands/zlexcount" target="_blank" rel="noopener">ZLEXCOUNT</a></h4><h4 id="5-9-ZPOPMAX"><a href="#5-9-ZPOPMAX" class="headerlink" title="5.9 ZPOPMAX"></a>5.9 <a href="https://redis.io/commands/zpopmax" target="_blank" rel="noopener">ZPOPMAX</a></h4><h4 id="5-10-ZPOPMIN"><a href="#5-10-ZPOPMIN" class="headerlink" title="5.10 ZPOPMIN"></a>5.10 <a href="https://redis.io/commands/zpopmin" target="_blank" rel="noopener">ZPOPMIN</a></h4><h4 id="5-11-ZRANGE"><a href="#5-11-ZRANGE" class="headerlink" title="5.11 ZRANGE"></a>5.11 <a href="https://redis.io/commands/zrange" target="_blank" rel="noopener">ZRANGE</a></h4><h4 id="5-12-ZRANGEBYLEX"><a href="#5-12-ZRANGEBYLEX" class="headerlink" title="5.12 ZRANGEBYLEX"></a>5.12 <a href="https://redis.io/commands/zrangebylex" target="_blank" rel="noopener">ZRANGEBYLEX</a></h4><h4 id="5-13-ZRANGEBYSCORE"><a href="#5-13-ZRANGEBYSCORE" class="headerlink" title="5.13 ZRANGEBYSCORE"></a>5.13 <a href="https://redis.io/commands/zrangebyscore" target="_blank" rel="noopener">ZRANGEBYSCORE</a></h4><h4 id="5-14-ZRANK"><a href="#5-14-ZRANK" class="headerlink" title="5.14 ZRANK"></a>5.14 <a href="https://redis.io/commands/zrank" target="_blank" rel="noopener">ZRANK</a></h4><h4 id="5-15-ZREM"><a href="#5-15-ZREM" class="headerlink" title="5.15 ZREM"></a>5.15 <a href="https://redis.io/commands/zrem" target="_blank" rel="noopener">ZREM</a></h4><h4 id="5-16-ZREMRANGEBYLEX"><a href="#5-16-ZREMRANGEBYLEX" class="headerlink" title="5.16 ZREMRANGEBYLEX"></a>5.16 <a href="https://redis.io/commands/zremrangebylex" target="_blank" rel="noopener">ZREMRANGEBYLEX</a></h4><h4 id="5-17-ZREMRANGEBYRANK"><a href="#5-17-ZREMRANGEBYRANK" class="headerlink" title="5.17 ZREMRANGEBYRANK"></a>5.17 <a href="https://redis.io/commands/zremrangebyrank" target="_blank" rel="noopener">ZREMRANGEBYRANK</a></h4><h4 id="5-18-ZREMRANGEBYSCORE"><a href="#5-18-ZREMRANGEBYSCORE" class="headerlink" title="5.18 ZREMRANGEBYSCORE"></a>5.18 <a href="https://redis.io/commands/zremrangebyscore" target="_blank" rel="noopener">ZREMRANGEBYSCORE</a></h4><h4 id="5-19-ZREVRANGE"><a href="#5-19-ZREVRANGE" class="headerlink" title="5.19 ZREVRANGE"></a>5.19 <a href="https://redis.io/commands/zrevrange" target="_blank" rel="noopener">ZREVRANGE</a></h4><h4 id="5-20-ZREVRANGEBYLEX"><a href="#5-20-ZREVRANGEBYLEX" class="headerlink" title="5.20 ZREVRANGEBYLEX"></a>5.20 <a href="https://redis.io/commands/zrevrangebylex" target="_blank" rel="noopener">ZREVRANGEBYLEX</a></h4><h4 id="5-21-ZREVRANGEBYSCORE"><a href="#5-21-ZREVRANGEBYSCORE" class="headerlink" title="5.21 ZREVRANGEBYSCORE"></a>5.21 <a href="https://redis.io/commands/zrevrangebyscore" target="_blank" rel="noopener">ZREVRANGEBYSCORE</a></h4><h4 id="5-22-ZREVRANK"><a href="#5-22-ZREVRANK" class="headerlink" title="5.22 ZREVRANK"></a>5.22 <a href="https://redis.io/commands/zrevrank" target="_blank" rel="noopener">ZREVRANK</a></h4><h4 id="5-23-ZSCAN"><a href="#5-23-ZSCAN" class="headerlink" title="5.23 ZSCAN"></a>5.23 <a href="https://redis.io/commands/zscan" target="_blank" rel="noopener">ZSCAN</a></h4><h4 id="5-24-ZSCORE"><a href="#5-24-ZSCORE" class="headerlink" title="5.24 ZSCORE"></a>5.24 <a href="https://redis.io/commands/zscore" target="_blank" rel="noopener">ZSCORE</a></h4><h4 id="5-25-ZUNIONSTORE"><a href="#5-25-ZUNIONSTORE" class="headerlink" title="5.25 ZUNIONSTORE"></a>5.25 <a href="https://redis.io/commands/zunionstore" target="_blank" rel="noopener">ZUNIONSTORE</a></h4><h1 id="6-公共命令-可操作性所有数据类型"><a href="#6-公共命令-可操作性所有数据类型" class="headerlink" title="6. 公共命令 (可操作性所有数据类型)"></a>6. <a href="https://redis.io/commands/del" target="_blank" rel="noopener">公共命令</a> <font color="red">(可操作性所有数据类型)</font></h1><h4 id="6-1-del-删除key"><a href="#6-1-del-删除key" class="headerlink" title="6.1 del 删除key"></a>6.1 del 删除key</h4><p>dump 序列化key</p>
+<p>exists 判断key是否存在</p>
+<p>ttl 查看key的有效期</p>
+<p>expire 设置key的有效期</p>
+<p>persist 移除key的过期时间</p>
+<h4 id="6-1-DEL"><a href="#6-1-DEL" class="headerlink" title="6.1 DEL"></a>6.1 <a href="https://redis.io/commands/del" target="_blank" rel="noopener"><strong>DEL</strong></a></h4><h4 id="6-2-DUMP"><a href="#6-2-DUMP" class="headerlink" title="6.2 DUMP"></a>6.2 <a href="https://redis.io/commands/dump" target="_blank" rel="noopener">DUMP</a></h4><h4 id="6-3-EXISTS"><a href="#6-3-EXISTS" class="headerlink" title="6.3 EXISTS"></a>6.3 <a href="https://redis.io/commands/exists" target="_blank" rel="noopener">EXISTS</a></h4><h4 id="6-4-EXPIRE"><a href="#6-4-EXPIRE" class="headerlink" title="6.4 EXPIRE"></a>6.4 <a href="https://redis.io/commands/expire" target="_blank" rel="noopener">EXPIRE</a></h4><h4 id="6-5-EXPIREAT"><a href="#6-5-EXPIREAT" class="headerlink" title="6.5 EXPIREAT"></a>6.5 <a href="https://redis.io/commands/expireat" target="_blank" rel="noopener">EXPIREAT</a></h4><h4 id="6-6-KEYS"><a href="#6-6-KEYS" class="headerlink" title="6.6 KEYS"></a>6.6 <a href="https://redis.io/commands/keys" target="_blank" rel="noopener">KEYS</a></h4><h4 id="6-7-MIGRATE"><a href="#6-7-MIGRATE" class="headerlink" title="6.7 MIGRATE"></a>6.7 <a href="https://redis.io/commands/migrate" target="_blank" rel="noopener">MIGRATE</a></h4><h4 id="6-8-MOVE"><a href="#6-8-MOVE" class="headerlink" title="6.8 MOVE"></a>6.8 <a href="https://redis.io/commands/move" target="_blank" rel="noopener">MOVE</a></h4><h4 id="6-9-OBJECT"><a href="#6-9-OBJECT" class="headerlink" title="6.9 OBJECT"></a>6.9 <a href="https://redis.io/commands/object" target="_blank" rel="noopener">OBJECT</a></h4><h4 id="6-10-PERSIST"><a href="#6-10-PERSIST" class="headerlink" title="6.10 PERSIST"></a>6.10 <a href="https://redis.io/commands/persist" target="_blank" rel="noopener">PERSIST</a></h4><h4 id="6-11-PEXPIRE"><a href="#6-11-PEXPIRE" class="headerlink" title="6.11 PEXPIRE"></a>6.11 <a href="https://redis.io/commands/pexpire" target="_blank" rel="noopener">PEXPIRE</a></h4><h4 id="6-12-PEXPIREAT"><a href="#6-12-PEXPIREAT" class="headerlink" title="6.12 PEXPIREAT"></a>6.12 <a href="https://redis.io/commands/pexpireat" target="_blank" rel="noopener">PEXPIREAT</a></h4><h4 id="6-13-PTTL"><a href="#6-13-PTTL" class="headerlink" title="6.13 PTTL"></a>6.13 <a href="https://redis.io/commands/pttl" target="_blank" rel="noopener">PTTL</a></h4><h4 id="6-14-RANDOMKEY"><a href="#6-14-RANDOMKEY" class="headerlink" title="6.14 RANDOMKEY"></a>6.14 <a href="https://redis.io/commands/randomkey" target="_blank" rel="noopener">RANDOMKEY</a></h4><h4 id="6-15-RENAME"><a href="#6-15-RENAME" class="headerlink" title="6.15 RENAME"></a>6.15 <a href="https://redis.io/commands/rename" target="_blank" rel="noopener">RENAME</a></h4><h4 id="6-16-RENAMENX"><a href="#6-16-RENAMENX" class="headerlink" title="6.16 RENAMENX"></a>6.16 <a href="https://redis.io/commands/renamenx" target="_blank" rel="noopener">RENAMENX</a></h4><h4 id="6-17-RESTORE"><a href="#6-17-RESTORE" class="headerlink" title="6.17 RESTORE"></a>6.17 <a href="https://redis.io/commands/restore" target="_blank" rel="noopener">RESTORE</a></h4><h4 id="6-18-SCAN"><a href="#6-18-SCAN" class="headerlink" title="6.18 SCAN"></a>6.18 <a href="https://redis.io/commands/scan" target="_blank" rel="noopener">SCAN</a></h4><h4 id="6-19-SORT"><a href="#6-19-SORT" class="headerlink" title="6.19 SORT"></a>6.19 <a href="https://redis.io/commands/sort" target="_blank" rel="noopener">SORT</a></h4><h4 id="6-20-TOUCH"><a href="#6-20-TOUCH" class="headerlink" title="6.20 TOUCH"></a>6.20 <a href="https://redis.io/commands/touch" target="_blank" rel="noopener">TOUCH</a></h4><h4 id="6-21-TTL"><a href="#6-21-TTL" class="headerlink" title="6.21 TTL"></a>6.21 <a href="https://redis.io/commands/ttl" target="_blank" rel="noopener">TTL</a></h4><h4 id="6-22-TYPE"><a href="#6-22-TYPE" class="headerlink" title="6.22 TYPE"></a>6.22 <a href="https://redis.io/commands/type" target="_blank" rel="noopener">TYPE</a></h4><h4 id="6-23-UNLINK"><a href="#6-23-UNLINK" class="headerlink" title="6.23 UNLINK"></a>6.23 <a href="https://redis.io/commands/unlink" target="_blank" rel="noopener">UNLINK</a></h4><h4 id="6-24-WAIT"><a href="#6-24-WAIT" class="headerlink" title="6.24 WAIT"></a>6.24 <a href="https://redis.io/commands/wait" target="_blank" rel="noopener">WAIT</a></h4><h1 id="7-补充"><a href="#7-补充" class="headerlink" title="7. 补充"></a>7. 补充</h1><ol>
+<li>四种数据类型(, 除string外的: list/set/zset/hash) 在第一次使用时, 如果容器不存在, 就自动创建一个. 如果里面没元素了, 就自动删除容器释放内存.</li>
+<li></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://liweian.co.uk/2020/07/19/redis-01/" title="Redis_01">https://liweian.co.uk/2020/07/19/redis-01/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i>Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/12/jt-day01/" rel="prev" title="Jt_day01">
+      <i class="fa fa-chevron-left"></i> Jt_day01
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/23/CV/" rel="next" title="CV">
+      CV <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-String-类型操作"><span class="nav-number">1.</span> <span class="nav-text">1.  String 类型操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1APPEND"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">1.1APPEND</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-BITCOUNT"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">1.2 BITCOUNT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-BITFIELD"><span class="nav-number">1.0.0.3.</span> <span class="nav-text">1.3 BITFIELD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-BITOP"><span class="nav-number">1.0.0.4.</span> <span class="nav-text">1.4 BITOP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-BITPOS"><span class="nav-number">1.0.0.5.</span> <span class="nav-text">1.5 BITPOS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-DECR"><span class="nav-number">1.0.0.6.</span> <span class="nav-text">1.6 DECR</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-7-DECRBY"><span class="nav-number">1.0.0.7.</span> <span class="nav-text">1.7 DECRBY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-8-GET"><span class="nav-number">1.0.0.8.</span> <span class="nav-text">1.8 GET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-9-GETBIT"><span class="nav-number">1.0.0.9.</span> <span class="nav-text">1.9 GETBIT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-10-GETRANGE"><span class="nav-number">1.0.0.10.</span> <span class="nav-text">1.10 GETRANGE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-11-GETSET"><span class="nav-number">1.0.0.11.</span> <span class="nav-text">1.11 GETSET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-12-INCR"><span class="nav-number">1.0.0.12.</span> <span class="nav-text">1.12 INCR</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-13-INCRBY"><span class="nav-number">1.0.0.13.</span> <span class="nav-text">1.13 INCRBY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-14-INCRBYFLOAT"><span class="nav-number">1.0.0.14.</span> <span class="nav-text">1.14 INCRBYFLOAT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-15-MGET"><span class="nav-number">1.0.0.15.</span> <span class="nav-text">1.15 MGET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-16-MSET"><span class="nav-number">1.0.0.16.</span> <span class="nav-text">1.16 MSET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-17-MSETNX"><span class="nav-number">1.0.0.17.</span> <span class="nav-text">1.17 MSETNX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-18-PSETEX"><span class="nav-number">1.0.0.18.</span> <span class="nav-text">1.18 PSETEX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-19-SET"><span class="nav-number">1.0.0.19.</span> <span class="nav-text">1.19 SET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-20-SETBIT"><span class="nav-number">1.0.0.20.</span> <span class="nav-text">1.20 SETBIT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-21-SETEX"><span class="nav-number">1.0.0.21.</span> <span class="nav-text">1.21 SETEX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-22-SETNX"><span class="nav-number">1.0.0.22.</span> <span class="nav-text">1.22 SETNX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-23-SETRANGE"><span class="nav-number">1.0.0.23.</span> <span class="nav-text">1.23 SETRANGE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-24-STRALGO"><span class="nav-number">1.0.0.24.</span> <span class="nav-text">1.24 STRALGO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-25-STRLEN"><span class="nav-number">1.0.0.25.</span> <span class="nav-text">1.25 STRLEN</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-List-类型操作"><span class="nav-number">2.</span> <span class="nav-text">2.  List 类型操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-BLPOP"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">2.1  BLPOP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-BRPOP"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">2.2 BRPOP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-BRPOPLPUSH"><span class="nav-number">2.0.0.3.</span> <span class="nav-text">2.3 BRPOPLPUSH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-LINDEX"><span class="nav-number">2.0.0.4.</span> <span class="nav-text">2.4 LINDEX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-LINSERT"><span class="nav-number">2.0.0.5.</span> <span class="nav-text">2.5 LINSERT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-LLEN"><span class="nav-number">2.0.0.6.</span> <span class="nav-text">2.6 LLEN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-LPOP"><span class="nav-number">2.0.0.7.</span> <span class="nav-text">2.7 LPOP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-8-LPOS"><span class="nav-number">2.0.0.8.</span> <span class="nav-text">2.8 LPOS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-9-LPUSH"><span class="nav-number">2.0.0.9.</span> <span class="nav-text">2.9 LPUSH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-10-LPUSHX"><span class="nav-number">2.0.0.10.</span> <span class="nav-text">2.10 LPUSHX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-11-LRANGE"><span class="nav-number">2.0.0.11.</span> <span class="nav-text">2.11 LRANGE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-12-LREM"><span class="nav-number">2.0.0.12.</span> <span class="nav-text">2.12 LREM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-13-LSET"><span class="nav-number">2.0.0.13.</span> <span class="nav-text">2.13 LSET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-14-LTRIM"><span class="nav-number">2.0.0.14.</span> <span class="nav-text">2.14 LTRIM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-15-RPOP"><span class="nav-number">2.0.0.15.</span> <span class="nav-text">2.15 RPOP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-16-RPOPLPUSH"><span class="nav-number">2.0.0.16.</span> <span class="nav-text">2.16 RPOPLPUSH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-17-RPUSH"><span class="nav-number">2.0.0.17.</span> <span class="nav-text">2.17 RPUSH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-18-RPUSHX"><span class="nav-number">2.0.0.18.</span> <span class="nav-text">2.18 RPUSHX</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Set-类型操作"><span class="nav-number">3.</span> <span class="nav-text">3.  Set 类型操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-SADD"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">3.1 SADD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-SCARD"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">3.2 SCARD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-SDIFF"><span class="nav-number">3.0.0.3.</span> <span class="nav-text">3.3 SDIFF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-SDIFFSTORE"><span class="nav-number">3.0.0.4.</span> <span class="nav-text">3.4 SDIFFSTORE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-SINTER"><span class="nav-number">3.0.0.5.</span> <span class="nav-text">3.5 SINTER</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-SINTERSTORE"><span class="nav-number">3.0.0.6.</span> <span class="nav-text">3.6 SINTERSTORE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-SISMEMBER"><span class="nav-number">3.0.0.7.</span> <span class="nav-text">3.7 SISMEMBER</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-8-SMEMBERS"><span class="nav-number">3.0.0.8.</span> <span class="nav-text">3.8 SMEMBERS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-9-SMOVE"><span class="nav-number">3.0.0.9.</span> <span class="nav-text">3.9 SMOVE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-10-SPOP"><span class="nav-number">3.0.0.10.</span> <span class="nav-text">3.10 SPOP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-11-SRANDMEMBER"><span class="nav-number">3.0.0.11.</span> <span class="nav-text">3.11 SRANDMEMBER</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-12-SREM"><span class="nav-number">3.0.0.12.</span> <span class="nav-text">3.12 SREM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-13-SSCAN"><span class="nav-number">3.0.0.13.</span> <span class="nav-text">3.13 SSCAN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-14-SUNION"><span class="nav-number">3.0.0.14.</span> <span class="nav-text">3.14 SUNION</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-15-SUNIONSTORE"><span class="nav-number">3.0.0.15.</span> <span class="nav-text">3.15 SUNIONSTORE</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Hash-类型操作"><span class="nav-number">3.1.</span> <span class="nav-text">4.  Hash 类型操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-HDEL"><span class="nav-number">3.1.0.1.</span> <span class="nav-text">4.1 HDEL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-HEXISTS"><span class="nav-number">3.1.0.2.</span> <span class="nav-text">4.2 HEXISTS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-HGET"><span class="nav-number">3.1.0.3.</span> <span class="nav-text">4.3 HGET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-HGETALL"><span class="nav-number">3.1.0.4.</span> <span class="nav-text">4.4 HGETALL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-HINCRBY"><span class="nav-number">3.1.0.5.</span> <span class="nav-text">4.5 HINCRBY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-6-HINCRBYFLOAT"><span class="nav-number">3.1.0.6.</span> <span class="nav-text">4.6 HINCRBYFLOAT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-7-HKEYS"><span class="nav-number">3.1.0.7.</span> <span class="nav-text">4.7 HKEYS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-8-HLEN"><span class="nav-number">3.1.0.8.</span> <span class="nav-text">4.8 HLEN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-9-HMGET"><span class="nav-number">3.1.0.9.</span> <span class="nav-text">4.9 HMGET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-10-HMSET"><span class="nav-number">3.1.0.10.</span> <span class="nav-text">4.10 HMSET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-11-HSCAN"><span class="nav-number">3.1.0.11.</span> <span class="nav-text">4.11 HSCAN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-12-HSET"><span class="nav-number">3.1.0.12.</span> <span class="nav-text">4.12 HSET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-13-HSETNX"><span class="nav-number">3.1.0.13.</span> <span class="nav-text">4.13 HSETNX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-14-HSTRLEN"><span class="nav-number">3.1.0.14.</span> <span class="nav-text">4.14 HSTRLEN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-15-HVALS"><span class="nav-number">3.1.0.15.</span> <span class="nav-text">4.15 HVALS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Zset-类型操作"><span class="nav-number">3.2.</span> <span class="nav-text">5.  Zset 类型操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-BZPOPMAX"><span class="nav-number">3.2.0.1.</span> <span class="nav-text">5.1 BZPOPMAX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-BZPOPMIN"><span class="nav-number">3.2.0.2.</span> <span class="nav-text">5.2 BZPOPMIN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-ZADD"><span class="nav-number">3.2.0.3.</span> <span class="nav-text">5.3 ZADD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-ZCARD"><span class="nav-number">3.2.0.4.</span> <span class="nav-text">5.4 ZCARD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-5-ZCOUNT"><span class="nav-number">3.2.0.5.</span> <span class="nav-text">5.5 ZCOUNT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-6-ZINCRBY"><span class="nav-number">3.2.0.6.</span> <span class="nav-text">5.6 ZINCRBY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-7-ZINTERSTORE"><span class="nav-number">3.2.0.7.</span> <span class="nav-text">5.7 ZINTERSTORE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-8-ZLEXCOUNT"><span class="nav-number">3.2.0.8.</span> <span class="nav-text">5.8 ZLEXCOUNT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-9-ZPOPMAX"><span class="nav-number">3.2.0.9.</span> <span class="nav-text">5.9 ZPOPMAX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-10-ZPOPMIN"><span class="nav-number">3.2.0.10.</span> <span class="nav-text">5.10 ZPOPMIN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-11-ZRANGE"><span class="nav-number">3.2.0.11.</span> <span class="nav-text">5.11 ZRANGE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-12-ZRANGEBYLEX"><span class="nav-number">3.2.0.12.</span> <span class="nav-text">5.12 ZRANGEBYLEX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-13-ZRANGEBYSCORE"><span class="nav-number">3.2.0.13.</span> <span class="nav-text">5.13 ZRANGEBYSCORE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-14-ZRANK"><span class="nav-number">3.2.0.14.</span> <span class="nav-text">5.14 ZRANK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-15-ZREM"><span class="nav-number">3.2.0.15.</span> <span class="nav-text">5.15 ZREM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-16-ZREMRANGEBYLEX"><span class="nav-number">3.2.0.16.</span> <span class="nav-text">5.16 ZREMRANGEBYLEX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-17-ZREMRANGEBYRANK"><span class="nav-number">3.2.0.17.</span> <span class="nav-text">5.17 ZREMRANGEBYRANK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-18-ZREMRANGEBYSCORE"><span class="nav-number">3.2.0.18.</span> <span class="nav-text">5.18 ZREMRANGEBYSCORE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-19-ZREVRANGE"><span class="nav-number">3.2.0.19.</span> <span class="nav-text">5.19 ZREVRANGE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-20-ZREVRANGEBYLEX"><span class="nav-number">3.2.0.20.</span> <span class="nav-text">5.20 ZREVRANGEBYLEX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-21-ZREVRANGEBYSCORE"><span class="nav-number">3.2.0.21.</span> <span class="nav-text">5.21 ZREVRANGEBYSCORE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-22-ZREVRANK"><span class="nav-number">3.2.0.22.</span> <span class="nav-text">5.22 ZREVRANK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-23-ZSCAN"><span class="nav-number">3.2.0.23.</span> <span class="nav-text">5.23 ZSCAN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-24-ZSCORE"><span class="nav-number">3.2.0.24.</span> <span class="nav-text">5.24 ZSCORE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-25-ZUNIONSTORE"><span class="nav-number">3.2.0.25.</span> <span class="nav-text">5.25 ZUNIONSTORE</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-公共命令-可操作性所有数据类型"><span class="nav-number">4.</span> <span class="nav-text">6. 公共命令 (可操作性所有数据类型)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-del-删除key"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">6.1 del 删除key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-DEL"><span class="nav-number">4.0.0.2.</span> <span class="nav-text">6.1 DEL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-DUMP"><span class="nav-number">4.0.0.3.</span> <span class="nav-text">6.2 DUMP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-EXISTS"><span class="nav-number">4.0.0.4.</span> <span class="nav-text">6.3 EXISTS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4-EXPIRE"><span class="nav-number">4.0.0.5.</span> <span class="nav-text">6.4 EXPIRE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-5-EXPIREAT"><span class="nav-number">4.0.0.6.</span> <span class="nav-text">6.5 EXPIREAT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-6-KEYS"><span class="nav-number">4.0.0.7.</span> <span class="nav-text">6.6 KEYS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-7-MIGRATE"><span class="nav-number">4.0.0.8.</span> <span class="nav-text">6.7 MIGRATE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-8-MOVE"><span class="nav-number">4.0.0.9.</span> <span class="nav-text">6.8 MOVE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-9-OBJECT"><span class="nav-number">4.0.0.10.</span> <span class="nav-text">6.9 OBJECT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-10-PERSIST"><span class="nav-number">4.0.0.11.</span> <span class="nav-text">6.10 PERSIST</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-11-PEXPIRE"><span class="nav-number">4.0.0.12.</span> <span class="nav-text">6.11 PEXPIRE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-12-PEXPIREAT"><span class="nav-number">4.0.0.13.</span> <span class="nav-text">6.12 PEXPIREAT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-13-PTTL"><span class="nav-number">4.0.0.14.</span> <span class="nav-text">6.13 PTTL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-14-RANDOMKEY"><span class="nav-number">4.0.0.15.</span> <span class="nav-text">6.14 RANDOMKEY</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-15-RENAME"><span class="nav-number">4.0.0.16.</span> <span class="nav-text">6.15 RENAME</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-16-RENAMENX"><span class="nav-number">4.0.0.17.</span> <span class="nav-text">6.16 RENAMENX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-17-RESTORE"><span class="nav-number">4.0.0.18.</span> <span class="nav-text">6.17 RESTORE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-18-SCAN"><span class="nav-number">4.0.0.19.</span> <span class="nav-text">6.18 SCAN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-19-SORT"><span class="nav-number">4.0.0.20.</span> <span class="nav-text">6.19 SORT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-20-TOUCH"><span class="nav-number">4.0.0.21.</span> <span class="nav-text">6.20 TOUCH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-21-TTL"><span class="nav-number">4.0.0.22.</span> <span class="nav-text">6.21 TTL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-22-TYPE"><span class="nav-number">4.0.0.23.</span> <span class="nav-text">6.22 TYPE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-23-UNLINK"><span class="nav-number">4.0.0.24.</span> <span class="nav-text">6.23 UNLINK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-24-WAIT"><span class="nav-number">4.0.0.25.</span> <span class="nav-text">6.24 WAIT</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-补充"><span class="nav-number">5.</span> <span class="nav-text">7. 补充</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">263k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">3:59</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>
