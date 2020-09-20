@@ -3,7 +3,11 @@
   <entry>
     <title>Spring</title>
     <url>/2020/09/20/spring/</url>
-    <content><![CDATA[<h1 id="1-spring初识"><a href="#1-spring初识" class="headerlink" title="1. spring初识"></a>1. spring初识</h1><h3 id="1-1-框架"><a href="#1-1-框架" class="headerlink" title="1.1 框架"></a>1.1 框架</h3><pre><code>框架就是一些类和接口的集合，通过这些类和接口协调来完成一系列的程序实现。JAVA框架可以分为三层：表示层，业务层和物理层。框架又叫做开发中的半成品，它不能提供整个WEB应用程序的所有东西，但是有了框架，我们就可以集中精力进行业务逻辑的开发而不用去关心它的技术实现以及一些辅助的业务逻辑。大家熟知的Structs和Spring就是表示层和业务层框架的强力代表。（说的太官方了）
+    <content><![CDATA[<p>随着互联网的发展,网站应用的规模不断扩大,常规的垂直应用架构已无法应对，分布式服务架构以及流动计算架构势在必行，亟需一个治理系统确保架构有条不紊的演进。</p>
+<a id="more"></a>
+
+
+<h1 id="1-spring初识"><a href="#1-spring初识" class="headerlink" title="1. spring初识"></a>1. spring初识</h1><h3 id="1-1-框架"><a href="#1-1-框架" class="headerlink" title="1.1 框架"></a>1.1 框架</h3><pre><code>框架就是一些类和接口的集合，通过这些类和接口协调来完成一系列的程序实现。JAVA框架可以分为三层：表示层，业务层和物理层。框架又叫做开发中的半成品，它不能提供整个WEB应用程序的所有东西，但是有了框架，我们就可以集中精力进行业务逻辑的开发而不用去关心它的技术实现以及一些辅助的业务逻辑。大家熟知的Structs和Spring就是表示层和业务层框架的强力代表。（说的太官方了）
 
 人话:
 
