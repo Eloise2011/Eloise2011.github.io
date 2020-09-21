@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>springbootContent</title>
+    <url>/2020/09/21/springbootContent/</url>
+    <content><![CDATA[<p>Springboot from Scratch…</p>
+<a id="more"></a>
+
+
+<p>post 1<br>    回顾SSM构建过程<br>post 2<br>    Springboot三种构建方式<br>    启动类Application上的注解<br>    深入理解parent标签<br>post 3基础配置<br>    banner,<br>    容器相关<br>    属性注入<br>    类型安全的属性注入<br>    ymal方式配置<br>    profile切换<br>post 4. 整合视图层<br>    Freemarker<br>    FM常用指令<br>    Thymeleaf<br>    JSP基础</p>
+<p>post 5.整合Web开发<br>    整合Json (fastJson, jackson, Gson)<br>    默认静态资源位置/访问<br>    (多))文件上传/下载<br>    @ControllerAdvice注解的三种使用(全局异常配置,预设全局数据,请求参数预处理)<br>    自定义错误页<br>    异常源码分析, 自定义异常数据,自定义异常视图<br>    CORS实现跨域<br>    拦截器<br>    系统自动启动任务(ComandLineRunner,Application Runner)<br>    整合web基础组件(I,S,F)<br>    AOP<br>    自定义 welcome<br>    自定义favicon<br>    disable autoconfig<br>post 6.整合持久层<br>    整合持久层总览<br>    JdbcTemplate<br>    Mybatis<br>    Spring Data 和 Jpa<br>post 7. 整合NoSql<br>    整合Redis<br>    Redis+Nginx+Spring Session 实现session共享<br>    整合MongoDB<br>post 8. REST服务<br>post 9. 开发者工具和单元测试(DevTools, LiveReload,Junit)<br>post10. 整合缓存<br>post11. 安全管理(SpringSecurity,授权, 表单登录及其自定义,整合mybatis,用户数据入库,多HTTPSecurity,密码加密,方法安全,角色继承,动态权限配置,CSRF(cross site request forgery) Oauth2 etc…)<br>post12. 整合websocket<br>post13. 整合MQ<br>post14. 企业开发整合Mail<br>post15. 应用监控<br>post16. 项目构建与部署<br>post17. 项目vHr</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>SpringBoot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Spring</title>
     <url>/2020/09/20/spring/</url>
     <content><![CDATA[<p>随着互联网的发展,网站应用的规模不断扩大,常规的垂直应用架构已无法应对，分布式服务架构以及流动计算架构势在必行，亟需一个治理系统确保架构有条不紊的演进。</p>
