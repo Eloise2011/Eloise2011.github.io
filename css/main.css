@@ -1218,7 +1218,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #75300d;
+  background: #ffdbff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2462,7 +2462,7 @@ embed {
   transition-timing-function: ease-out;
 }
 body {
-  background: url("https://images.unsplash.com/photo-1599351430135-6fcad7318f5f?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=900&ixlib=rb-1.2.1&q=80&w=1600");
+  background: url("https://images.unsplash.com/photo-1600270159877-3598ad63e2be?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=900&ixlib=rb-1.2.1&q=80&w=1600");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
