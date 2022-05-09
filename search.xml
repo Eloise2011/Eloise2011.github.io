@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>多线程-Part01</title>
+    <url>/2022/05/09/%E5%A4%9A%E7%BA%BF%E7%A8%8B-Part01/</url>
+    <content><![CDATA[<p>本章节主要介绍线程中的一些基本概念，比如线程， 进程， 并行， 并发， 一些常用查看进程的方法和操作方式（如 JConsole），创建线程 的方式， 栈桢图解，上下文切换等基本原理， 至此对线程有一个初步认识。</p>
+<a id="more"></a>
+]]></content>
+      <categories>
+        <category>Concurrency</category>
+      </categories>
+      <tags>
+        <tag>多线程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>多线程-Part04</title>
     <url>/2022/05/07/%E5%A4%9A%E7%BA%BF%E7%A8%8B-Part04/</url>
     <content><![CDATA[<p>本章节主要介绍多线程中wait-notify相关的知识点.</p>
@@ -56,6 +69,25 @@
 <h4 id="Future原理"><a href="#Future原理" class="headerlink" title="Future原理"></a>Future原理</h4><p><img src="https://gitee.com/brooksjoshua/hexo-blog-pics/raw/master/img/Screenshot%202022-05-07%20at%2014.22.45.png" alt="Screenshot 2022-05-07 at 14.22.45"></p>
 <p>当有多对线程两两相互关联应用保护性暂停的需求时。如上图Futures就是保存关联对象的集合。左侧的t0, t2, t4 分别等待右侧t1, t3, t5的结果。 就好比现实生活中不同房号的居民分别等待不同快递公司的快递员送达货品。 </p>
 <p>那么如何维护这个关联对象集合与线程间的对应关系就变得复杂。因此， 设计一个接偶的中间类， 这样不仅能够解藕 消费者(等待结果方) 和 生产者(结果创建方)。 还能同时支持多个任务的管理。</p>
+<p>上面的<a href="####Future原理">模型图</a>可以用如下代码演示: <span style="color:red"><strong>居民线程要等待对应的邮递员把对应的信送到，即两两有序</strong></span> </p>
+<p>1.邮递员（线程）2. 居民（线程）3. 解藕对象 （用来完成上述t0, t2, t4 和t1, t3, t5的两两关联） 4 主线程测试 </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.joshua.waitnotify;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.joshua.util.Sleeper;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Hashtable;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-05-07 14:31</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GuardedSuspension_Multi_8</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> People().start();</span><br><span class="line">        &#125;</span><br><span class="line">        Sleeper.sleep(<span class="number">1_000</span>);</span><br><span class="line">        Mailboxes.getIds().forEach((id) -&gt; &#123;</span><br><span class="line">            <span class="keyword">new</span> Postman(id, <span class="string">"内容"</span> + id).start();</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf</span>4j(topic = <span class="string">"c.People"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">People</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        GuardedObject2 go = Mailboxes.createGuardedObject2();</span><br><span class="line">        log.debug(<span class="string">"开始收信 id [&#123;&#125;]"</span>, go.getId());</span><br><span class="line">        <span class="comment">//等待邮递员送信5000ms</span></span><br><span class="line">        Object mail = go.get(<span class="number">5000</span>);</span><br><span class="line">        log.debug(<span class="string">"收到信件 ID：&#123;&#125;"</span>, go.getId(), mail);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf</span>4j(topic = <span class="string">"c.Postman"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Postman</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> String mail;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Postman</span><span class="params">(<span class="keyword">int</span> id, String mail)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.mail = mail;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 1。获取即将要送的这封信是哪封</span></span><br><span class="line"><span class="comment">     * 2。然后打印即将送的日志</span></span><br><span class="line"><span class="comment">     * 3。最后唤醒一个people线程。 （可能会虚假唤醒， 但是被虚假唤醒的线程会进入下一轮wait）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        GuardedObject2 go = Mailboxes.popSentMail(id);</span><br><span class="line">        log.debug(<span class="string">"送信 id: &#123;&#125;"</span>, go.getId());</span><br><span class="line">        go.generate(mail);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 该对象用来解藕</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Slf</span>4j(topic = <span class="string">"c.Mailboxes"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Mailboxes</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;Integer, GuardedObject2&gt; boxes = <span class="keyword">new</span> Hashtable&lt;&gt;();</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 此id就是来将people-id和postman-id对应上的键</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> id = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 因为id会被多个线程访问， 也就是临界区变量， 所以要synchronized修饰保证安全性</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">generateId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用remove是因为场景是一次性的， 邮递员将信递给用户后就应该从原有集合去除， 否则该集合会一直增大最终堆内存溢出</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> id</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> GuardedObject2 <span class="title">popSentMail</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> boxes.remove(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 多个关联对象放进集合便于管理。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> GuardedObject2 <span class="title">createGuardedObject2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        GuardedObject2 go = <span class="keyword">new</span> GuardedObject2(generateId());</span><br><span class="line">        boxes.put(go.getId(), go);</span><br><span class="line">        <span class="keyword">return</span> go;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用来通知主线程应该创建多少个邮递员送信线程</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Set&lt;Integer&gt; <span class="title">getIds</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> boxes.keySet();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf</span>4j(topic = <span class="string">"c.GuardedObject2"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GuardedObject2</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 关联对象的id</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GuardedObject2</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 关联的保护对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Object response;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 要获取的结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">while</span> (response == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">this</span>.wait();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">"有人传递结果来了。"</span>);</span><br><span class="line">            <span class="keyword">return</span> response;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> timeout 等待的超时时间 单位毫秒</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 传递的关联结果</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">get</span><span class="params">(<span class="keyword">long</span> timeout)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="comment">//开始时间</span></span><br><span class="line">            <span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line">            <span class="comment">//经历时间</span></span><br><span class="line">            <span class="keyword">long</span> timeElapsed = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (response == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (timeElapsed &gt;= timeout) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">long</span> timeToWait = timeout - timeElapsed;</span><br><span class="line">                    log.debug(<span class="string">"还需等待ms: &#123;&#125;"</span>, timeToWait);</span><br><span class="line">                    <span class="keyword">this</span>.wait(timeToWait);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                timeElapsed = System.currentTimeMillis() - start;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (response == <span class="keyword">null</span>) &#123;</span><br><span class="line">            response = <span class="string">"已等待"</span> + timeout + <span class="string">"ms，结果尚未返回。"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 产生结果</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">generate</span><span class="params">(Object response)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.notify();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.response = response;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果（如下）可以看出无论是哪个ID都是按照这样的顺序： 开始收信1–&gt; 送信1 –&gt; 收到信 1</p>
+<p><img src="https://gitee.com/brooksjoshua/hexo-blog-pics/raw/master/img/Screenshot%202022-05-08%20at%2011.04.57.png" alt="Screenshot 2022-05-08 at 11.04.57"></p>
+<h2 id="异步模式之生产者-消费者"><a href="#异步模式之生产者-消费者" class="headerlink" title="异步模式之生产者/消费者"></a>异步模式之生产者/消费者</h2><h3 id="主要特点："><a href="#主要特点：" class="headerlink" title="主要特点："></a>主要特点：</h3><ul>
+<li>与前面保护性暂停的多关联对象不同， 不需要产生结果和消费结果的线程一一对应</li>
+<li>消费队列可以用来平衡生产和消费的线程资源</li>
+<li>生产者仅负责产生结果，不关心数据如何处理，而消费者专心处理结果数据</li>
+<li>消息队列谁有容量限制的，满载时不会再加入数据，空栽时不会再消费数据</li>
+<li><span style="color:red"><strong>JDK中各种阻塞队列就是采用的这种模式</strong></span></li>
+</ul>
+<p>⚠️  之所以称之为异步是因为该模式中消费者消费可能延时。 如下图中t3产生的消息t3(d)没有被及时消费，而是先消费队列前面的t1(a).</p>
+<p><img src="https://gitee.com/brooksjoshua/hexo-blog-pics/raw/master/img/Screenshot%202022-05-08%20at%2011.14.40.png" alt="Screenshot 2022-05-08 at 11.14.40"></p>
+<h3 id="代码演示"><a href="#代码演示" class="headerlink" title="代码演示"></a>代码演示</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.joshua.waitnotify;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.joshua.util.Sleeper;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 用来演示生产者/消费者</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-05-08 11:23</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Slf</span>4j(topic = <span class="string">"c.ProducerConsumer"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MQ_9</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        MessageQ mq = <span class="keyword">new</span> MessageQ(<span class="number">3</span>);</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 生产者</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">            <span class="comment">// lambda表达式引用外部变量必须是final的， 所以在这里定一个id 方便后续使用</span></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> id = i;</span><br><span class="line">            <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                mq.put(<span class="keyword">new</span> Message(id, String.valueOf(id)));</span><br><span class="line">            &#125;, <span class="string">"生产者-"</span> + i).start();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 消费者</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                Sleeper.sleep(<span class="number">1_000</span>);</span><br><span class="line">                Message msg = mq.take();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="string">"消费者"</span>).start();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 消息队列模型实体</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Slf</span>4j(topic = <span class="string">"c.MQ"</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MessageQ</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> LinkedList&lt;Message&gt; llist = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> capacity;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MessageQ</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 如果list是空则等待， 否则从队列头部取出第一个元素返回</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Message <span class="title">take</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (llist) &#123;</span><br><span class="line">            <span class="keyword">while</span> (llist.isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    log.debug(<span class="string">"队列为空， 消费者线程需等待"</span>);</span><br><span class="line">                    llist.wait();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            Message msg = llist.removeFirst();</span><br><span class="line">            log.debug(<span class="string">"已消费消息"</span> + msg);</span><br><span class="line">            llist.notifyAll();</span><br><span class="line">            <span class="keyword">return</span> msg;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 如果list是满则等待， 否则从队列尾部存入一个元素</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (llist) &#123;</span><br><span class="line">            <span class="keyword">while</span> (llist.size() == capacity) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    log.debug(<span class="string">"队列已满， 生产者线程需等待"</span>);</span><br><span class="line">                    llist.wait();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            llist.addLast(message);</span><br><span class="line">            log.debug(<span class="string">"已生产消息"</span> + message);</span><br><span class="line">            llist.notifyAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 消息实体</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Message</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">    <span class="keyword">private</span> String value;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Message</span><span class="params">(<span class="keyword">int</span> id, String value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Message&#123;"</span> +</span><br><span class="line">                <span class="string">"id="</span> + id +</span><br><span class="line">                <span class="string">", value='"</span> + value + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果：</p>
+<p><img src="https://gitee.com/brooksjoshua/hexo-blog-pics/raw/master/img/Screenshot%202022-05-09%20at%2017.29.24.png" alt="生产者消费者模式测试结果"></p>
 ]]></content>
       <categories>
         <category>Concurrency</category>
@@ -161,155 +193,101 @@
   <entry>
     <title>ContentTables</title>
     <url>/2021/02/23/ContentTables/</url>
-    <content><![CDATA[<p>本文列出了该博客站点所有文章的排序方式, 以列表展示.</p>
+    <content><![CDATA[<p>本文列出了该博客站点所有文章的排序方式, 以列表展示. 二级标题下的列表里的技术栈名称可以单击进入三级标题出，三级标题名称处可以选择点击跳转官网（没有对应官网的会选择网络上比较好的技术文档）或者跳转系列博客首篇文章再或者跳到git查看代码。</p>
+<p>三级Notes列一般会截取当前博客文章的<strong>more标签</strong>前的那一段介绍。而二级标题的Notes列会列出更为抽象但是极其重要的的技术点或技术名词。</p>
 <a id="more"></a>
 
-<table>
+<h2 id="Java-八股文-纵览"><a href="#Java-八股文-纵览" class="headerlink" title="Java 八股文(纵览)"></a>Java 八股文(纵览)</h2><table>
 <thead>
 <tr>
-<th>Tech-Stack</th>
-<th>Chapters &amp; Top N</th>
-<th>Notes</th>
+<th><span style="color:red"><strong>Tech-Stack</strong></span></th>
+<th><span style="color:red"><strong>Chapters &amp; Top N 「[start,end)」</strong></span></th>
+<th><span style="color:red"><strong>Notes</strong></span></th>
 </tr>
 </thead>
 <tbody><tr>
-<td>JVM</td>
-<td>9999-9990</td>
+<td><a href="###Spring">Spring</a></td>
+<td>1-20</td>
 <td></td>
 </tr>
 <tr>
-<td>IO</td>
-<td>9989-9980</td>
+<td><a href="###Mybatis">Mybatis</a></td>
+<td>20-30</td>
 <td></td>
 </tr>
 <tr>
-<td>JUC</td>
-<td>9979-9970</td>
+<td><a href="###SpringMVC">SpringMVC</a></td>
+<td>30-40</td>
 <td></td>
 </tr>
 <tr>
-<td>Nginx</td>
-<td>9969-9960</td>
+<td><a href="###SpringBoot">SpringBoot</a></td>
+<td>40-100</td>
 <td></td>
 </tr>
 <tr>
-<td>SpringCloud</td>
-<td>9959-9950</td>
+<td><a href="###MySQL-基础">MySQL-基础</a></td>
+<td>100-150</td>
 <td></td>
 </tr>
 <tr>
-<td>Spring</td>
-<td>9949-9940</td>
+<td><a href="###MySQL-优化">MySQL-优化</a></td>
+<td>150-200</td>
 <td></td>
 </tr>
 <tr>
-<td>Mybatis</td>
-<td>9939-9930</td>
+<td><a href="###JVM">JVM</a></td>
+<td>200-220</td>
 <td></td>
 </tr>
 <tr>
-<td>SpringMVC</td>
-<td>9929-9920</td>
+<td><a href="###IO">IO</a></td>
+<td>220-250</td>
 <td></td>
 </tr>
 <tr>
-<td>SpringBoot</td>
-<td>9919-9900</td>
+<td><a href="###JUC">JUC</a></td>
+<td>250-300</td>
 <td></td>
 </tr>
 <tr>
-<td>MySQL</td>
-<td>9899-9890</td>
+<td><a href="###Nginx">Nginx</a></td>
+<td>300-310</td>
 <td></td>
 </tr>
 <tr>
-<td>Kafka</td>
-<td>9889-9880</td>
+<td><a href="###Redis">Redis</a></td>
+<td>310-340</td>
 <td></td>
 </tr>
 <tr>
-<td>多线程</td>
-<td>9879-9870</td>
+<td><a href="###Kafka">Kafka</a></td>
+<td>340-370</td>
 <td></td>
 </tr>
 <tr>
-<td>RabbitMQ</td>
-<td>9869-9860</td>
+<td><a href="###Threading&Concurrency">Threading&amp;Concurrency</a></td>
+<td>370-400</td>
 <td></td>
 </tr>
 <tr>
-<td>RocketMQ</td>
-<td>9869-9860</td>
+<td>[HTTP &amp; Rpc &amp; RESTful](###HTTP &amp; Rpc &amp; RESTful)</td>
+<td>400-450</td>
 <td></td>
 </tr>
 <tr>
-<td>HTTP</td>
-<td>9859-9850</td>
+<td></td>
+<td></td>
 <td></td>
 </tr>
 <tr>
-<td>Redis</td>
-<td>9849-9840</td>
+<td></td>
+<td></td>
 <td></td>
 </tr>
 <tr>
-<td>Hadoop</td>
-<td>9839-9830</td>
 <td></td>
-</tr>
-<tr>
-<td>HDFC</td>
-<td>9829-9820</td>
 <td></td>
-</tr>
-<tr>
-<td>MapReduce</td>
-<td>9819-9810</td>
-<td></td>
-</tr>
-<tr>
-<td>Yarn</td>
-<td>9809-9800</td>
-<td></td>
-</tr>
-<tr>
-<td>Zookeeper</td>
-<td>9799-9790</td>
-<td></td>
-</tr>
-<tr>
-<td>Dubbo</td>
-<td>9789-9780</td>
-<td></td>
-</tr>
-<tr>
-<td>HIVE</td>
-<td>9779-9770</td>
-<td></td>
-</tr>
-<tr>
-<td>HBase</td>
-<td>9769-9760</td>
-<td></td>
-</tr>
-<tr>
-<td>Flume</td>
-<td>9759-9750</td>
-<td></td>
-</tr>
-<tr>
-<td>Flink</td>
-<td>9749-9740</td>
-<td></td>
-</tr>
-<tr>
-<td>ElasticSearch (ES)</td>
-<td>9739-9730</td>
-<td></td>
-</tr>
-<tr>
-<td>Spark</td>
-<td>9729-9720</td>
 <td></td>
 </tr>
 <tr>
@@ -318,7 +296,197 @@
 <td></td>
 </tr>
 </tbody></table>
-]]></content>
+<h3 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h3><h3 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h3><h3 id="SpringMVC"><a href="#SpringMVC" class="headerlink" title="SpringMVC"></a>SpringMVC</h3><h3 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h3><table>
+<thead>
+<tr>
+<th>–</th>
+<th>–</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="MySQL-基础"><a href="#MySQL-基础" class="headerlink" title="MySQL-基础"></a>MySQL-基础</h3><h3 id="MySQL-优化"><a href="#MySQL-优化" class="headerlink" title="MySQL-优化"></a>MySQL-优化</h3><h3 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h3><h3 id="IO"><a href="#IO" class="headerlink" title="IO"></a>IO</h3><h3 id="JUC"><a href="#JUC" class="headerlink" title="JUC"></a>JUC</h3><h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><h3 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h3><h3 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h3><h3 id="Threading-amp-Concurrency"><a href="#Threading-amp-Concurrency" class="headerlink" title="Threading&amp;Concurrency"></a>Threading&amp;Concurrency</h3><p><a href="https://github.com/BrooksJoshua/MultiThread" target="_blank" rel="noopener">线程并发-GIT</a></p>
+<table>
+<thead>
+<tr>
+<th>Chapter Name（370-400）</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>多线程-Part01</td>
+<td></td>
+</tr>
+<tr>
+<td>多线程-Part02</td>
+<td></td>
+</tr>
+<tr>
+<td>多线程-Part03</td>
+<td></td>
+</tr>
+<tr>
+<td>多线程-Part04</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="HTTP-amp-Rpc-amp-RESTful"><a href="#HTTP-amp-Rpc-amp-RESTful" class="headerlink" title="HTTP &amp; Rpc &amp; RESTful"></a>HTTP &amp; Rpc &amp; RESTful</h3><h2 id="Java-Advanced-纵览"><a href="#Java-Advanced-纵览" class="headerlink" title="Java Advanced(纵览)"></a>Java Advanced(纵览)</h2><table>
+<thead>
+<tr>
+<th><span style="color:red"><strong>Tech-Stack</strong></span></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="###"></a>RabbitMQ</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###"></a>RocketMQ</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###"></a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="大数据-纵览"><a href="#大数据-纵览" class="headerlink" title="大数据(纵览)"></a>大数据(纵览)</h2><table>
+<thead>
+<tr>
+<th><span style="color:red"><strong>Tech-Stack</strong></span></th>
+<th>Chapters &amp; Top N</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="###Hadoop">Hadoop</a></td>
+<td>9839-9830</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###HDFC">HDFC</a></td>
+<td>9829-9820</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###MapReduce">MapReduce</a></td>
+<td>9819-9810</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###Yarn">Yarn</a></td>
+<td>9809-9800</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###Zookeeper">Zookeeper</a></td>
+<td>9799-9790</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###Dubbo">Dubbo</a></td>
+<td>9789-9780</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###HIVE">HIVE</a></td>
+<td>9779-9770</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###HBase">HBase</a></td>
+<td>9769-9760</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###Flume">Flume</a></td>
+<td>9759-9750</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###Flink">Flink</a></td>
+<td>9749-9740</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###ElasticSearch" title="ES">ElasticSearch (ES)</a></td>
+<td>9739-9730</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="###Spark">Spark</a></td>
+<td>9729-9720</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="Hadoop"><a href="#Hadoop" class="headerlink" title="Hadoop"></a>Hadoop</h3><h3 id="HDFC"><a href="#HDFC" class="headerlink" title="HDFC"></a>HDFC</h3><h3 id="MapReduce"><a href="#MapReduce" class="headerlink" title="MapReduce"></a>MapReduce</h3><h3 id="Yarn"><a href="#Yarn" class="headerlink" title="Yarn"></a>Yarn</h3><h3 id="Zookeeper"><a href="#Zookeeper" class="headerlink" title="Zookeeper"></a>Zookeeper</h3><h3 id="Dubbo"><a href="#Dubbo" class="headerlink" title="Dubbo"></a>Dubbo</h3><h3 id="HIVE"><a href="#HIVE" class="headerlink" title="HIVE"></a>HIVE</h3><h3 id="HBase"><a href="#HBase" class="headerlink" title="HBase"></a>HBase</h3><h3 id="Flume"><a href="#Flume" class="headerlink" title="Flume"></a>Flume</h3><h3 id="Flink"><a href="#Flink" class="headerlink" title="Flink"></a>Flink</h3><h3 id="ElasticSearch-ES"><a href="#ElasticSearch-ES" class="headerlink" title="ElasticSearch (ES)"></a>ElasticSearch (ES)</h3><h3 id="Spark"><a href="#Spark" class="headerlink" title="Spark"></a>Spark</h3>]]></content>
       <tags>
         <tag>目录</tag>
       </tags>
