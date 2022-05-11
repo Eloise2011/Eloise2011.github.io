@@ -389,7 +389,9 @@
   <entry>
     <title>ContentTables</title>
     <url>/2021/02/23/ContentTables/</url>
-    <content><![CDATA[<p>本文列出了该博客站点所有文章的排序方式, 以列表展示. 二级标题下的列表里的技术栈名称可以单击进入三级标题出，三级标题名称处可以选择点击跳转官网（没有对应官网的会选择网络上比较好的技术文档）或者跳转系列博客首篇文章再或者跳到git查看代码。</p>
+    <content><![CDATA[<iframe src="//player.bilibili.com/player.html?aid=93411079&bvid=BV1ME41147b9&cid=159487720&page=1&danmaku=0&high_quality=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+<p>本文列出了该博客站点所有文章的排序方式, 以列表展示. 二级标题下的列表里的技术栈名称可以单击进入三级标题出，三级标题名称处可以选择点击跳转官网（没有对应官网的会选择网络上比较好的技术文档）或者跳转系列博客首篇文章再或者跳到git查看代码。</p>
 <p>三级Notes列一般会截取当前博客文章的<strong>more标签</strong>前的那一段介绍。而二级标题的Notes列会列出更为抽象但是极其重要的的技术点或技术名词。</p>
 <a id="more"></a>
 
