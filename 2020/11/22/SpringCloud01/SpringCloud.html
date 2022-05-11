@@ -1,4 +1,10 @@
-<h1 id="SpringCloud"><a href="#SpringCloud" class="headerlink" title="SpringCloud:"></a>SpringCloud:</h1><h2 id="0-SpringCloud升级-部分组件停用"><a href="#0-SpringCloud升级-部分组件停用" class="headerlink" title="0,SpringCloud升级,部分组件停用:"></a>0,SpringCloud升级,部分组件停用:</h2><p>1,Eureka停用,可以使用zk作为服务注册中心</p>
+<hr>
+<p>title: SpringCloud<br>date: 2022-05-10 20:28:45<br>tags: [微服务]<br>categories: [micro service]<br>summary_img: /image/post_cover_image_新年快乐.jpeg<br>top: 1</p>
+<hr>
+<h1 id="SpringCloud"><a href="#SpringCloud" class="headerlink" title="SpringCloud"></a>SpringCloud</h1><p>本章节主要介绍SpringCloud从0到1 的搭建过程。</p>
+<!-- more -->
+
+<h2 id="0-SpringCloud升级-部分组件停用"><a href="#0-SpringCloud升级-部分组件停用" class="headerlink" title="0,SpringCloud升级,部分组件停用:"></a>0,SpringCloud升级,部分组件停用:</h2><p>1,Eureka停用,可以使用zk作为服务注册中心</p>
 <p>2,服务调用,Ribbon准备停更,代替为LoadBalance</p>
 <p>3,Feign改为OpenFeign</p>
 <p>4,Hystrix停更,改为resilence4j</p>
@@ -1566,7 +1572,7 @@ file-extension
          */
         void create(Order order);
     }
-     ```
+    ```
 
     ```xml
     @FeignClient(value = &quot;seata-storage-service&quot;)
@@ -1754,7 +1760,7 @@ file-extension
         }
     }
 
-     ```
+    ```
 
     ![](C:\Users\陈超\Desktop\Linux\springboot+cloud\springcloud\seala的12.png)
 
@@ -1856,7 +1862,10 @@ file-extension
 <p><img src="C:%5CUsers%5C%E9%99%88%E8%B6%85%5CDesktop%5CLinux%5Cspringboot+cloud%5Cspringcloud%5Cseala%E7%9A%8414.png" alt=""></p>
 </li>
 </ol>
-<pre><code>![](C:\Users\陈超\Desktop\Linux\springboot+cloud\springcloud\seala的13.png)</code></pre><ol start="6">
+<pre><code>![](C:\Users\陈超\Desktop\Linux\springboot+cloud\springcloud\seala的13.png)</code></pre><p>​    </p>
+<p>​    </p>
+<p>​     </p>
+<ol start="6">
 <li><p>使用seata:</p>
 <p><strong>在==订单模块==的serviceImpl类中的==create方法==添加启动分布式事务的注解</strong></p>
 <pre><code class="java"><span class="comment">/**</span>
