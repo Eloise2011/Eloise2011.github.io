@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本篇文章将介绍如何使用Spring Security实现记住我Remember Me的功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-Security-5-RememberMe">
+<meta property="og:url" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="本篇文章将介绍如何使用Spring Security实现记住我Remember Me的功能。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/QQ%E8%AE%B0%E4%BD%8F%E6%88%91.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/%E5%89%8D%E5%90%8E%E7%AB%AF%E4%B8%80%E8%87%B4.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/%E8%AE%B0%E4%BD%8F%E6%88%91%E7%99%BB%E9%99%86.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/%E8%AE%B0%E4%BD%8F%E6%88%91%E7%99%BB%E9%99%86%E6%8E%A5%E5%8F%A3response%E8%AE%BE%E7%BD%AEcookie.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/%E7%99%BB%E9%99%86%E6%8E%A5%E5%8F%A3%E8%A1%A8%E5%8D%95%E4%BF%A1%E6%81%AF%E4%B8%AD%E7%9A%84%E8%AE%B0%E4%BD%8F%E6%88%91%E5%B1%9E%E6%80%A7.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/%E9%87%8D%E5%90%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E6%88%96%E8%80%85%E9%87%8D%E5%90%AF%E5%90%8E%E5%8F%B0%E9%A1%B9%E7%9B%AE%E5%90%8E%E7%9B%B4%E6%8E%A5%E8%AE%BF%E9%97%AE%E6%8E%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/%E5%8E%9F%E7%90%86%E9%AA%8C%E8%AF%81.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/processAutoLoginCookie%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/AbstractRememberMeServices%E7%9A%84%E7%BB%A7%E6%89%BF%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/%E6%8C%81%E4%B9%85%E5%8C%96%E4%BB%A4%E7%89%8C%E6%96%B9%E6%A1%88%E6%B5%8B%E8%AF%95%E5%87%86%E5%A4%87%E6%96%B0%E5%A2%9E%E7%94%A8%E6%88%B7.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/SeriesToken%E5%8F%98%E5%8C%96%E9%80%BB%E8%BE%91.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/JdbcTokenRepositoryImpl%E8%87%AA%E5%8A%A8%E5%BB%BA%E8%A1%A8.png">
+<meta property="article:published_time" content="2022-07-05T13:31:48.000Z">
+<meta property="article:modified_time" content="2022-07-07T02:57:20.794Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Spring-Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/QQ%E8%AE%B0%E4%BD%8F%E6%88%91.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring-Security-5-RememberMe | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring-Security-5-RememberMe
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-05 21:31:48" itemprop="dateCreated datePublished" datetime="2022-07-05T21:31:48+08:00">2022-07-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-07 10:57:20" itemprop="dateModified" datetime="2022-07-07T10:57:20+08:00">2022-07-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">安全框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>20k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>18 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本篇文章将介绍如何使用Spring Security实现记住我Remember Me的功能。</p>
+<a id="more"></a>
+
+<h1 id="什么是RememberMe？"><a href="#什么是RememberMe？" class="headerlink" title="什么是RememberMe？"></a>什么是RememberMe？</h1><p>自动登录是我们在软件开发时一个非常常见的功能，例如我们登录 QQ 邮箱：<br><img src="/2022/07/05/Spring-Security-5-RememberMe/QQ%E8%AE%B0%E4%BD%8F%E6%88%91.png" alt="QQ记住我"><br>很多网站我们在登录的时候都会看到类似的选项，毕竟总让用户输入用户名密码是一件很麻烦的事。<br>自动登录功能就是，用户在登录成功后，在某一段时间内，如果用户关闭了浏览器并重新打开，或者服务器重启了，都不需要用户重新登录了，用户依然可以直接访问接口数据。<br>作为一个常见的功能，我们的 Spring Security 肯定也提供了相应的支持，本文我们就来看下 Spring Security 中如何实现这个功能。<br><strong>注意⚠️: 和Shiro的RememberMe是不同的概念 不要混淆。</strong></p>
+<h1 id="怎么实现？"><a href="#怎么实现？" class="headerlink" title="怎么实现？"></a>怎么实现？</h1><h2 id="修改SecurityConfig"><a href="#修改SecurityConfig" class="headerlink" title="修改SecurityConfig"></a>修改SecurityConfig</h2><p>在<code>protected void configure(HttpSecurity http) throws Exception {</code>方法中开启记住我功能</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.and()</span><br><span class="line">.rememberMe()</span><br><span class="line">.rememberMeParameter(<span class="string">"remMe"</span>)</span><br><span class="line">.key(<span class="string">"12345"</span>)</span><br></pre></td></tr></table></figure>
+<p>在登陆页面html中增加radio输入项供用户选择是否开启rememberMe</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"input"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"radio"</span> <span class="attr">name</span>=<span class="string">"remMe"</span> <span class="attr">id</span>=<span class="string">"rememberMe"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"spin"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"rememberMe"</span>&gt;</span>记住我<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>注意前后端开启RememberMe指定的key一样。<br><img src="/2022/07/05/Spring-Security-5-RememberMe/%E5%89%8D%E5%90%8E%E7%AB%AF%E4%B8%80%E8%87%B4.png" alt="前后端一致"></p>
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><h2 id="记住我登陆"><a href="#记住我登陆" class="headerlink" title="记住我登陆"></a>记住我登陆</h2><p>在上述配置完后启动项目， 然后访问登陆页面， 选择记住我登陆。观察HTTP请求协议里的内容。<br><img src="/2022/07/05/Spring-Security-5-RememberMe/%E8%AE%B0%E4%BD%8F%E6%88%91%E7%99%BB%E9%99%86.png" alt="记住我登陆"><br><img src="/2022/07/05/Spring-Security-5-RememberMe/%E8%AE%B0%E4%BD%8F%E6%88%91%E7%99%BB%E9%99%86%E6%8E%A5%E5%8F%A3response%E8%AE%BE%E7%BD%AEcookie.png" alt><br>登陆接口的表单信息中除了用户名密码还有一个remMe 也就是rememberMe的开关。<br><img src="/2022/07/05/Spring-Security-5-RememberMe/%E7%99%BB%E9%99%86%E6%8E%A5%E5%8F%A3%E8%A1%A8%E5%8D%95%E4%BF%A1%E6%81%AF%E4%B8%AD%E7%9A%84%E8%AE%B0%E4%BD%8F%E6%88%91%E5%B1%9E%E6%80%A7.png" alt="登陆接口表单信息中的记住我属性"></p>
+<h2 id="访问其他接口"><a href="#访问其他接口" class="headerlink" title="访问其他接口"></a>访问其他接口</h2><p>观察上图说明记住我功能已经生效。继续测试，重启浏览器和后台项目后访问<code>hello</code>接口发现：<br>虽然cookie JSESSIONID的值因为重启浏览器而变更， 但是cookie remember-me的值却还是之前的。<br><img src="/2022/07/05/Spring-Security-5-RememberMe/%E9%87%8D%E5%90%AF%E6%B5%8F%E8%A7%88%E5%99%A8%E6%88%96%E8%80%85%E9%87%8D%E5%90%AF%E5%90%8E%E5%8F%B0%E9%A1%B9%E7%9B%AE%E5%90%8E%E7%9B%B4%E6%8E%A5%E8%AE%BF%E9%97%AE%E6%8E%A5%E5%8F%A3.png" alt><br>再一次证明了RememberMe功能已经生效。</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>分析刚才remember-me cookie的值，其实是使用Base64工具类加密 “用户名+过期时间(登陆时间后的两周)+md5算法加密的password和盐值(也就是SecurityConfig指定的key)。<br>为了证实这一结论， 对刚才的remember-me cookie进行Base64解密测试.</p>
+<h2 id="测试类验证"><a href="#测试类验证" class="headerlink" title="测试类验证"></a>测试类验证</h2><p>新建测试类 TestBase64RememberMe:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.assertj.core.util.DateUtil;</span><br><span class="line"><span class="keyword">import</span> org.junit.jupiter.api.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.codec.Hex;</span><br><span class="line"><span class="keyword">import</span> sun.security.provider.MD5;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.UnsupportedEncodingException;</span><br><span class="line"><span class="keyword">import</span> java.security.MessageDigest;</span><br><span class="line"><span class="keyword">import</span> java.security.NoSuchAlgorithmException;</span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.Base64;</span><br><span class="line"><span class="keyword">import</span> java.util.Calendar;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-03 23:12</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBase64RememberMe</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">testRememberMe</span><span class="params">()</span> <span class="keyword">throws</span> UnsupportedEncodingException, NoSuchAlgorithmException </span>&#123;</span><br><span class="line">        <span class="comment">//rememberMeCookie的值</span></span><br><span class="line">        String rememberMeCookie = <span class="string">"QmVuZWRpY3Q6MTY1ODEyMDU2Njk2MTphODc2NDIzMzk3Mjc3MDllNTMyMzAxZDNiMGY1MTZmNA"</span>;</span><br><span class="line">        <span class="comment">//解密</span></span><br><span class="line">        String decoded = <span class="keyword">new</span> String(Base64.getDecoder().decode(rememberMeCookie), <span class="string">"UTF-8"</span>);</span><br><span class="line">        <span class="comment">//解密后的值</span></span><br><span class="line">        System.out.println(<span class="string">"明文decoded = "</span> + decoded);</span><br><span class="line">        <span class="comment">//拆解明文</span></span><br><span class="line">        String[] split = decoded.split(<span class="string">":"</span>);</span><br><span class="line">        String username = Arrays.asList(split).stream().skip(<span class="number">0</span>).findFirst().orElse(<span class="string">"UsernameNull"</span>);</span><br><span class="line">        System.out.println(<span class="string">"拆解后明文的第一部分: username = "</span> + username);</span><br><span class="line">        String tokenExpiryTime = Arrays.asList(split).stream().skip(<span class="number">1</span>).findFirst().orElse(<span class="string">"ExpireTimeNull"</span>);</span><br><span class="line">        Date date = <span class="keyword">new</span> Date();</span><br><span class="line">        SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd hh:mm:ss.SSS"</span>);</span><br><span class="line">        System.out.println(<span class="string">"当前时间: "</span>+sdf.format(date)) ;</span><br><span class="line">        date.setTime(Long.valueOf(tokenExpiryTime));</span><br><span class="line">        System.out.println(<span class="string">"拆解后明文第二部分过期时间的格式化字符串： "</span>+sdf.format(date));</span><br><span class="line">        String md5EncodedPwdSalt = Arrays.asList(split).stream().skip(<span class="number">2</span>).findFirst().orElse(<span class="string">"Md5EncodedPwdSaltNull"</span>);</span><br><span class="line">        System.out.println(<span class="string">"md5EncodedPwdSalt = "</span> + md5EncodedPwdSalt);</span><br><span class="line">        String password = <span class="string">"111"</span>;</span><br><span class="line">        String key = <span class="string">"12345"</span>; <span class="comment">//configure(HttpSecurity http) throws Exception中 .rememberMeParameter("remMe").key("12345")的key值</span></span><br><span class="line">        String data = username + <span class="string">":"</span> + tokenExpiryTime + <span class="string">":"</span> + password + <span class="string">":"</span> + key;</span><br><span class="line">        MessageDigest digest = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line">        String encoded = <span class="keyword">new</span> String(Hex.encode(digest.digest(data.getBytes())));</span><br><span class="line">        System.out.println(<span class="string">"encoded = "</span> + encoded);</span><br><span class="line">        System.out.println(<span class="string">"拆解出来的密文的密码+盐值 与 MD5加密password+key 密文是否相等："</span>+encoded.equals(md5EncodedPwdSalt));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果:<br><img src="/2022/07/05/Spring-Security-5-RememberMe/%E5%8E%9F%E7%90%86%E9%AA%8C%E8%AF%81.png" alt="原理验证"></p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>其实底层源码在 <code>org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices#onLoginSuccess#makeTokenSignature()</code>方法中有所体现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 部分源码：</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLoginSuccess</span><span class="params">(HttpServletRequest request, HttpServletResponse response,</span></span></span><br><span class="line"><span class="function"><span class="params">        Authentication successfulAuthentication)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        String username = retrieveUserName(successfulAuthentication);</span><br><span class="line">        String password = retrievePassword(successfulAuthentication);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// If unable to find a username and password, just abort as</span></span><br><span class="line">        <span class="comment">// TokenBasedRememberMeServices is</span></span><br><span class="line">        <span class="comment">// unable to construct a valid token in this case.</span></span><br><span class="line">        <span class="keyword">if</span> (!StringUtils.hasLength(username)) &#123;</span><br><span class="line">        logger.debug(<span class="string">"Unable to retrieve username"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!StringUtils.hasLength(password)) &#123;</span><br><span class="line">        UserDetails user = getUserDetailsService().loadUserByUsername(username);</span><br><span class="line">        password = user.getPassword();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!StringUtils.hasLength(password)) &#123;</span><br><span class="line">        logger.debug(<span class="string">"Unable to obtain password for user: "</span> + username);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> tokenLifetime = calculateLoginLifetime(request, successfulAuthentication);</span><br><span class="line">        <span class="keyword">long</span> expiryTime = System.currentTimeMillis();</span><br><span class="line">        <span class="comment">// SEC-949</span></span><br><span class="line">        expiryTime += <span class="number">1000L</span> * (tokenLifetime &lt; <span class="number">0</span> ? TWO_WEEKS_S : tokenLifetime);</span><br><span class="line"></span><br><span class="line">        String signatureValue = makeTokenSignature(expiryTime, username, password);</span><br><span class="line"></span><br><span class="line">        setCookie(<span class="keyword">new</span> String[] &#123; username, Long.toString(expiryTime), signatureValue &#125;,</span><br><span class="line">        tokenLifetime, request, response);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">        logger.debug(<span class="string">"Added remember-me cookie for user '"</span> + username</span><br><span class="line">        + <span class="string">"', expiry: '"</span> + <span class="keyword">new</span> Date(expiryTime) + <span class="string">"'"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p><code>org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices#setCookie()</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY = <span class="string">"remember-me"</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_PARAMETER = <span class="string">"remember-me"</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TWO_WEEKS_S = <span class="number">1209600</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setCookie</span><span class="params">(String[] tokens, <span class="keyword">int</span> maxAge, HttpServletRequest request,HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">    String cookieValue = encodeCookie(tokens);</span><br><span class="line">    Cookie cookie = <span class="keyword">new</span> Cookie(cookieName, cookieValue);</span><br><span class="line">    cookie.setMaxAge(maxAge);</span><br><span class="line">    cookie.setPath(getCookiePath(request));</span><br><span class="line">    <span class="keyword">if</span> (cookieDomain != <span class="keyword">null</span>) &#123;</span><br><span class="line">        cookie.setDomain(cookieDomain);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (maxAge &lt; <span class="number">1</span>) &#123;</span><br><span class="line">        cookie.setVersion(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (useSecureCookie == <span class="keyword">null</span>) &#123;</span><br><span class="line">        cookie.setSecure(request.isSecure());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        cookie.setSecure(useSecureCookie);</span><br><span class="line">    &#125;</span><br><span class="line">    cookie.setHttpOnly(<span class="keyword">true</span>);response.addCookie(cookie);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="流程总结："><a href="#流程总结：" class="headerlink" title="流程总结："></a>流程总结：</h2><p>源码逻辑其实很好理解：</p>
+<ol>
+<li>首先从登录成功的 Authentication 中提取出用户名/密码。</li>
+<li>由于登录成功之后，密码可能被擦除了，所以，如果一开始没有拿到密码，就再从 UserDetailsService 中重新加载用户并重新获取密码。</li>
+<li>再接下来去获取令牌的有效期，令牌有效期默认就是两周。</li>
+<li>再接下来调用 makeTokenSignature 方法去计算散列值，实际上就是根据 username、令牌有效期以及 password、key 一起计算一个散列值。如果我们没有自己去设置这个 key，默认是在 RememberMeConfigurer#getKey 方法中进行设置的，它的值是一个 UUID 字符串。</li>
+<li>最后，将用户名、令牌有效期以及计算得到的散列值放入 Cookie 中。<br>第四点容易造成误解或者陷阱，因为如果不指定的话每次启动生成的key都是一个新的UUID，之前派发出去的所有 remember-me 自动登录令牌失效。所以需要显示指定， 之后即使服务端重启，即使浏览器打开再关闭，也依然能够访问到 hello 接口。<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#TODO 待补充流程图</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>Spring Security 中的一系列功能都是通过一个过滤器链实现的，RememberMe 这个功能当然也不例外。Spring Security 中提供了 RememberMeAuthenticationFilter 类专门用来做相关的事情，我们来看下 RememberMeAuthenticationFilter 的 doFilter 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest req, ServletResponse res, FilterChain chain)</span> <span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">	HttpServletRequest request = (HttpServletRequest) req;</span><br><span class="line">	HttpServletResponse response = (HttpServletResponse) res;</span><br><span class="line">	<span class="keyword">if</span> (SecurityContextHolder.getContext().getAuthentication() == <span class="keyword">null</span>) &#123;</span><br><span class="line">		Authentication rememberMeAuth = rememberMeServices.autoLogin(request,response);</span><br><span class="line">		<span class="keyword">if</span> (rememberMeAuth != <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="comment">// Attempt authenticaton via AuthenticationManager</span></span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				rememberMeAuth = authenticationManager.authenticate(rememberMeAuth);</span><br><span class="line">				<span class="comment">// Store to SecurityContextHolder</span></span><br><span class="line">				SecurityContextHolder.getContext().setAuthentication(rememberMeAuth);</span><br><span class="line">				onSuccessfulAuthentication(request, response, rememberMeAuth);</span><br><span class="line">				<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(<span class="string">"SecurityContextHolder populated with remember-me token: '"</span></span><br><span class="line">							+ SecurityContextHolder.getContext().getAuthentication()</span><br><span class="line">							+ <span class="string">"'"</span>);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="comment">// Fire event</span></span><br><span class="line">				<span class="keyword">if</span> (<span class="keyword">this</span>.eventPublisher != <span class="keyword">null</span>) &#123;</span><br><span class="line">					eventPublisher</span><br><span class="line">							.publishEvent(<span class="keyword">new</span> InteractiveAuthenticationSuccessEvent(</span><br><span class="line">									SecurityContextHolder.getContext()</span><br><span class="line">											.getAuthentication(), <span class="keyword">this</span>.getClass()));</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (successHandler != <span class="keyword">null</span>) &#123;</span><br><span class="line">					successHandler.onAuthenticationSuccess(request, response,</span><br><span class="line">							rememberMeAuth);</span><br><span class="line">					<span class="keyword">return</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span> (AuthenticationException authenticationException) &#123;</span><br><span class="line">				<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">					logger.debug(</span><br><span class="line">							<span class="string">"SecurityContextHolder not populated with remember-me token, as "</span></span><br><span class="line">									+ <span class="string">"AuthenticationManager rejected Authentication returned by RememberMeServices: '"</span></span><br><span class="line">									+ rememberMeAuth</span><br><span class="line">									+ <span class="string">"'; invalidating remember-me token"</span>,</span><br><span class="line">							authenticationException);</span><br><span class="line">				&#125;</span><br><span class="line">				rememberMeServices.loginFail(request, response);</span><br><span class="line">				onUnsuccessfulAuthentication(request, response,</span><br><span class="line">						authenticationException);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		chain.doFilter(request, response);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">			logger.debug(<span class="string">"SecurityContextHolder not populated with remember-me token, as it already contained: '"</span></span><br><span class="line">					+ SecurityContextHolder.getContext().getAuthentication() + <span class="string">"'"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		chain.doFilter(request, response);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的逻辑解释了为什么重启后台或浏览器之后访问hello接口依然能通过过滤器放行的原因。<br>这个方法最关键的地方在于，如果从 SecurityContextHolder 中无法获取到当前登录用户实例，那么就调用 rememberMeServices.autoLogin 逻辑进行登录，我们来看下这个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Authentication <span class="title">autoLogin</span><span class="params">(HttpServletRequest request,</span></span></span><br><span class="line"><span class="function"><span class="params">			HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">		String rememberMeCookie = extractRememberMeCookie(request);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (rememberMeCookie == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		logger.debug(<span class="string">"Remember-me cookie detected"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (rememberMeCookie.length() == <span class="number">0</span>) &#123;</span><br><span class="line">			logger.debug(<span class="string">"Cookie was empty"</span>);</span><br><span class="line">			cancelCookie(request, response);</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		UserDetails user = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			String[] cookieTokens = decodeCookie(rememberMeCookie);</span><br><span class="line">			user = processAutoLoginCookie(cookieTokens, request, response);</span><br><span class="line">			userDetailsChecker.check(user);</span><br><span class="line"></span><br><span class="line">			logger.debug(<span class="string">"Remember-me cookie accepted"</span>);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">return</span> createSuccessfulAuthentication(request, user);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (CookieTheftException cte) &#123;</span><br><span class="line">			cancelCookie(request, response);</span><br><span class="line">			<span class="keyword">throw</span> cte;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (UsernameNotFoundException noUser) &#123;</span><br><span class="line">			logger.debug(<span class="string">"Remember-me login was valid but corresponding user not found."</span>,</span><br><span class="line">					noUser);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (InvalidCookieException invalidCookie) &#123;</span><br><span class="line">			logger.debug(<span class="string">"Invalid remember-me cookie: "</span> + invalidCookie.getMessage());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (AccountStatusException statusInvalid) &#123;</span><br><span class="line">			logger.debug(<span class="string">"Invalid UserDetails: "</span> + statusInvalid.getMessage());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (RememberMeAuthenticationException e) &#123;</span><br><span class="line">			logger.debug(e.getMessage());</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		cancelCookie(request, response);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，这里就是提取出 cookie 信息，并对 cookie 信息进行解码，解码之后，简单校验是否开启了rememberMe功能，如果开启了且cookie长度不为0，则解码，并调用子类(以为例)中的 processAutoLoginCookie 方法去做校验，如果校验通过并返回了用户信息则<br>processAutoLoginCookie 核心流程如下：<br><img src="/2022/07/05/Spring-Security-5-RememberMe/processAutoLoginCookie%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B.png" alt="processAutoLoginCookie处理流程"><br>简单来说就是对cookie进行一系列的校验， 校验通过后将用户信息userDetails结果再返回给AbstractRememberMeServices中的userDetailsChecker实例进行校验,即：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> UserDetailsChecker userDetailsChecker = <span class="keyword">new</span> AccountStatusUserDetailsChecker();</span><br><span class="line"><span class="comment">// ... 其他代码</span></span><br><span class="line">user = processAutoLoginCookie(cookieTokens, request, response);</span><br><span class="line">userDetailsChecker.check(user);</span><br></pre></td></tr></table></figure>
+<p>而AccountStatusUserDetailsChecker#check()方法就是校验账号是否锁定，是否过期，密码是否正确这些。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">check</span><span class="params">(UserDetails user)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!user.isAccountNonLocked()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> LockedException(messages.getMessage(</span><br><span class="line">                <span class="string">"AccountStatusUserDetailsChecker.locked"</span>, <span class="string">"User account is locked"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!user.isEnabled()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> DisabledException(messages.getMessage(</span><br><span class="line">                <span class="string">"AccountStatusUserDetailsChecker.disabled"</span>, <span class="string">"User is disabled"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!user.isAccountNonExpired()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AccountExpiredException(</span><br><span class="line">                messages.getMessage(<span class="string">"AccountStatusUserDetailsChecker.expired"</span>,</span><br><span class="line">        <span class="string">"User account has expired"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!user.isCredentialsNonExpired()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> CredentialsExpiredException(messages.getMessage(</span><br><span class="line">                <span class="string">"AccountStatusUserDetailsChecker.credentialsExpired"</span>,</span><br><span class="line">        <span class="string">"User credentials have expired"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果校验过通过， 就返回return createSuccessfulAuthentication(request, user);</p>
+<h1 id="安全隐患"><a href="#安全隐患" class="headerlink" title="安全隐患"></a>安全隐患</h1><p>文章截止目前，大家可能已经发现，如果我们开启了 RememberMe 功能，最最核心的东西就是放在 cookie 中的令牌了，这个令牌突破了 session 的限制，即使服务器重启、即使浏览器关闭又重新打开，只要这个令牌没有过期，就能访问到数据。<br>一旦令牌丢失，别人就可以拿着这个令牌随意登录我们的系统了，这是一个非常危险的操作。<br>但是实际上这是一段悖论，为了提高用户体验（少登录），我们的系统不可避免的引出了一些安全问题，不过我们可以通过技术将安全风险降低到最小。</p>
+<h1 id="如何降低风险"><a href="#如何降低风险" class="headerlink" title="如何降低风险"></a>如何降低风险</h1><p>降低安全风险，主要有如下两种方式：</p>
+<h2 id="方案一：-持久化令牌方案"><a href="#方案一：-持久化令牌方案" class="headerlink" title="方案一： 持久化令牌方案"></a>方案一： 持久化令牌方案</h2><h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>持久化令牌就是在基本的自动登录RememberMe功能基础上，又增加了新的校验参数，来提高系统的安全性，这些都是由开发者在后台完成的，对于用户来说，登录体验和普通的自动登录体验是一样的。<br>在持久化令牌中，新增了两个经过 MD5 散列函数计算的校验参数，一个是 series，另一个是 token。其中，<strong>series 只有当用户在使用用户名/密码登录时，才会生成或者更新</strong>，而 <strong>token 只要有新的会话，就会重新生成</strong>，这样就可以避免一个用户同时在多端登录，就像手机 QQ ，一个手机上登录了，就会踢掉另外一个手机的登录，这样用户就会很容易发现账户是否泄漏。<br>持久化令牌的具体处理类在 PersistentTokenBasedRememberMeServices 中，上篇文章我们讲到的自动化登录具体的处理类是在 TokenBasedRememberMeServices 中，它们有一个共同的父类<br><img src="/2022/07/05/Spring-Security-5-RememberMe/AbstractRememberMeServices%E7%9A%84%E7%BB%A7%E6%89%BF%E7%BB%93%E6%9E%84.png" alt="持久化令牌方案的具体实现类PersistentTokenBasedRememberMeServices的继承继承结构"><br>而用来保存令牌的处理类则是 PersistentRememberMeToken，该类的定义也很简洁明了，完整源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.security.web.authentication.rememberme;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersistentRememberMeToken</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String username;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String series;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String tokenValue;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Date date;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PersistentRememberMeToken</span><span class="params">(String username, String series, String tokenValue, Date date)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">        <span class="keyword">this</span>.series = series;</span><br><span class="line">        <span class="keyword">this</span>.tokenValue = tokenValue;</span><br><span class="line">        <span class="keyword">this</span>.date = date;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUsername</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.username;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSeries</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.series;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTokenValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.tokenValue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Date <span class="title">getDate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.date;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中第四个属性的含义为：上一次登陆的时间。</p>
+<p>接下来，我通过代码来给大家演示一下持久化令牌的具体用法。</p>
+<p>首先我们需要一张表来记录令牌信息，这张表我们可以完全自定义，也可以使用系统默认提供的 JDBC 来操作，如果使用默认的 JDBC，其实现类为 <code>**JdbcTokenRepositoryImpl**</code>，我们可以来分析一下该类的定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.security.web.authentication.rememberme;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.dao.DataAccessException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.dao.EmptyResultDataAccessException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.dao.IncorrectResultSizeDataAccessException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.jdbc.core.support.JdbcDaoSupport;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JDBC based persistent login token repository implementation.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Luke Taylor</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcTokenRepositoryImpl</span> <span class="keyword">extends</span> <span class="title">JdbcDaoSupport</span> <span class="keyword">implements</span></span></span><br><span class="line"><span class="class">		<span class="title">PersistentTokenRepository</span> </span>&#123;</span><br><span class="line">	<span class="comment">// ~ Static fields/initializers</span></span><br><span class="line">	<span class="comment">// =====================================================================================</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/** Default SQL for creating the database table to store the tokens */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String CREATE_TABLE_SQL = <span class="string">"create table persistent_logins (username varchar(64) not null, series varchar(64) primary key, "</span></span><br><span class="line">			+ <span class="string">"token varchar(64) not null, last_used timestamp not null)"</span>;</span><br><span class="line">	<span class="comment">/** The default SQL used by the &lt;tt&gt;getTokenBySeries&lt;/tt&gt; query */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEF_TOKEN_BY_SERIES_SQL = <span class="string">"select username,series,token,last_used from persistent_logins where series = ?"</span>;</span><br><span class="line">	<span class="comment">/** The default SQL used by &lt;tt&gt;createNewToken&lt;/tt&gt; */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEF_INSERT_TOKEN_SQL = <span class="string">"insert into persistent_logins (username, series, token, last_used) values(?,?,?,?)"</span>;</span><br><span class="line">	<span class="comment">/** The default SQL used by &lt;tt&gt;updateToken&lt;/tt&gt; */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEF_UPDATE_TOKEN_SQL = <span class="string">"update persistent_logins set token = ?, last_used = ? where series = ?"</span>;</span><br><span class="line">	<span class="comment">/** The default SQL used by &lt;tt&gt;removeUserTokens&lt;/tt&gt; */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEF_REMOVE_USER_TOKENS_SQL = <span class="string">"delete from persistent_logins where username = ?"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ~ Instance fields</span></span><br><span class="line">	<span class="comment">// ================================================================================================</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String tokensBySeriesSql = DEF_TOKEN_BY_SERIES_SQL;</span><br><span class="line">	<span class="keyword">private</span> String insertTokenSql = DEF_INSERT_TOKEN_SQL;</span><br><span class="line">	<span class="keyword">private</span> String updateTokenSql = DEF_UPDATE_TOKEN_SQL;</span><br><span class="line">	<span class="keyword">private</span> String removeUserTokensSql = DEF_REMOVE_USER_TOKENS_SQL;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> createTableOnStartup;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initDao</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (createTableOnStartup) &#123;</span><br><span class="line">			getJdbcTemplate().execute(CREATE_TABLE_SQL);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createNewToken</span><span class="params">(PersistentRememberMeToken token)</span> </span>&#123;</span><br><span class="line">		getJdbcTemplate().update(insertTokenSql, token.getUsername(), token.getSeries(),</span><br><span class="line">				token.getTokenValue(), token.getDate());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateToken</span><span class="params">(String series, String tokenValue, Date lastUsed)</span> </span>&#123;</span><br><span class="line">		getJdbcTemplate().update(updateTokenSql, tokenValue, lastUsed, series);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Loads the token data for the supplied series identifier.</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * If an error occurs, it will be reported and null will be returned (since the result</span></span><br><span class="line"><span class="comment">	 * should just be a failed persistent login).</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> seriesId</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> the token matching the series, or null if no match found or an exception</span></span><br><span class="line"><span class="comment">	 * occurred.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> PersistentRememberMeToken <span class="title">getTokenForSeries</span><span class="params">(String seriesId)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> getJdbcTemplate().queryForObject(tokensBySeriesSql,</span><br><span class="line">					(rs, rowNum) -&gt; <span class="keyword">new</span> PersistentRememberMeToken(rs.getString(<span class="number">1</span>), rs</span><br><span class="line">							.getString(<span class="number">2</span>), rs.getString(<span class="number">3</span>), rs.getTimestamp(<span class="number">4</span>)), seriesId);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (EmptyResultDataAccessException zeroResults) &#123;</span><br><span class="line">			<span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">				logger.debug(<span class="string">"Querying token for series '"</span> + seriesId</span><br><span class="line">						+ <span class="string">"' returned no results."</span>, zeroResults);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (IncorrectResultSizeDataAccessException moreThanOne) &#123;</span><br><span class="line">			logger.error(<span class="string">"Querying token for series '"</span> + seriesId</span><br><span class="line">					+ <span class="string">"' returned more than one value. Series"</span> + <span class="string">" should be unique"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (DataAccessException e) &#123;</span><br><span class="line">			logger.error(<span class="string">"Failed to load token for series "</span> + seriesId, e);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeUserTokens</span><span class="params">(String username)</span> </span>&#123;</span><br><span class="line">		getJdbcTemplate().update(removeUserTokensSql, username);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Intended for convenience in debugging. Will create the persistent_tokens database</span></span><br><span class="line"><span class="comment">	 * table when the class is initialized during the initDao method.</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> createTableOnStartup set to true to execute the</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCreateTableOnStartup</span><span class="params">(<span class="keyword">boolean</span> createTableOnStartup)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.createTableOnStartup = createTableOnStartup;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>观察上述源码可以知道用来存储用户登陆series token信息的表都有哪些字段.</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><h4 id="建库建表"><a href="#建库建表" class="headerlink" title="建库建表"></a>建库建表</h4><p>其中已经定义好了对Token进行持久化操作需要的默认的SQL。  分析其中的字段可以可以到退出建表需要的字段</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`persistent_logins`</span> (</span><br><span class="line">  <span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`series`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`token`</span> <span class="built_in">varchar</span>(<span class="number">64</span>) <span class="keyword">COLLATE</span> utf8mb4_unicode_ci <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`last_used`</span> <span class="built_in">timestamp</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`series`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;</span><br></pre></td></tr></table></figure>
+<h3 id="修改yaml-修改DB-url"><a href="#修改yaml-修改DB-url" class="headerlink" title="修改yaml 修改DB url"></a>修改yaml 修改DB url</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  datasource:</span><br><span class="line">    url: jdbc:mysql://localhost:3306/springsecurityPersistentToken?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false</span><br></pre></td></tr></table></figure>
+<h3 id="新增依赖"><a href="#新增依赖" class="headerlink" title="新增依赖"></a>新增依赖</h3><p>因为是需要DB交互， 所以需要MySQL 和 jdbc依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>8.0.29<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="配置SecurityConfig类"><a href="#配置SecurityConfig类" class="headerlink" title="配置SecurityConfig类"></a>配置SecurityConfig类</h4><p>提供一个 JdbcTokenRepositoryImpl 实例，并给其配置 DataSource 数据源，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">DataSource dataSource;</span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">JdbcTokenRepositoryImpl <span class="title">jdbcTokenRepository</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    JdbcTokenRepositoryImpl jdbcTokenRepository = <span class="keyword">new</span> JdbcTokenRepositoryImpl();</span><br><span class="line">    jdbcTokenRepository.setDataSource(dataSource);</span><br><span class="line">    <span class="keyword">return</span> jdbcTokenRepository;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>SecurityConfig#configure(HttpSecurity http)</code>方法中在原来rememberMe的基础上关联指定要使用的JdbcTokenRepository</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.rememberMe()</span><br><span class="line">.rememberMeParameter(<span class="string">"remMe"</span>)</span><br><span class="line">.key(<span class="string">"12345"</span>)</span><br><span class="line">.tokenRepository(jdbcTokenRepository())</span><br></pre></td></tr></table></figure>
+<h3 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h3><h4 id="准备用户"><a href="#准备用户" class="headerlink" title="准备用户"></a>准备用户</h4><p>测试之前还是要先新增用户， 因为还是用的JPA的方式将用户信息存储到DB。所以再次执行test类中插入用户的动作AppTest#testInsertUsers()<br>检查数据库springsecurityPersistentToken已经多了下面三张用户和角色相关的三张表，并且里面有插入的用户记录行说明插入用户成功。<br><img src="/2022/07/05/Spring-Security-5-RememberMe/%E6%8C%81%E4%B9%85%E5%8C%96%E4%BB%A4%E7%89%8C%E6%96%B9%E6%A1%88%E6%B5%8B%E8%AF%95%E5%87%86%E5%A4%87%E6%96%B0%E5%A2%9E%E7%94%A8%E6%88%B7.png" alt="持久化令牌方案测试准备新增用户"></p>
+<h4 id="启动项目并访问"><a href="#启动项目并访问" class="headerlink" title="启动项目并访问"></a>启动项目并访问</h4><p>启动项目并登陆访问接口观察其remember-me cookie值的变化<br><img src="/2022/07/05/Spring-Security-5-RememberMe/SeriesToken%E5%8F%98%E5%8C%96%E9%80%BB%E8%BE%91.png" alt="Remember_meCookie和SeriesToken变化逻辑"><br>其中 “=” 的加密形式就是  “%3D”<br>从上面可以看出, 如果是新登陆/重新登陆，则想持久化令牌表里新增一条崭新的记录。如果是重新建立会话，则只是在之前的记录行上对token进行更新。<br>所以不管是哪种情况cookie remember-me的值和token值都会变化。通过这种变化会使得真正用户有所感知。像之前那样拿着remember-me cookie和token就能实现自动登陆的功能就不再</p>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>对JdbcTokenRepositoryImpl源码分析可知， 不用自己建表而是通过setCreateTableOnStartup(true)来让initDao()执行建表脚本， 为了验证这一想法，<br>JdbcTokenRepositoryImpl#initDao()</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initDao</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (createTableOnStartup) &#123;</span><br><span class="line">		getJdbcTemplate().execute(CREATE_TABLE_SQL);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JdbcTemplate#execute(final String sql)源码 (只是为了知道需要看见启动日志中的建表信息需要对jdbcTemplate开启debug日志)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(<span class="keyword">final</span> String sql)</span> <span class="keyword">throws</span> DataAccessException</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">this</span>.logger.isDebugEnabled())&#123;</span><br><span class="line">        <span class="keyword">this</span>.logger.debug(<span class="string">"Executing SQL statement ["</span>+sql+<span class="string">"]"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="开启日志"><a href="#开启日志" class="headerlink" title="开启日志"></a>开启日志</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">logging:</span></span><br><span class="line">  <span class="attr">level:</span></span><br><span class="line">    <span class="attr">org.example.dao:</span> <span class="string">DEBUG</span></span><br><span class="line">    <span class="attr">org.springframework.jdbc.core.JdbcTemplate:</span> <span class="string">DEBUG</span></span><br></pre></td></tr></table></figure>
+<h4 id="旧表重命名"><a href="#旧表重命名" class="headerlink" title="旧表重命名"></a>旧表重命名</h4><p>将原来的表重命名</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">rename</span> <span class="keyword">table</span> <span class="string">`persistent_logins`</span> <span class="keyword">to</span> <span class="string">`persistent_logins_self_created`</span></span><br></pre></td></tr></table></figure>
+<p>在原来的jdbcTokenRepository()中开启createTableOnStartup</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">JdbcTokenRepositoryImpl <span class="title">jdbcTokenRepository</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    JdbcTokenRepositoryImpl jdbcTokenRepository = <span class="keyword">new</span> JdbcTokenRepositoryImpl();</span><br><span class="line">    jdbcTokenRepository.setDataSource(dataSource);</span><br><span class="line">    jdbcTokenRepository.setCreateTableOnStartup(<span class="keyword">true</span>); <span class="comment">//会执行建表脚本，具体可见JdbcTokenRepositoryImpl#initDao()</span></span><br><span class="line">    <span class="keyword">return</span> jdbcTokenRepository;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是要注意这种方式如果之后重启会导致表已存在的错误： <strong>Table ‘persistent_logins’ already exists</strong> 应该修改逻辑避免。</p>
+<h4 id="测试-2"><a href="#测试-2" class="headerlink" title="测试"></a>测试</h4><p>重启项目发现启动日志中打印了建表日志, 并且有新表生成。如图<br><img src="/2022/07/05/Spring-Security-5-RememberMe/JdbcTokenRepositoryImpl%E8%87%AA%E5%8A%A8%E5%BB%BA%E8%A1%A8.png" alt="JdbcTokenRepositoryImpl自动建表"></p>
+<h2 id="方案二：-二次校验方案"><a href="#方案二：-二次校验方案" class="headerlink" title="方案二： 二次校验方案"></a>方案二： 二次校验方案</h2><h3 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h3><p>另外一种解决自动登录安全问题的方案其实是一种折中方案， 就是对敏感信息在记住我方式访问时需要二次登陆校验通过才可以， 而非敏感信息可以直接查看。<br>这种方式需要用户/开发人员去定义哪些为敏感信息。（一般情况写操作和极其重要的数据如金额，身份证ID等的读为敏感，其他读操作为非敏感)。</p>
+<h3 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h3><p>还是之前的四个接口，角色继承和权限访问关系不变， 在此基础上添加一条， 路径带/admin的需要二次交验， 而带/user的只需要rememberme就可以访问<br>/hello<br>/guest/hello<br>/user/hello<br>/admin/hello<br>在原来的的SecurityConfig#中添加如下行，表示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.antMatchers(<span class="string">"/user/**"</span>).rememberMe()</span><br><span class="line">.antMatchers(<span class="string">"/admin/**"</span>).fullyAuthenticated()</span><br></pre></td></tr></table></figure>
+<h3 id="测试-3"><a href="#测试-3" class="headerlink" title="测试"></a>测试</h3>
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/" title="Spring-Security-5-RememberMe">https://52zhongneng.cn/2022/07/05/Spring-Security-5-RememberMe/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring-Security/" rel="tag"><i class="fa fa-tag"></i>Spring-Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/04/Spring-Security-4-JPA%E5%81%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="prev" title="Spring-Security-4-JPA做数据源">
+      <i class="fa fa-chevron-left"></i> Spring-Security-4-JPA做数据源
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/06/Spring-Security-6-Mybatis/" rel="next" title="Spring-Security-6-MyBatis">
+      Spring-Security-6-MyBatis <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是RememberMe？"><span class="nav-number">1.</span> <span class="nav-text">什么是RememberMe？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#怎么实现？"><span class="nav-number">2.</span> <span class="nav-text">怎么实现？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改SecurityConfig"><span class="nav-number">2.1.</span> <span class="nav-text">修改SecurityConfig</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试"><span class="nav-number">3.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#记住我登陆"><span class="nav-number">3.1.</span> <span class="nav-text">记住我登陆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问其他接口"><span class="nav-number">3.2.</span> <span class="nav-text">访问其他接口</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">4.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#测试类验证"><span class="nav-number">4.1.</span> <span class="nav-text">测试类验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码分析"><span class="nav-number">4.2.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程总结："><span class="nav-number">4.3.</span> <span class="nav-text">流程总结：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安全隐患"><span class="nav-number">5.</span> <span class="nav-text">安全隐患</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何降低风险"><span class="nav-number">6.</span> <span class="nav-text">如何降低风险</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方案一：-持久化令牌方案"><span class="nav-number">6.1.</span> <span class="nav-text">方案一： 持久化令牌方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">6.1.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">6.1.2.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#建库建表"><span class="nav-number">6.1.2.1.</span> <span class="nav-text">建库建表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改yaml-修改DB-url"><span class="nav-number">6.1.3.</span> <span class="nav-text">修改yaml 修改DB url</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新增依赖"><span class="nav-number">6.1.4.</span> <span class="nav-text">新增依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置SecurityConfig类"><span class="nav-number">6.1.4.1.</span> <span class="nav-text">配置SecurityConfig类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试-1"><span class="nav-number">6.1.5.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备用户"><span class="nav-number">6.1.5.1.</span> <span class="nav-text">准备用户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动项目并访问"><span class="nav-number">6.1.5.2.</span> <span class="nav-text">启动项目并访问</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#补充"><span class="nav-number">6.1.6.</span> <span class="nav-text">补充</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#开启日志"><span class="nav-number">6.1.6.1.</span> <span class="nav-text">开启日志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#旧表重命名"><span class="nav-number">6.1.6.2.</span> <span class="nav-text">旧表重命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试-2"><span class="nav-number">6.1.6.3.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方案二：-二次校验方案"><span class="nav-number">6.2.</span> <span class="nav-text">方案二： 二次校验方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-2"><span class="nav-number">6.2.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现-1"><span class="nav-number">6.2.2.</span> <span class="nav-text">实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试-3"><span class="nav-number">6.2.3.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

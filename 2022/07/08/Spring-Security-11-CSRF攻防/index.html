@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文将讲解CSRF相关的安全问题, 以及如何使用[Spring Security]进行防御.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-Security-11-CSRF攻防">
+<meta property="og:url" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="本文将讲解CSRF相关的安全问题, 以及如何使用[Spring Security]进行防御.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%9B%BE%E8%A7%A3CSRF%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%B0%9D%E8%AF%95%E8%AE%BF%E9%97%AEcsrf-1%E7%9A%84hello%E6%8E%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E5%90%8E%E8%AE%BF%E9%97%AEhello%E6%8E%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%AE%BF%E9%97%AEcsrf-2%E7%9A%84%E9%A1%B5%E9%9D%A2.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E7%82%B9%E5%87%BBcsrf-2%E9%A1%B5%E9%9D%A2%E6%8C%89%E9%92%AE.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%BD%AC%E8%B4%A6%E6%88%90%E5%8A%9F.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%89%8D%E5%90%8E%E7%AB%AF%E4%B8%80%E4%BD%93%E5%8C%96%E9%A1%B9%E7%9B%AE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E7%9A%84%E7%99%BB%E9%99%86%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%B7%B3%E8%BD%ACPOST%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E7%82%B9%E5%87%BB%E8%AF%B7%E6%B1%828083%E9%A1%B9%E7%9B%AE.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%AF%B7%E6%B1%82header%E6%90%BA%E5%B8%A6cookie.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%AF%B7%E6%B1%82%E8%A1%A8%E5%8D%95%E5%8F%82%E6%95%B0%E5%B0%91%E4%BA%86_csrf.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%E9%A1%B9%E7%9B%AE%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E5%90%8E%E8%BF%94%E5%9B%9Ecookie%E5%A4%9A%E4%BA%86XSRF-TOKEN.png">
+<meta property="article:published_time" content="2022-07-08T14:34:48.000Z">
+<meta property="article:modified_time" content="2022-07-10T08:59:10.977Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Spring-Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%9B%BE%E8%A7%A3CSRF%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring-Security-11-CSRF攻防 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring-Security-11-CSRF攻防
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-08 22:34:48" itemprop="dateCreated datePublished" datetime="2022-07-08T22:34:48+08:00">2022-07-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-10 16:59:10" itemprop="dateModified" datetime="2022-07-10T16:59:10+08:00">2022-07-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">安全框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>8.9k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文将讲解CSRF相关的安全问题, 以及如何使用[Spring Security]进行防御.</p>
+<a id="more"></a>
+<h1 id="CSRF原理"><a href="#CSRF原理" class="headerlink" title="CSRF原理"></a>CSRF原理</h1><p>想要防御 CSRF 攻击，那我们得先搞清楚什么是 CSRF 攻击，下面这张图以及图后的文字描述梳理 CSRF 攻击流程：<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%9B%BE%E8%A7%A3CSRF%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86.png" alt="图解CSRF底层原理"><br>其实这个流程很简单：</p>
+<ol>
+<li>假设用户打开了招商银行网上银行网站，并且登录。 </li>
+<li>登录成功后，网上银行会返回 Cookie 给前端，浏览器将 Cookie 保存下来。 </li>
+<li>用户在没有登出网上银行的情况下，在浏览器里边打开了一个新的选项卡，然后又去访问了一个危险网站。 </li>
+<li>这个危险网站上有一个超链接，超链接的地址指向了招商银行网上银行。 </li>
+<li>用户点击了这个超链接，由于这个超链接会自动携带上浏览器中保存的 Cookie，所以用户不知不觉中就访问了网上银行，进而可能给自己造成了损失。<br>CSRF 的流程大致就是这样，接下将用一个简单的例子展示一下 CSRF 到底是怎么回事。</li>
+</ol>
+<h1 id="CSRF实践"><a href="#CSRF实践" class="headerlink" title="CSRF实践"></a>CSRF实践</h1><h2 id="建项目"><a href="#建项目" class="headerlink" title="建项目"></a>建项目</h2><p>创建一个名为 csrf-1 的 Spring Boot 项目，这个项目相当于我们上面所说的网上银行网站，创建项目时引入 Web 和 Spring Security 依赖，如下：</p>
+<h2 id="引依赖"><a href="#引依赖" class="headerlink" title="引依赖"></a>引依赖</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-security<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="写yml"><a href="#写yml" class="headerlink" title="写yml"></a>写yml</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8081</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">security:</span></span><br><span class="line">    <span class="attr">user:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Joshua</span></span><br><span class="line">      <span class="attr">password:</span> <span class="number">1234</span></span><br></pre></td></tr></table></figure>
+<p>配置了Spring Security内存用户.</p>
+<h2 id="配置SpringSecurityConfig"><a href="#配置SpringSecurityConfig" class="headerlink" title="配置SpringSecurityConfig"></a>配置SpringSecurityConfig</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.builders.HttpSecurity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-08 22:49</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringSecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        http.authorizeRequests().anyRequest().authenticated()</span><br><span class="line">                .and()</span><br><span class="line">                .formLogin()</span><br><span class="line">                .and()</span><br><span class="line">                .csrf().disable();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Controller接口"><a href="#Controller接口" class="headerlink" title="Controller接口"></a>Controller接口</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.PostMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-08 22:49</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@PostMapping</span>(<span class="string">"/transfer"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transferMoney</span><span class="params">(String name, Integer money)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"name = "</span> + name);</span><br><span class="line">        System.out.println(<span class="string">"money = "</span> + money);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hello"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意⚠️: </p>
+<ol>
+<li>Controller中假设 /transfer 是一个转账接口（这里是假设，主要是给大家演示 CSRF 攻击，真实的转账接口比这复杂）。 </li>
+<li>因为 Spring Security 中默认是可以自动防御 CSRF 攻击的，所以我们要把这个关闭掉了. 即 SpringSecurityConfig#configure中的.csrf().disable();</li>
+</ol>
+<h2 id="准备项目csrf-2"><a href="#准备项目csrf-2" class="headerlink" title="准备项目csrf-2"></a>准备项目csrf-2</h2><h3 id="引依赖-1"><a href="#引依赖-1" class="headerlink" title="引依赖"></a>引依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="写yml-1"><a href="#写yml-1" class="headerlink" title="写yml"></a>写yml</h3><p>新建</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8082</span></span><br></pre></td></tr></table></figure>
+<h3 id="请求入口html"><a href="#请求入口html" class="headerlink" title="请求入口html"></a>请求入口html</h3><p>在 resources/static/下新建hello2.html, 具体内容:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://localhost:8081/transfer"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"Josh"</span> <span class="attr">name</span>=<span class="string">"name"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"10000"</span> <span class="attr">name</span>=<span class="string">"money"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"点击查看美女图片"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这里有一个超链接，超链接的文本是点击查看美女图片，当你点击了超链接之后，会自动请求 <a href="http://localhost:8081/transfer" target="_blank" rel="noopener">http://localhost:8081/transfer</a> 接口，同时隐藏域还携带了两个参数。<br>配置完成后，就可以启动 csrf-2 项目了。<br>接下来，用户首先访问 csrf-1 项目中的接口，在访问的时候需要登录，用户就执行了登录操作，访问完整后，用户并没有执行登出操作，然后用户访问 csrf-2 中的页面，看到了超链接，好奇这美女到底长啥样，一点击，结果钱就被人转走了。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>启动两个项目: csrf-1 和 csrf-2, 按下面的请求顺序演示CSRF攻击的原理:</p>
+<ol>
+<li>用户访问csrf-1接口hello, 首先会跳转到登陆页面<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%B0%9D%E8%AF%95%E8%AE%BF%E9%97%AEcsrf-1%E7%9A%84hello%E6%8E%A5%E5%8F%A3.png" alt="尝试访问csrf-1的hello接口"></li>
+<li>用户登陆成功访问到了接口hello<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E5%90%8E%E8%AE%BF%E9%97%AEhello%E6%8E%A5%E5%8F%A3.png" alt="登陆成功后访问hello接口"></li>
+<li>然后用户访问了恶意网站csrf-2的页面hello2.html, 点击页面按钮.<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%AE%BF%E9%97%AEcsrf-2%E7%9A%84%E9%A1%B5%E9%9D%A2.png" alt="访问csrf-2的页面"><br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E7%82%B9%E5%87%BBcsrf-2%E9%A1%B5%E9%9D%A2%E6%8C%89%E9%92%AE.png" alt="点击csrf-2页面按钮"></li>
+<li>因为用户刚刚访问过csrf-1的接口, 浏览器此时是保留有其cookie和session信息的. 所以点击完hello2.html页面的按钮后请求csrf-1的transfer接口时会自动鞋带上浏览器里的cookie, 从而使得请求成功.<br>查看后台发现转账成功, 说明CSRF攻击成功.</li>
+<li><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%BD%AC%E8%B4%A6%E6%88%90%E5%8A%9F.png" alt="转账成功"></li>
+</ol>
+<h1 id="CSRF防御"><a href="#CSRF防御" class="headerlink" title="CSRF防御"></a>CSRF防御</h1><p>CSRF 防御，一个核心思路就是在前端请求中，添加一个随机数。 因为在 CSRF 攻击中，黑客网站其实是不知道用户的 Cookie 具体是什么的，他是让用户自己发送请求到网上银行这个网站的，因为这个过程会自动携带上 Cookie 中的信息。<br>所以我们的防御思路是这样：用户在访问网上银行时，除了携带 Cookie 中的信息之外，还需要携带一个随机数，如果用户没有携带这个随机数，则网上银行网站会拒绝该请求。黑客网站诱导用户点击超链接时，会自动携带上 Cookie 中的信息，但是却不会自动携带随机数，这样就成功的避免掉 CSRF 攻击了。<br>Spring Security 中对此提供了很好的支持，我们一起来看下。</p>
+<h2 id="前后端一体化项目解决方案"><a href="#前后端一体化项目解决方案" class="headerlink" title="前后端一体化项目解决方案"></a>前后端一体化项目解决方案</h2><h3 id="建项目-1"><a href="#建项目-1" class="headerlink" title="建项目"></a>建项目</h3><p>Spring Security 中默认实际上就提供了 csrf 防御，但是需要开发者做的事情比较多。 首先我们来创建一个新的 Spring Boot 工程.</p>
+<h3 id="引依赖-2"><a href="#引依赖-2" class="headerlink" title="引依赖"></a>引依赖</h3><p>创建时引入 Spring Security、Thymeleaf 和 web 依赖。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-security<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.4.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="写yaml"><a href="#写yaml" class="headerlink" title="写yaml"></a>写yaml</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8083</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">security:</span></span><br><span class="line">    <span class="attr">user:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">root</span></span><br><span class="line">      <span class="attr">password:</span> <span class="number">123</span></span><br><span class="line">  <span class="attr">thymeleaf:</span></span><br><span class="line">    <span class="attr">prefix:</span> <span class="string">classpath:/templates/</span></span><br><span class="line">    <span class="attr">suffix:</span> <span class="string">.html</span></span><br><span class="line">    <span class="attr">cache:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">check-template-location:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="新建测试接口"><a href="#新建测试接口" class="headerlink" title="新建测试接口"></a>新建测试接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.PostMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-08 23:48</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello3Controller</span> </span>&#123;</span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/hello3"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hello3"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@PostMapping</span>(<span class="string">"/hello3"</span>)</span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hello3 string"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>GET</strong> 接口是用来访问html前端页面对应接口, <strong>POST</strong>接口是真正测试接口，<strong>因为默认情况下，GET、HEAD、TRACE 以及 OPTIONS 是不需要验证 CSRF 攻击的。</strong></p>
+<h3 id="页面模板"><a href="#页面模板" class="headerlink" title="页面模板"></a>页面模板</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymleaf.org"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/hello3"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">th:value</span>=<span class="string">"$&#123;_csrf.token&#125;"</span> <span class="attr">th:name</span>=<span class="string">"$&#123;_csrf.parameterName&#125;"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"hello3"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><span style="color:red"><code>_&lt;input type=&quot;hidden&quot; th:value=&quot;${_csrf.token}&quot; th:name=&quot;${_csrf.parameterName}&quot;&gt;_</code></span><br>注意⚠️: 在发送 POST 请求的时候，还额外携带了一个<strong><em>隐藏域</em></strong>，隐藏域的 key 是 ${_csrf.parameterName}，value 则是 ${_csrf.token}。这两个值服务端会自动带过来，我们只需要在前端渲染出来即可。<br>必须要加这一行, 因为我们添加了</p>
+<h2 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h2><h3 id="本项目启动跳转参数观察"><a href="#本项目启动跳转参数观察" class="headerlink" title="本项目启动跳转参数观察"></a>本项目启动跳转参数观察</h3><p>添加完成后，启动项目，我们访问 hello 页面，在访问时候，需要先登录，登录成功之后，我们可以看到登录请求中也多了一个参数，如下：<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%89%8D%E5%90%8E%E7%AB%AF%E4%B8%80%E4%BD%93%E5%8C%96%E9%A1%B9%E7%9B%AE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E7%9A%84%E7%99%BB%E9%99%86%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0.png" alt="前后端一体化项目解决方案的登陆接口参数"><br>然后通过上面的按钮再去访问POST请求接口发现<strong><code>_csrf</code></strong>参数又变化了:<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%B7%B3%E8%BD%ACPOST%E6%B5%8B%E8%AF%95%E6%8E%A5%E5%8F%A3.png" alt="跳转POST测试接口"></p>
+<h3 id="外部项目CSRF尝试攻击"><a href="#外部项目CSRF尝试攻击" class="headerlink" title="外部项目CSRF尝试攻击"></a>外部项目CSRF尝试攻击</h3><p>如果通过8082项目启动, 在8083项目登陆后, 通过8082跳转请求8083的POST接口, 注意记得修改8082的前端form表单请求路径:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--请求测试8081项目--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://localhost:8081/transfer"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"Josh"</span> <span class="attr">name</span>=<span class="string">"name"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"10000"</span> <span class="attr">name</span>=<span class="string">"money"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"点击查看美女图片"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--请求测试8083项目--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://localhost:8083/hello3"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"Josh"</span> <span class="attr">name</span>=<span class="string">"name"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">value</span>=<span class="string">"10000"</span> <span class="attr">name</span>=<span class="string">"money"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"点击查看美女图片2"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>发现点击请求8083项目的按钮后:<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E7%82%B9%E5%87%BB%E8%AF%B7%E6%B1%828083%E9%A1%B9%E7%9B%AE.png" alt="点击请求8083项目"></p>
+<p>虽然请求header携带了cookie (该cookie也就是8083服务端返回给客户端的cookie)<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%AF%B7%E6%B1%82header%E6%90%BA%E5%B8%A6cookie.png" alt="请求header携带cookie"><br>但是因为请求表单参数少了_csrf, 所以校验身份还是403,<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E8%AF%B7%E6%B1%82%E8%A1%A8%E5%8D%95%E5%8F%82%E6%95%B0%E5%B0%91%E4%BA%86_csrf.png" alt="请求表单参数少了_csrf"></p>
+<p>所以结果看出CSRF防御已经生效了.</p>
+<h2 id="前后端分离项目解决方案"><a href="#前后端分离项目解决方案" class="headerlink" title="前后端分离项目解决方案"></a>前后端分离项目解决方案</h2><p>如果是前后端分离项目，Spring Security 也提供了解决方案。</p>
+<h3 id="Spring-Security配置"><a href="#Spring-Security配置" class="headerlink" title="Spring Security配置"></a>Spring Security配置</h3><p>这次不是将 _csrf 放在 Model 中返回前端了，而是放在 Cookie 中返回前端，配置方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        http.authorizeRequests().anyRequest().authenticated()</span><br><span class="line">                .and()</span><br><span class="line">                .formLogin()</span><br><span class="line">                .and()</span><br><span class="line">                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可能有人会说放在 Cookie 中不是又被黑客网站盗用了吗？其实不会的，大家注意如下两个问题：<br><img src="/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%E9%A1%B9%E7%9B%AE%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E5%90%8E%E8%BF%94%E5%9B%9Ecookie%E5%A4%9A%E4%BA%86XSRF-TOKEN.png" alt="前后端分离项目登陆成功后返回cookie多了XSRF-TOKEN"></p>
+<ol>
+<li>黑客网站根本不知道你的 Cookie 里边存的啥，他也不需要知道，因为 CSRF 攻击是浏览器自动携带上 Cookie 中的数据的。 </li>
+<li>我们将服务端生成的随机数放在 Cookie 中，前端需要从 Cookie 中自己提取出来 _csrf 参数，然后拼接成参数传递给后端，单纯的将 Cookie 中的数据传到服务端是没用的。<br>理解透了上面两点，你就会发现 _csrf 放在 Cookie 中是没有问题的，但是千万注意⚠️，<strong>配置的时候我们通过 withHttpOnlyFalse 方法获取了 CookieCsrfTokenRepository 的实例，该方法会设置 Cookie 中的 HttpOnly 属性为 false，也就是允许前端通过 js 操作 Cookie（否则你就没有办法获取到 _csrf）。</strong><br>配置完成后，重启项目，此时我们就发现返回的 Cookie 中多了一项：</li>
+</ol>
+<h3 id="前端页面准备"><a href="#前端页面准备" class="headerlink" title="前端页面准备"></a>前端页面准备</h3><p>在static目录下新建vue.html</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/jquery.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/jQuery-cookie.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"username"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">id</span>=<span class="string">"password"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"登录"</span> <span class="attr">id</span>=<span class="string">"loginBtn"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    $(<span class="string">"#loginBtn"</span>).click(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> _csrf = $.cookie(<span class="string">'XSRF-TOKEN'</span>);</span></span><br><span class="line"><span class="javascript">        $.post(<span class="string">'/login.html'</span>,&#123;<span class="attr">username</span>:$(<span class="string">"#username"</span>).val(),<span class="attr">password</span>:$(<span class="string">"#password"</span>).val(),<span class="attr">_csrf</span>:_csrf&#125;,<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span></span><br><span class="line">            alert(data);</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这段 html 我给大家解释下：</p>
+<ol>
+<li>首先引入 jquery 和 jquery.cookie ，方便我们一会操作 Cookie。 </li>
+<li>定义三个 input，前两个是用户名和密码，第三个是登录按钮。 </li>
+<li>点击登录按钮之后，我们先从 Cookie 中提取出 XSRF-TOKEN，这也就是我们要上传的 csrf 参数。 </li>
+<li>通过一个 POST 请求执行登录操作，注意携带上 _csrf 参数。</li>
+</ol>
+<h3 id="服务端修改"><a href="#服务端修改" class="headerlink" title="服务端修改"></a>服务端修改</h3><p>因为引入了JS文件,服务端我们也稍作修改，配置JS放行, 在SecurityConfig类添加</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF%E6%94%BB%E9%98%B2/" title="Spring-Security-11-CSRF攻防">https://52zhongneng.cn/2022/07/08/Spring-Security-11-CSRF攻防/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring-Security/" rel="tag"><i class="fa fa-tag"></i>Spring-Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/" rel="prev" title="Spring-Security-10-集群化部署Session管理">
+      <i class="fa fa-chevron-left"></i> Spring-Security-10-集群化部署Session管理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/09/Spring-Security-12-%E4%B8%A4%E7%A7%8D%E8%B5%84%E6%BA%90%E6%94%BE%E8%A1%8C%E7%AD%96%E7%95%A5/" rel="next" title="Spring-Security-12-两种资源放行策略">
+      Spring-Security-12-两种资源放行策略 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CSRF原理"><span class="nav-number">1.</span> <span class="nav-text">CSRF原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CSRF实践"><span class="nav-number">2.</span> <span class="nav-text">CSRF实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#建项目"><span class="nav-number">2.1.</span> <span class="nav-text">建项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引依赖"><span class="nav-number">2.2.</span> <span class="nav-text">引依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写yml"><span class="nav-number">2.3.</span> <span class="nav-text">写yml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置SpringSecurityConfig"><span class="nav-number">2.4.</span> <span class="nav-text">配置SpringSecurityConfig</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Controller接口"><span class="nav-number">2.5.</span> <span class="nav-text">Controller接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备项目csrf-2"><span class="nav-number">2.6.</span> <span class="nav-text">准备项目csrf-2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引依赖-1"><span class="nav-number">2.6.1.</span> <span class="nav-text">引依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写yml-1"><span class="nav-number">2.6.2.</span> <span class="nav-text">写yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求入口html"><span class="nav-number">2.6.3.</span> <span class="nav-text">请求入口html</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">2.7.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CSRF防御"><span class="nav-number">3.</span> <span class="nav-text">CSRF防御</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前后端一体化项目解决方案"><span class="nav-number">3.1.</span> <span class="nav-text">前后端一体化项目解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建项目-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引依赖-2"><span class="nav-number">3.1.2.</span> <span class="nav-text">引依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写yaml"><span class="nav-number">3.1.3.</span> <span class="nav-text">写yaml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建测试接口"><span class="nav-number">3.1.4.</span> <span class="nav-text">新建测试接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#页面模板"><span class="nav-number">3.1.5.</span> <span class="nav-text">页面模板</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-1"><span class="nav-number">3.2.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本项目启动跳转参数观察"><span class="nav-number">3.2.1.</span> <span class="nav-text">本项目启动跳转参数观察</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部项目CSRF尝试攻击"><span class="nav-number">3.2.2.</span> <span class="nav-text">外部项目CSRF尝试攻击</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前后端分离项目解决方案"><span class="nav-number">3.3.</span> <span class="nav-text">前后端分离项目解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-Security配置"><span class="nav-number">3.3.1.</span> <span class="nav-text">Spring Security配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前端页面准备"><span class="nav-number">3.3.2.</span> <span class="nav-text">前端页面准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端修改"><span class="nav-number">3.3.3.</span> <span class="nav-text">服务端修改</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

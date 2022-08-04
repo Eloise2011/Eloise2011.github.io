@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文将介绍Spring Security的基础入门以及自定义登陆页面， 登陆接口， 登陆成功&#x2F;失败跳转页面(或处理器) 以及前后端分离项目中Spring Security如何通过JSON数据交互完成安全控制等知识点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-Security-1-初识及自定义登陆页">
+<meta property="og:url" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="本文将介绍Spring Security的基础入门以及自定义登陆页面， 登陆接口， 登陆成功&#x2F;失败跳转页面(或处理器) 以及前后端分离项目中Spring Security如何通过JSON数据交互完成安全控制等知识点。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/pomDependency.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/login.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E7%95%8C%E9%9D%A2.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E6%8C%87%E5%AE%9A%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81%E5%8F%82%E6%95%B0%E5%90%8D%E7%A7%B0.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E9%BB%98%E8%AE%A4%E8%B7%B3%E8%BD%AC%E9%A1%B5%E9%9D%A2.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E7%9A%84%E8%B7%B3%E8%BD%AC.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E7%9A%84%E8%B7%B3%E8%BD%AC.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/logout-1.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/logout-2.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E5%90%8E%E7%9A%84Auth%E7%9A%84JSON%E8%BF%94%E5%9B%9E.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E7%99%BB%E9%99%86%E5%BC%82%E5%B8%B8%E5%90%8E%E7%9A%84JSON%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E7%94%A8BadCredential%E9%9A%90%E8%97%8FUsernameNotFoundException%E5%BC%82%E5%B8%B8%E5%8E%9F%E7%90%86.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E6%9C%AA%E7%99%BB%E9%99%86%E8%BF%94%E5%9B%9E%E7%9A%84JSON%E6%8F%90%E7%A4%BA.png">
+<meta property="article:published_time" content="2022-07-01T13:31:48.000Z">
+<meta property="article:modified_time" content="2022-07-07T02:56:44.070Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Spring-Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/pomDependency.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring-Security-1-初识及自定义登陆页 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring-Security-1-初识及自定义登陆页
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-01 21:31:48" itemprop="dateCreated datePublished" datetime="2022-07-01T21:31:48+08:00">2022-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-07 10:56:44" itemprop="dateModified" datetime="2022-07-07T10:56:44+08:00">2022-07-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">安全框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>16 mins.</span>
+            </span>
+
+
+           
+          
+          <div class="out-img-topic">
+          <img src=/image/Spring-Security-AuthenticationManager.png class="img-topic">
+          </div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文将介绍Spring Security的基础入门以及自定义登陆页面， 登陆接口， 登陆成功/失败跳转页面(或处理器) 以及前后端分离项目中Spring Security如何通过JSON数据交互完成安全控制等知识点。</p>
+<a id="more"></a>
+
+
+
+
+
+<h1 id="新建项目并添加依赖-pom-xml："><a href="#新建项目并添加依赖-pom-xml：" class="headerlink" title="新建项目并添加依赖 pom.xml："></a>新建项目并添加依赖 pom.xml：</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">relativePath</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>MySpringSecurity<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>MySpringSecurity<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-security<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.junit.vintage<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit-vintage-engine<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/pomDependency.png" alt="pomDependency"></p>
+<h1 id="新建Controller"><a href="#新建Controller" class="headerlink" title="新建Controller"></a>新建Controller</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-01 01:22</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HiController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/hi"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hi</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hi spring security"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="启动主启动类"><a href="#启动主启动类" class="headerlink" title="启动主启动类:"></a>启动主启动类:</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        SpringApplication.run(App<span class="class">.<span class="keyword">class</span>,<span class="title">args</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在启动日志中可以看见一行输出：<br><br><code>Using generated security password: f79e5558-9195-440d-8770-070c2b0ee5a0</code><br><br>由此可以看出,只要引入了spring security的包， 就会对所有访问进行保护。<br>访问: <code>http://localhost:9999/hi</code> 可以看见页面跳转到了 <code>http://localhost:9999/login</code>. 如下：<br>用 user / f79e5558-9195-440d-8770-070c2b0ee5a0 就可以登陆访问到了。<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/login.png" alt="登陆界面"></p>
+<h1 id="分析源码："><a href="#分析源码：" class="headerlink" title="分析源码："></a>分析源码：</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.boot.autoconfigure.security.servlet;</span><br><span class="line"></span><br><span class="line"><span class="meta">@ConditionalOnClass</span>(&#123;AuthenticationManager<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class">@<span class="title">ConditionalOnBean</span>(</span>&#123;ObjectPostProcessor<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class">@<span class="title">ConditionalOnMissingBean</span>(</span></span><br><span class="line"><span class="class">        <span class="title">value</span> </span>= &#123;AuthenticationManager<span class="class">.<span class="keyword">class</span>, <span class="title">AuthenticationProvider</span>.<span class="title">class</span>, <span class="title">UserDetailsService</span>.<span class="title">class</span>&#125;,</span></span><br><span class="line"><span class="class">        <span class="title">type</span> </span>= &#123;<span class="string">"org.springframework.security.oauth2.jwt.JwtDecoder"</span>, <span class="string">"org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector"</span>&#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserDetailsServiceAutoConfiguration</span> </span>&#123;</span><br><span class="line">  <span class="comment">//其他代码...</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getOrDeducePassword</span><span class="params">(User user, PasswordEncoder encoder)</span> </span>&#123;</span><br><span class="line">        String password = user.getPassword();</span><br><span class="line">        <span class="keyword">if</span> (user.isPasswordGenerated()) &#123;</span><br><span class="line">            logger.info(String.format(<span class="string">"%n%nUsing generated security password: %s%n"</span>, user.getPassword()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> encoder == <span class="keyword">null</span> &amp;&amp; !PASSWORD_ALGORITHM_PATTERN.matcher(password).matches() ? <span class="string">"&#123;noop&#125;"</span> + password : password;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="自定义用户密码"><a href="#自定义用户密码" class="headerlink" title="自定义用户密码"></a>自定义用户密码</h1><p>如果想要自定义用户密码可以在yml文件中配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9999</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">security:</span></span><br><span class="line">    <span class="attr">user:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Joshua</span></span><br><span class="line">      <span class="attr">password:</span> <span class="number">123456</span></span><br></pre></td></tr></table></figure>
+<p>然后重启发现登陆时输入原来的用户。然后启动既可以用 <code>Joshua / 123456</code>  登陆了。</p>
+<h1 id="Java代码配置用户"><a href="#Java代码配置用户" class="headerlink" title="Java代码配置用户"></a>Java代码配置用户</h1><p>当然也可以通过Java代码进行用户的配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.password.NoOpPasswordEncoder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.password.PasswordEncoder;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> Spring-Security V5 之后强制密码必须加密</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-01 12:15</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function">PasswordEncoder <span class="title">passwordEncoder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//TODO 后期改成加密的</span></span><br><span class="line">        <span class="keyword">return</span> NoOpPasswordEncoder.getInstance(); <span class="comment">//不对密码进行加密， 暂时这样</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder auth)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        auth.inMemoryAuthentication()</span><br><span class="line">                .withUser(<span class="string">"aaa"</span>)</span><br><span class="line">                .password(<span class="string">"111"</span>)</span><br><span class="line">                .roles(<span class="string">"admin"</span>)</span><br><span class="line">                .and()</span><br><span class="line">                .withUser(<span class="string">"bbb"</span>)</span><br><span class="line">                .password(<span class="string">"222"</span>)</span><br><span class="line">                .roles(<span class="string">"admin"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重启后发现用 <code>aaa / 111 和 bbb / 222</code>都可以登陆。</p>
+<h1 id="自定义表单登录页"><a href="#自定义表单登录页" class="headerlink" title="自定义表单登录页"></a>自定义表单登录页</h1><p>默认的表单登录有点简陋 很多时候我们需要对登录页面进行改造，那我们可以自定义一个登录页面。</p>
+<h2 id="服务端定义"><a href="#服务端定义" class="headerlink" title="服务端定义"></a>服务端定义</h2><p>然后接下来我们继续完善前面的 SecurityConfig 类，继续重写它的 configure(WebSecurity web) 和 configure(HttpSecurity http) 方法，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.builders.HttpSecurity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.builders.WebSecurity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.password.NoOpPasswordEncoder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.crypto.password.PasswordEncoder;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> Spring-Security V5 之后强制密码必须加密</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-01 12:15</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityConfig</span> <span class="keyword">extends</span> <span class="title">WebSecurityConfigurerAdapter</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function">PasswordEncoder <span class="title">passwordEncoder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//TODO 后期改成加密的</span></span><br><span class="line">        <span class="keyword">return</span> NoOpPasswordEncoder.getInstance(); <span class="comment">//不对密码进行加密， 暂时这样</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder auth)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        auth.inMemoryAuthentication()</span><br><span class="line">                .withUser(<span class="string">"aaa"</span>)</span><br><span class="line">                .password(<span class="string">"111"</span>)</span><br><span class="line">                .roles(<span class="string">"admin"</span>)</span><br><span class="line">                .and()</span><br><span class="line">                .withUser(<span class="string">"bbb"</span>)</span><br><span class="line">                .password(<span class="string">"222"</span>)</span><br><span class="line">                .roles(<span class="string">"admin"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 静态资源放行</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> web</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(WebSecurity web)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        web.ignoring().antMatchers(<span class="string">"/js/**"</span>, <span class="string">"/css/**"</span>,<span class="string">"/images/**"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 配置自定义的登陆界面文件路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> http</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        http.authorizeRequests()</span><br><span class="line">                .anyRequest().authenticated()</span><br><span class="line">                .and()</span><br><span class="line">                .formLogin()</span><br><span class="line">                .loginPage(<span class="string">"/login.html"</span>)</span><br><span class="line">                .permitAll()</span><br><span class="line">                .and()</span><br><span class="line">                .csrf().disable();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>web.ignoring() 用来配置忽略掉的 URL 地址，一般对于静态文件，我们可以采用此操作。</p>
+</li>
+<li><p>如果我们使用 XML 来配置 Spring Security ，里边会有一个重要的标签 <http>，HttpSecurity 提供的配置方法 都对应了该标签。</http></p>
+</li>
+<li><p>authorizeRequests 对应了 <intercept-url>。</intercept-url></p>
+</li>
+<li><p>formLogin 对应了 <formlogin>。</formlogin></p>
+</li>
+<li><p>and 方法表示结束当前标签，上下文回到HttpSecurity，开启新一轮的配置。</p>
+</li>
+<li><p>permitAll 表示登录相关的页面/接口不要被拦截。</p>
+</li>
+<li><p>最后记得关闭 csrf ，关于 csrf 问题后面会详细讲解。</p>
+</li>
+</ol>
+<h2 id="自定义登陆页面"><a href="#自定义登陆页面" class="headerlink" title="自定义登陆页面"></a>自定义登陆页面</h2><p>按照上main的配置在resource目录下新建文档static/login.html</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/login.html"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"input"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"name"</span>&gt;</span>用户名<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"username"</span> <span class="attr">id</span>=<span class="string">"name"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"spin"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"input"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"pass"</span>&gt;</span>密码<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">name</span>=<span class="string">"password"</span> <span class="attr">id</span>=<span class="string">"pass"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"spin"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"button login"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">span</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-check"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>重启项目访问: <code>http://localhost:9999/hi</code> 发现跳转后的登陆界面如下所示<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E7%95%8C%E9%9D%A2.png" alt></p>
+<p>当我们配置了 loginPage 为 /login.html 之后，这个配置从字面上理解，就是设置登录页面的地址为 /login.html。</p>
+<p>实际上它还有一个隐藏的操作，就是登录接口地址也设置成 /login.html 了。换句话说，新的登录页面和登录接口地址都是 /login.html，现在存在如下两个请求：</p>
+<p><code>GET http://localhost:8080/login.html</code> <br><br><code>POST http://localhost:8080/login.html</code> <br><br>前面的 GET 请求用来获取登录页面，后面的 POST 请求用来提交登录数据。<br>其实是可以分开配置的！</p>
+<h2 id="分开配置登陆页面和登陆接口"><a href="#分开配置登陆页面和登陆接口" class="headerlink" title="分开配置登陆页面和登陆接口"></a>分开配置登陆页面和登陆接口</h2><p>首先，在 SecurityConfig的configure(HttpSecurity http) 方法中，我们可以通过 loginProcessingUrl 方法来指定登录接口地址，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.loginProcessingUrl(<span class="string">"/doLogin"</span>) <span class="comment">//⚠️ 一定带前面的/</span></span><br></pre></td></tr></table></figure>
+<p>然后将login.html中的用户密码表单的提交地址修改为</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--    &lt;form action="/login.html" method="post"&gt;--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"/doLogin"</span> <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>重启项目发现还是可以登陆访问 <code>http://localhost:9999/hi</code><br>另外， 还可以通过指定参数的方式修改前端提交用户密码的参数名称,见下图：<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E6%8C%87%E5%AE%9A%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81%E5%8F%82%E6%95%B0%E5%90%8D%E7%A7%B0.png" alt="指定用户名密码参数名称"><br>访问<code>http://localhost:9999/login.html</code>登陆成功后会默认跳转到``<a href="http://localhost:9999/`页面" target="_blank" rel="noopener">http://localhost:9999/`页面</a></p>
+<h2 id="登陆成功默认跳转页"><a href="#登陆成功默认跳转页" class="headerlink" title="登陆成功默认跳转页"></a>登陆成功默认跳转页</h2><p>但是controller里没有配置”/“的路径响应。 所以会出现下图所示的404报错。<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E9%BB%98%E8%AE%A4%E8%B7%B3%E8%BD%AC%E9%A1%B5%E9%9D%A2.png" alt="登陆成功默认跳转页面"><br>同样也可以登陆成功的跳转的页面也可以进行自定义配置</p>
+<h2 id="自定义登陆成功跳转页"><a href="#自定义登陆成功跳转页" class="headerlink" title="自定义登陆成功跳转页"></a>自定义登陆成功跳转页</h2><p>还是在 SecurityConfig的configure(HttpSecurity http) 方法中添加如下行即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.successForwardUrl(<span class="string">"/success"</span>)</span><br></pre></td></tr></table></figure>
+<p>然后在原来的controller里添加/success的控制器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-01 01:22</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HiController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/hi"</span>,method = RequestMethod.GET)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hi</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hi spring security"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/success"</span>,method = RequestMethod.POST)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">success</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Congrats! Successfully logged in"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h2><p>然后再次访问登陆界面 <code>http://localhost:9999/login.html</code> 登陆成功后界面跳转如下：<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E7%9A%84%E8%B7%B3%E8%BD%AC.png" alt="自定义的登陆成功的跳转"></p>
+<p>在 Spring Security 中，和登录成功重定向 URL 相关的方法有两个：</p>
+<p>defaultSuccessUrl &amp; successForwardUrl 这两个咋看没什么区别，实际上内藏乾坤。</p>
+<p>首先我们在配置的时候，defaultSuccessUrl 和 successForwardUrl 只需要配置一个即可，具体配置哪个，则要看你的需求，两个的区别如下：</p>
+<ol>
+<li><strong>defaultSuccessUrl 有一个重载的方法，我们先说一个参数的 defaultSuccessUrl 方法。如果我们在 defaultSuccessUrl 中指定登录成功的跳转页面为 /index，此时分两种情况，如果你是直接在浏览器中输入的登录地址，登录成功后，就直接跳转到 /index，如果你是在浏览器中输入了其他地址，例如 <a href="http://localhost:8080/hello，结果因为没有登录，又重定向到登录页面，此时登录成功后，就不会来到" target="_blank" rel="noopener">http://localhost:8080/hello，结果因为没有登录，又重定向到登录页面，此时登录成功后，就不会来到</a> /index ，而是来到 /hello 页面。</strong></li>
+<li><strong>defaultSuccessUrl 还有一个重载的方法，第二个参数如果不设置默认为 false，也就是我们上面的的情况，如果手动设置第二个参数为 true，则 defaultSuccessUrl 的效果和 successForwardUrl 一致。</strong></li>
+<li><strong>successForwardUrl 表示不管你是从哪里来的，登录后一律跳转到 successForwardUrl 指定的地址。例如 successForwardUrl 指定的地址为 /index ，你在浏览器地址栏输入 <a href="http://localhost:8080/hello，结果因为没有登录，重定向到登录页面，当你登录成功之后，就会服务端跳转到" target="_blank" rel="noopener">http://localhost:8080/hello，结果因为没有登录，重定向到登录页面，当你登录成功之后，就会服务端跳转到</a> /index 页面；或者你直接就在浏览器输入了登录页面地址，登录成功后也是来到 /index。</strong></li>
+</ol>
+<h2 id="登录失败回调"><a href="#登录失败回调" class="headerlink" title="登录失败回调"></a>登录失败回调</h2><p>与登录成功相似，登录失败也是有两个方法：</p>
+<p>failureForwardUrl<br>failureUrl<br>这两个方法在设置的时候也是设置一个即可。failureForwardUrl 是登录失败之后会发生服务端跳转，failureUrl 则在登录失败之后，会发生重定向。</p>
+<h2 id="注销登陆"><a href="#注销登陆" class="headerlink" title="注销登陆"></a>注销登陆</h2><p>注销登录的默认接口是 /logout，我们也可以配置。同样也可以自定义配置， 默认是GET方式的注销登陆(下面配置后的注释有解释)。此处我们只针对POST请求进行演示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">     <span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        http.authorizeRequests()</span><br><span class="line">        .anyRequest().authenticated()</span><br><span class="line">        .and()</span><br><span class="line">        .formLogin()</span><br><span class="line">        .loginPage(<span class="string">"/login.html"</span>)</span><br><span class="line">        .loginProcessingUrl(<span class="string">"/doLogin"</span>) <span class="comment">//⚠️注意一定带前面的/</span></span><br><span class="line">        .usernameParameter(<span class="string">"uname"</span>)</span><br><span class="line">        .passwordParameter(<span class="string">"pwd"</span>)</span><br><span class="line">        .defaultSuccessUrl(<span class="string">"/success"</span>) <span class="comment">//重定向，  调用重载方法 defaultSuccessUrl(defaultSuccessUrl, false); 如果显示设置成true，就和successForwardUrl("/success")的功能效果一致了。 所以只用配置一个即可</span></span><br><span class="line">        .successForwardUrl(<span class="string">"/success"</span>) <span class="comment">// 服务端跳转</span></span><br><span class="line">        <span class="comment">//.failureForwardUrl() //服务端跳转</span></span><br><span class="line">        <span class="comment">//.failureUrl() //重定向</span></span><br><span class="line">        <span class="comment">//.successHandler()</span></span><br><span class="line">        <span class="comment">//.failureHandler() //两个handler多用于前后端分离的场景。</span></span><br><span class="line">        .permitAll()</span><br><span class="line">        .and()</span><br><span class="line">        .logout() <span class="comment">//如果不配置，访问http://localhost:9999/logout 后会跳转到http://localhost:9999/login.html页面, 能在浏览器直接访问 侧面说明登陆默认是get请求</span></span><br><span class="line">        <span class="comment">//.logoutUrl("/logout") // 自定义登出的访问路径， 还是GET方式</span></span><br><span class="line">        .logoutRequestMatcher(<span class="keyword">new</span> AntPathRequestMatcher(<span class="string">"/logout"</span>, <span class="string">"POST"</span>)) <span class="comment">// 如果业务场景必须使用POST登出， 则可以这样配置</span></span><br><span class="line">        .logoutSuccessUrl(<span class="string">"/login.html"</span>)<span class="comment">// 此行可以不配置， 默认注销登陆成功就是跳转到登陆界面</span></span><br><span class="line">        .invalidateHttpSession(<span class="keyword">true</span>) <span class="comment">//注销登陆后使session失效， 默认是true也可以不配置</span></span><br><span class="line">        .clearAuthentication(<span class="keyword">true</span>)<span class="comment">//清除认证信息，默认也是true  也可以不配置</span></span><br><span class="line">        .and()</span><br><span class="line">        .csrf().disable();</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试-2"><a href="#测试-2" class="headerlink" title="测试"></a>测试</h2><p>重启项目，首先访问login.html登陆成功后显示：<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E7%9A%84%E8%B7%B3%E8%BD%AC.png" alt="自定义的登陆成功的跳转"><br>然后在浏览器上手动输入访问: <code>http://localhost:9999/logout</code> 回车发现：<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/logout-1.png" alt="以get方式logout失败"><br>因为我们自定义了注销登录的路径和请求方式为POST， 所以浏览器GET请求会失败。<br>我们使用POSTMAN等工具或者直接在chrome进行POST请求<code>http://localhost:9999/logout</code>如下图：<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/logout-2.png" alt="以post方式logout成功"></p>
+<p>即 在console发起POST请求 (注意⚠️： 换行需要enter+shift， 直接 enter表示运行代码)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">xhr.open(<span class="string">"POST"</span>,<span class="string">"/logout"</span>,<span class="literal">true</span>);</span><br><span class="line">xhr.send();</span><br></pre></td></tr></table></figure>
+<p>发现再去访问之前访问的界面已经跳转到登陆界面了， 表示注销登录成功。</p>
+<h1 id="JSON数据交互"><a href="#JSON数据交互" class="headerlink" title="JSON数据交互"></a>JSON数据交互</h1><p>但是在前后端分离的项目中显然访问成功后不应该返回页面而是一段JSON交互。 那么应该怎么定义交互的JSON数据呢？</p>
+<h2 id="登陆成功JSON返回"><a href="#登陆成功JSON返回" class="headerlink" title="登陆成功JSON返回"></a>登陆成功JSON返回</h2><p>还是对 SecurityConfig的configure(HttpSecurity http) 方法 进行修改配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">             <span class="comment">//.defaultSuccessUrl("/success") //重定向，  调用重载方法 defaultSuccessUrl(defaultSuccessUrl, false); 如果显示设置成true，就和successForwardUrl("/success")的功能效果一致了。 所以只用配置一个即可</span></span><br><span class="line">                <span class="comment">//.successForwardUrl("/success") // 服务端跳转</span></span><br><span class="line">                .successHandler( <span class="comment">//配置了successHandler后在里面设置 response.setContentType("application/json;charset=utf-8");表示登陆成功不是跳转页面而是返回JSON数据。</span></span><br><span class="line"><span class="comment">//                        new AuthenticationSuccessHandler() &#123;</span></span><br><span class="line"><span class="comment">//                            @Override</span></span><br><span class="line"><span class="comment">//                            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException &#123;</span></span><br><span class="line"><span class="comment">//                                //...</span></span><br><span class="line"><span class="comment">//                            &#125;</span></span><br><span class="line"><span class="comment">//                        &#125;</span></span><br><span class="line">                        <span class="comment">/**</span></span><br><span class="line"><span class="comment">                         *  用lambda表达式代替上面的匿名对象，</span></span><br><span class="line"><span class="comment">                         */</span></span><br><span class="line">                        (request,response,authentication)-&gt;&#123;</span><br><span class="line">                            response.setContentType(<span class="string">"application/json;charset=utf-8"</span>);</span><br><span class="line">                            PrintWriter out = response.getWriter();</span><br><span class="line">                            out.write(<span class="keyword">new</span> ObjectMapper().writeValueAsString(authentication)); <span class="comment">// 将authentication信息写回客户端。</span></span><br><span class="line">                            out.flush();</span><br><span class="line">                            out.close();</span><br><span class="line">                        &#125;</span><br><span class="line">                )</span><br></pre></td></tr></table></figure>
+<p>重启项目， 登陆后发现返回已经从原来的页面编程JSON数据：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"authorities"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"authority"</span>: <span class="string">"ROLE_admin"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"details"</span>: &#123;</span><br><span class="line">    <span class="attr">"remoteAddress"</span>: <span class="string">"0:0:0:0:0:0:0:1"</span>,</span><br><span class="line">    <span class="attr">"sessionId"</span>: <span class="literal">null</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"authenticated"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"principal"</span>: &#123;</span><br><span class="line">    <span class="attr">"password"</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="attr">"username"</span>: <span class="string">"aaa"</span>,</span><br><span class="line">    <span class="attr">"authorities"</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">"authority"</span>: <span class="string">"ROLE_admin"</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"accountNonExpired"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"accountNonLocked"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"credentialsNonExpired"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"enabled"</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"credentials"</span>: <span class="literal">null</span>,</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"aaa"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E5%90%8E%E7%9A%84Auth%E7%9A%84JSON%E8%BF%94%E5%9B%9E.png" alt="登陆成功后的Auth的JSON返回"></p>
+<h2 id="登陆异常JSON返回"><a href="#登陆异常JSON返回" class="headerlink" title="登陆异常JSON返回"></a>登陆异常JSON返回</h2><p>同理，登陆异常的JSON数据交互模式也可以通过配置实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">.failureHandler(</span><br><span class="line">                     (request,response,exception)-&gt;&#123;</span><br><span class="line">                         RespBean respBean = RespBean.build();</span><br><span class="line">                         response.setContentType(<span class="string">"application/json;charset=utf-8"</span>);</span><br><span class="line">                         PrintWriter out = response.getWriter();</span><br><span class="line">                         <span class="keyword">if</span>(exception <span class="keyword">instanceof</span> LockedException)&#123;</span><br><span class="line">                             respBean.setMsg(<span class="string">"账号被锁定"</span>);</span><br><span class="line">                         &#125;<span class="keyword">else</span> <span class="keyword">if</span>(exception <span class="keyword">instanceof</span> CredentialsExpiredException)&#123;</span><br><span class="line">                             respBean.setMsg(<span class="string">"密码过期"</span>);</span><br><span class="line">                         &#125;<span class="keyword">else</span> <span class="keyword">if</span>(exception <span class="keyword">instanceof</span> AccountExpiredException)&#123;</span><br><span class="line">                             respBean.setMsg(<span class="string">"账户过期"</span>);</span><br><span class="line">                         &#125;<span class="keyword">else</span> <span class="keyword">if</span>(exception <span class="keyword">instanceof</span> BadCredentialsException)&#123;</span><br><span class="line">                             respBean.setMsg(<span class="string">"用户名或密码不对"</span>);</span><br><span class="line">                         &#125;<span class="keyword">else</span> <span class="keyword">if</span>(exception <span class="keyword">instanceof</span> DisabledException)&#123;</span><br><span class="line">                             respBean.setMsg(<span class="string">"账户禁用"</span>);</span><br><span class="line">                         &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                             respBean.setMsg(<span class="string">"未知错误\\n"</span>+exception.getLocalizedMessage());</span><br><span class="line">                         &#125;</span><br><span class="line">                         respBean.setStatus(<span class="number">500</span>);</span><br><span class="line">                         out.write(<span class="keyword">new</span> ObjectMapper().writeValueAsString(respBean));</span><br><span class="line">                         out.flush();</span><br><span class="line">                         out.close();</span><br><span class="line">                     &#125;</span><br><span class="line">             )</span><br></pre></td></tr></table></figure>
+<p> 新建返回异常的JSON对象实体<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.model;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-01 16:28</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RespBean</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 状态码</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Integer status;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异常信息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String msg;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Object obj;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RespBean <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RespBean();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RespBean <span class="title">ok</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RespBean(<span class="number">200</span>, msg, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RespBean <span class="title">ok</span><span class="params">(String msg, Object obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RespBean(<span class="number">200</span>, msg, obj);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RespBean <span class="title">error</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RespBean(<span class="number">500</span>, msg, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RespBean <span class="title">error</span><span class="params">(String msg, Object obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RespBean(<span class="number">500</span>, msg, obj);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">RespBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">RespBean</span><span class="params">(Integer status, String msg, Object obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.status = status;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">        <span class="keyword">this</span>.obj = obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getStatus</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> status;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RespBean <span class="title">setStatus</span><span class="params">(Integer status)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.status = status;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RespBean <span class="title">setMsg</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getObj</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RespBean <span class="title">setObj</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.obj = obj;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>重启项目故意输错密码登陆，发现返回信息如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"status"</span>: <span class="number">500</span>,</span><br><span class="line">  <span class="attr">"msg"</span>: <span class="string">"用户名或密码不对"</span>,</span><br><span class="line">  <span class="attr">"obj"</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E7%99%BB%E9%99%86%E5%BC%82%E5%B8%B8%E5%90%8E%E7%9A%84JSON%E6%95%B0%E6%8D%AE%E8%BF%94%E5%9B%9E.png" alt="登陆异常后的JSON数据返回"></p>
+<h2 id="关于用BadCredentialsException隐藏UsernameNotFoundException的说明"><a href="#关于用BadCredentialsException隐藏UsernameNotFoundException的说明" class="headerlink" title="关于用BadCredentialsException隐藏UsernameNotFoundException的说明"></a>关于用BadCredentialsException隐藏UsernameNotFoundException的说明</h2><p>另外值得一提的是， spring security中无论是用户名还是密码输入错误， 默认返回的都是BadCredentialException。 其具体原因是防止给出太具体的原因将系统处于危险之中。<br>至于底层实现可以查看类<code>org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider</code>的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line">    user = retrieveUser(username,</span><br><span class="line">    (UsernamePasswordAuthenticationToken) authentication);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">catch</span> (UsernameNotFoundException notFound) &#123;</span><br><span class="line">    logger.debug(<span class="string">"User '"</span> + username + <span class="string">"' not found"</span>);</span><br><span class="line">    <span class="keyword">if</span> (hideUserNotFoundExceptions) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BadCredentialsException(messages.getMessage(<span class="string">"AbstractUserDetailsAuthenticationProvider.badCredentials"</span>,<span class="string">"Bad credentials"</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> notFound;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E7%94%A8BadCredential%E9%9A%90%E8%97%8FUsernameNotFoundException%E5%BC%82%E5%B8%B8%E5%8E%9F%E7%90%86.png" alt="用BadCredential隐藏UsernameNotFoundException异常原理"></p>
+<h2 id="如何自定义显示UsernameNotFoundException"><a href="#如何自定义显示UsernameNotFoundException" class="headerlink" title="如何自定义显示UsernameNotFoundException"></a>如何自定义显示UsernameNotFoundException</h2><p>那么如果一定要显示的提示用户是用户名错误的异常， 可以参考如下三个思路</p>
+<h3 id="方式1：重新定义BadCredentialException的Msg"><a href="#方式1：重新定义BadCredentialException的Msg" class="headerlink" title="方式1：重新定义BadCredentialException的Msg"></a>方式1：重新定义BadCredentialException的Msg</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="方式2：自定义异常"><a href="#方式2：自定义异常" class="headerlink" title="方式2：自定义异常"></a>方式2：自定义异常</h3><h3 id="方式3：注册AbstractUserDetailsAuthenticationProvider-的Bean，将hideUserNotFoundExceptions设置成false。"><a href="#方式3：注册AbstractUserDetailsAuthenticationProvider-的Bean，将hideUserNotFoundExceptions设置成false。" class="headerlink" title="方式3：注册AbstractUserDetailsAuthenticationProvider 的Bean，将hideUserNotFoundExceptions设置成false。"></a>方式3：注册AbstractUserDetailsAuthenticationProvider 的Bean，将hideUserNotFoundExceptions设置成false。</h3><h2 id="未认证接口JSON-交互"><a href="#未认证接口JSON-交互" class="headerlink" title="未认证接口JSON 交互"></a>未认证接口JSON 交互</h2><p>前后端一体的项目，如果访问问认证的接口(未登陆访问)则跳转到登陆页面，但是对于前后端分离的项目， 应该是返回JSON数据提示用户先登陆。<br>还是对 configure(HttpSecurity http)方法进行如下配置即可打到该目的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.exceptionHandling()</span><br><span class="line">        .authenticationEntryPoint((request,response,exception)-&gt;&#123;</span><br><span class="line">        RespBean respBean = RespBean.build();</span><br><span class="line">        response.setContentType(<span class="string">"application/json;charset=utf-8"</span>);</span><br><span class="line">        PrintWriter out = response.getWriter();</span><br><span class="line">        respBean.setMsg(<span class="string">"尚未登陆!"</span>);</span><br><span class="line">        respBean.setStatus(<span class="number">401</span>);</span><br><span class="line">        out.write(<span class="keyword">new</span> ObjectMapper().writeValueAsString(respBean));</span><br><span class="line">        out.flush();</span><br><span class="line">        out.close();</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<p>重启项目, 再次直接访问: <code>http://localhost:9999/hi</code> 发现页面如下， 即已经返回JSON提示信息了。<br><img src="/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/%E6%9C%AA%E7%99%BB%E9%99%86%E8%BF%94%E5%9B%9E%E7%9A%84JSON%E6%8F%90%E7%A4%BA.png" alt="未登陆返回的JSON提示"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"status"</span>: <span class="number">401</span>,</span><br><span class="line">  <span class="attr">"msg"</span>: <span class="string">"尚未登陆!"</span>,</span><br><span class="line">  <span class="attr">"obj"</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注销登录JSON交互"><a href="#注销登录JSON交互" class="headerlink" title="注销登录JSON交互"></a>注销登录JSON交互</h3><p>同样的， 之前介绍的注销登录的跳转也用JSON数据交互，需要进行如下修改：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.logoutSuccessHandler((request,response,authentication)-&gt;&#123;</span><br><span class="line">   PrintWriter out = response.getWriter();</span><br><span class="line">   RespBean respBean = RespBean.build();</span><br><span class="line">   respBean.setMsg(<span class="string">"注销登录成功"</span>);</span><br><span class="line">   respBean.setStatus(<span class="number">200</span>);</span><br><span class="line">   response.setContentType(<span class="string">"application/json;charset=utf-8"</span>);</span><br><span class="line">   out.write(<span class="keyword">new</span> ObjectMapper().writeValueAsString(respBean));</span><br><span class="line">   out.flush();</span><br><span class="line">   out.close();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>然后重启项目， 登陆成功后， 注销登陆发现已经返回JSON数据。</p>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2022/07/01/Spring-Security-1-%E5%88%9D%E8%AF%86%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%99%BB%E9%99%86%E9%A1%B5/" title="Spring-Security-1-初识及自定义登陆页">https://52zhongneng.cn/2022/07/01/Spring-Security-1-初识及自定义登陆页/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring-Security/" rel="tag"><i class="fa fa-tag"></i>Spring-Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/24/Spring-Cloud-07-%E6%9C%8D%E5%8A%A1%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA/" rel="prev" title="Spring-Cloud-07-服务链路追踪">
+      <i class="fa fa-chevron-left"></i> Spring-Cloud-07-服务链路追踪
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/02/Spring-Security-2-%E6%8E%88%E6%9D%83/" rel="next" title="Spring-Security-2-授权">
+      Spring-Security-2-授权 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#新建项目并添加依赖-pom-xml："><span class="nav-number">1.</span> <span class="nav-text">新建项目并添加依赖 pom.xml：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新建Controller"><span class="nav-number">2.</span> <span class="nav-text">新建Controller</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#启动主启动类"><span class="nav-number">3.</span> <span class="nav-text">启动主启动类:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析源码："><span class="nav-number">4.</span> <span class="nav-text">分析源码：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义用户密码"><span class="nav-number">5.</span> <span class="nav-text">自定义用户密码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java代码配置用户"><span class="nav-number">6.</span> <span class="nav-text">Java代码配置用户</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自定义表单登录页"><span class="nav-number">7.</span> <span class="nav-text">自定义表单登录页</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端定义"><span class="nav-number">7.1.</span> <span class="nav-text">服务端定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义登陆页面"><span class="nav-number">7.2.</span> <span class="nav-text">自定义登陆页面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">7.3.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分开配置登陆页面和登陆接口"><span class="nav-number">7.4.</span> <span class="nav-text">分开配置登陆页面和登陆接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#登陆成功默认跳转页"><span class="nav-number">7.5.</span> <span class="nav-text">登陆成功默认跳转页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义登陆成功跳转页"><span class="nav-number">7.6.</span> <span class="nav-text">自定义登陆成功跳转页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-1"><span class="nav-number">7.7.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#登录失败回调"><span class="nav-number">7.8.</span> <span class="nav-text">登录失败回调</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注销登陆"><span class="nav-number">7.9.</span> <span class="nav-text">注销登陆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-2"><span class="nav-number">7.10.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON数据交互"><span class="nav-number">8.</span> <span class="nav-text">JSON数据交互</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#登陆成功JSON返回"><span class="nav-number">8.1.</span> <span class="nav-text">登陆成功JSON返回</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#登陆异常JSON返回"><span class="nav-number">8.2.</span> <span class="nav-text">登陆异常JSON返回</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于用BadCredentialsException隐藏UsernameNotFoundException的说明"><span class="nav-number">8.3.</span> <span class="nav-text">关于用BadCredentialsException隐藏UsernameNotFoundException的说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何自定义显示UsernameNotFoundException"><span class="nav-number">8.4.</span> <span class="nav-text">如何自定义显示UsernameNotFoundException</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方式1：重新定义BadCredentialException的Msg"><span class="nav-number">8.4.1.</span> <span class="nav-text">方式1：重新定义BadCredentialException的Msg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方式2：自定义异常"><span class="nav-number">8.4.2.</span> <span class="nav-text">方式2：自定义异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方式3：注册AbstractUserDetailsAuthenticationProvider-的Bean，将hideUserNotFoundExceptions设置成false。"><span class="nav-number">8.4.3.</span> <span class="nav-text">方式3：注册AbstractUserDetailsAuthenticationProvider 的Bean，将hideUserNotFoundExceptions设置成false。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#未认证接口JSON-交互"><span class="nav-number">8.5.</span> <span class="nav-text">未认证接口JSON 交互</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注销登录JSON交互"><span class="nav-number">8.5.1.</span> <span class="nav-text">注销登录JSON交互</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

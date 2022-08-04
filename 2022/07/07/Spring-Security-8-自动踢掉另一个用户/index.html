@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="用过QQ的人应该都知道QQ客户端是禁止同一账号多PC登陆的。[Spring Security]默认情况下是: 允许同一用户多终端登陆的。但是特殊情况下，也需要完成类似QQ这样的需求。本文就来讨论实现这一功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-Security-8-自动踢掉另一个用户">
+<meta property="og:url" content="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="用过QQ的人应该都知道QQ客户端是禁止同一账号多PC登陆的。[Spring Security]默认情况下是: 允许同一用户多终端登陆的。但是特殊情况下，也需要完成类似QQ这样的需求。本文就来讨论实现这一功能。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/%E5%90%8C%E4%B8%80%E7%94%A8%E6%88%B7%E4%BE%9D%E7%84%B6%E5%8F%AF%E4%BB%A5%E4%B8%A4%E4%B8%AA%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8C%E6%97%B6%E7%99%BB%E9%99%86.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/%E5%90%8C%E4%B8%80%E7%94%A8%E6%88%B7%E5%A4%9A%E7%AB%AF%E5%90%8C%E6%97%B6%E5%9C%A8%E7%BA%BF%E6%97%B6%E6%8A%A5%E9%94%99.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/%E7%A6%81%E6%AD%A2%E5%90%8C%E4%B8%80%E7%94%A8%E6%88%B7%E5%86%8D%E6%AC%A1%E7%99%BB%E9%99%86.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/session%E6%B2%A1%E6%9C%89%E7%AB%8B%E5%88%BB%E8%BF%87%E6%9C%9F.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/logout%E5%90%8Esession%E7%AB%8B%E5%88%BB%E5%A4%B1%E6%95%88%E5%8F%A6%E4%B8%80%E7%AB%AF%E5%8F%AF%E4%BB%A5%E7%AB%8B%E5%88%BB%E7%99%BB%E9%99%86.png">
+<meta property="article:published_time" content="2022-07-07T14:31:48.000Z">
+<meta property="article:modified_time" content="2022-07-07T02:57:49.984Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Spring-Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/%E5%90%8C%E4%B8%80%E7%94%A8%E6%88%B7%E4%BE%9D%E7%84%B6%E5%8F%AF%E4%BB%A5%E4%B8%A4%E4%B8%AA%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8C%E6%97%B6%E7%99%BB%E9%99%86.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring-Security-8-自动踢掉另一个用户 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring-Security-8-自动踢掉另一个用户
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-07-07 22:31:48 / Modified: 10:57:49" itemprop="dateCreated datePublished" datetime="2022-07-07T22:31:48+08:00">2022-07-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">安全框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>6.6k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>6 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>用过QQ的人应该都知道QQ客户端是禁止同一账号多PC登陆的。<strong>[Spring Security]默认情况下是:</strong> <span style="color:red"><strong>允许同一用户多终端登陆的。</strong></span><br>但是特殊情况下，也需要完成类似QQ这样的需求。本文就来讨论实现这一功能。</p>
+<a id="more"></a>
+<h1 id="验证默认情况"><a href="#验证默认情况" class="headerlink" title="验证默认情况"></a>验证默认情况</h1><ol>
+<li><p>为了简化验证， 将之前验证码相关的逻辑去掉</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@Autowired</span></span><br><span class="line"><span class="comment">//MyWebAuthenticationDetailsSource myWebAuthenticationDetailsSource;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//.authenticationDetailsSource(myWebAuthenticationDetailsSource)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--    &lt;div class="input"&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--        &lt;input type="text" name="code" id="vCode"&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--        &lt;label for="rememberMe"&gt;验证码:&lt;/label&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--    &lt;/div&gt;--&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后准备两个浏览器<code>Chrome</code> 和 <code>Firefox</code>. </p>
+</li>
+<li><p>启动项目， 用<code>Benedict</code> 账号登陆 <code>Chrome</code> </p>
+</li>
+<li><p>然后用同一个账号登陆Firefox</p>
+</li>
+<li><p>分别在两个浏览器访问接口hello 发现都能正常响应。说明我们之前的猜想是正确的。</p>
+</li>
+</ol>
+<h1 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h1><p>在同一个系统中，我们可能只允许一个用户在一个终端上登录，一般来说这可能是出于安全方面的考虑，但是也有一些情况是出于业务上的考虑。比如: 有些付费app， 普通用户只能登陆一个设备，需要VIP用户才能一个用户多终端同时在线。</p>
+<p>要实现一个用户不可以同时在两台设备上登录，我们有两种思路：</p>
+<ol>
+<li>后来的登录自动踢掉前面的登录，就像大家在扣扣中看到的效果。</li>
+<li>如果用户已经登录，则不允许后来者登录。<br>这种思路都能实现这个功能，具体使用哪一个，还要看我们具体的需求。 在 Spring Security 中，这两种都很好实现，一个配置就可以搞定。<h1 id="方案1-踢前一用户下线"><a href="#方案1-踢前一用户下线" class="headerlink" title="方案1 踢前一用户下线"></a>方案1 踢前一用户下线</h1><h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2>这一方案的配置需要在<code>SecurityConfig#configure(httpsession)</code>设置最大session值为1。即:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.and()</span><br><span class="line">.sessionManagement()</span><br><span class="line">.maximumSessions(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+重启项目验证， 发现还是可以同一用户在两个PC登陆。<br><img src="/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/%E5%90%8C%E4%B8%80%E7%94%A8%E6%88%B7%E4%BE%9D%E7%84%B6%E5%8F%AF%E4%BB%A5%E4%B8%A4%E4%B8%AA%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8C%E6%97%B6%E7%99%BB%E9%99%86.png" alt="同一用户依然可以两个浏览器同时登陆"><h2 id="TODO解释原因：为什么此时还可以同一用户在两个PC登陆。"><a href="#TODO解释原因：为什么此时还可以同一用户在两个PC登陆。" class="headerlink" title="TODO解释原因：为什么此时还可以同一用户在两个PC登陆。"></a>TODO解释原因：为什么此时还可以同一用户在两个PC登陆。</h2>为了解决这一问题，还需要添加如下配置，在原来<code>Client</code>里重写<code>hashcode和equals</code>方法。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Objects.hashCode(username);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> == obj) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">if</span>(obj == <span class="keyword">null</span> || getClass() != obj.getClass()) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> Objects.equals(<span class="keyword">this</span>.getUsername(),((Client) obj).getUsername());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2></li>
+</ol>
+<p>Chrome 上登录成功后，访问 /hello 接口。<br>Firefox 上登录成功后，访问 /hello 接口。<br>在 Chrome 上再次访问 /hello 接口，此时会看到如下提示：<br><code>**This session has been expired (possibly due to multiple concurrent logins being attempted as the same user).**</code><br><img src="/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/%E5%90%8C%E4%B8%80%E7%94%A8%E6%88%B7%E5%A4%9A%E7%AB%AF%E5%90%8C%E6%97%B6%E5%9C%A8%E7%BA%BF%E6%97%B6%E6%8A%A5%E9%94%99.png" alt="同一用户多端同时在线时报错"></p>
+<h1 id="方案2-禁止第二个用户登陆"><a href="#方案2-禁止第二个用户登陆" class="headerlink" title="方案2 禁止第二个用户登陆"></a>方案2 禁止第二个用户登陆</h1><h2 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h2><p>在上面的基础上添加 maxSessionsPreventsLogin(true) 即表示禁止用户再次登陆。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.and()</span><br><span class="line">.sessionManagement()</span><br><span class="line">.maximumSessions(<span class="number">1</span>)</span><br><span class="line">.maxSessionsPreventsLogin(<span class="keyword">true</span>)</span><br></pre></td></tr></table></figure>
+<p>虽然这个已经可以， 但是有一个小问题。<br>因为在 Spring Security 中，它是通过监听 session 的销毁事件，来及时的清理 session 的记录。用户从不同的浏览器登录后，都会有对应的 session，当用户注销登录之后，session 就会失效，但是默认的失效是通过调用 StandardSession#invalidate 方法来实现的，这一个失效事件无法被 Spring 容器感知到，进而导致当用户注销登录之后，Spring Security 没有及时清理会话信息表，以为用户还在线，进而导致用户无法重新登录进来（小伙伴们可以自行尝试不添加上面的 Bean，然后让用户注销登录之后再重新登录）。<br>所以为了解决这个问题还需要向容器中添加一个</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">HttpSessionEventPublisher <span class="title">httpSessionEventPublisher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> HttpSessionEventPublisher();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h2><p>方案二的测试需要测试两个。<br>测试a: 确实后来的用户无法登陆。<br>报错如下：<br><img src="/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/%E7%A6%81%E6%AD%A2%E5%90%8C%E4%B8%80%E7%94%A8%E6%88%B7%E5%86%8D%E6%AC%A1%E7%99%BB%E9%99%86.png" alt="禁止同一用户再次登陆"></p>
+<p>测试b: 用户<code>logout</code>后<code>session</code> 没有立刻失效</p>
+<ol>
+<li>chrome 登陆</li>
+<li>Chrome访问hello</li>
+<li>Chrome登出</li>
+<li>Chrome验证已经登出</li>
+<li>firefox访问login.html点击登陆后跳转返回如下报错：<code>aximum sessions of 1 for this principal exceeded</code>. 说明Chrome登出的session<br>没有立刻失效。<br><img src="/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/session%E6%B2%A1%E6%9C%89%E7%AB%8B%E5%88%BB%E8%BF%87%E6%9C%9F.png" alt="登出session没有立刻过期"><br>测试c: 注册<code>bean：HttpSessionEventPublisher</code> 用户<code>logout</code>后<code>session</code> 没有立刻失效<br>添加了<code>bean：HttpSessionEventPublisher</code>之后， 再次进行上面b里的测试。发现最后一步：<br><img src="/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/logout%E5%90%8Esession%E7%AB%8B%E5%88%BB%E5%A4%B1%E6%95%88%E5%8F%A6%E4%B8%80%E7%AB%AF%E5%8F%AF%E4%BB%A5%E7%AB%8B%E5%88%BB%E7%99%BB%E9%99%86.png" alt="logout后session立刻失效另一端可以立刻登陆"><h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1></li>
+</ol>
+<p>我们知道，在用户登录的过程中，会经过 UsernamePasswordAuthenticationFilter，而 UsernamePasswordAuthenticationFilter 中过滤方法的调用是在 AbstractAuthenticationProcessingFilter 中触发的，我们来看下 AbstractAuthenticationProcessingFilter#doFilter 方法的调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFilter</span><span class="params">(ServletRequest req, ServletResponse res, FilterChain chain)</span></span></span><br><span class="line"><span class="function">		<span class="keyword">throws</span> IOException, ServletException </span>&#123;</span><br><span class="line">	HttpServletRequest request = (HttpServletRequest) req;</span><br><span class="line">	HttpServletResponse response = (HttpServletResponse) res;</span><br><span class="line">	<span class="keyword">if</span> (!requiresAuthentication(request, response)) &#123;</span><br><span class="line">		chain.doFilter(request, response);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	Authentication authResult;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		authResult = attemptAuthentication(request, response);</span><br><span class="line">		<span class="keyword">if</span> (authResult == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		sessionStrategy.onAuthentication(authResult, request, response);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (InternalAuthenticationServiceException failed) &#123;</span><br><span class="line">		unsuccessfulAuthentication(request, response, failed);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (AuthenticationException failed) &#123;</span><br><span class="line">		unsuccessfulAuthentication(request, response, failed);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Authentication success</span></span><br><span class="line">	<span class="keyword">if</span> (continueChainBeforeSuccessfulAuthentication) &#123;</span><br><span class="line">		chain.doFilter(request, response);</span><br><span class="line">	&#125;</span><br><span class="line">	successfulAuthentication(request, response, chain, authResult);</span><br></pre></td></tr></table></figure>
+<p>在这段代码中，我们可以看到，调用 attemptAuthentication 方法走完认证流程之后，回来之后，接下来就是调用 sessionStrategy.onAuthentication 方法，这个方法就是用来处理 session 的并发问题的。具体在：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcurrentSessionControlAuthenticationStrategy</span> <span class="keyword">implements</span></span></span><br><span class="line"><span class="class">		<span class="title">MessageSourceAware</span>, <span class="title">SessionAuthenticationStrategy</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAuthentication</span><span class="params">(Authentication authentication,</span></span></span><br><span class="line"><span class="function"><span class="params">			HttpServletRequest request, HttpServletResponse response)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">final</span> List&lt;SessionInformation&gt; sessions = sessionRegistry.getAllSessions(</span><br><span class="line">				authentication.getPrincipal(), <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">int</span> sessionCount = sessions.size();</span><br><span class="line">		<span class="keyword">int</span> allowedSessions = getMaximumSessionsForThisUser(authentication);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (sessionCount &lt; allowedSessions) &#123;</span><br><span class="line">			<span class="comment">// They haven't got too many login sessions running at present</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (allowedSessions == -<span class="number">1</span>) &#123;</span><br><span class="line">			<span class="comment">// We permit unlimited logins</span></span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (sessionCount == allowedSessions) &#123;</span><br><span class="line">			HttpSession session = request.getSession(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (session != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="comment">// Only permit it though if this request is associated with one of the</span></span><br><span class="line">				<span class="comment">// already registered sessions</span></span><br><span class="line">				<span class="keyword">for</span> (SessionInformation si : sessions) &#123;</span><br><span class="line">					<span class="keyword">if</span> (si.getSessionId().equals(session.getId())) &#123;</span><br><span class="line">						<span class="keyword">return</span>;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// If the session is null, a new one will be created by the parent class,</span></span><br><span class="line">			<span class="comment">// exceeding the allowed number</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		allowableSessionsExceeded(sessions, allowedSessions, sessionRegistry);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">allowableSessionsExceeded</span><span class="params">(List&lt;SessionInformation&gt; sessions,</span></span></span><br><span class="line"><span class="function"><span class="params">			<span class="keyword">int</span> allowableSessions, SessionRegistry registry)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> SessionAuthenticationException </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (exceptionIfMaximumExceeded || (sessions == <span class="keyword">null</span>)) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> SessionAuthenticationException(messages.getMessage(</span><br><span class="line">					<span class="string">"ConcurrentSessionControlAuthenticationStrategy.exceededAllowed"</span>,</span><br><span class="line">					<span class="keyword">new</span> Object[] &#123;allowableSessions&#125;,</span><br><span class="line">					<span class="string">"Maximum sessions of &#123;0&#125; for this principal exceeded"</span>));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Determine least recently used sessions, and mark them for invalidation</span></span><br><span class="line">		sessions.sort(Comparator.comparing(SessionInformation::getLastRequest));</span><br><span class="line">		<span class="keyword">int</span> maximumSessionsExceededBy = sessions.size() - allowableSessions + <span class="number">1</span>;</span><br><span class="line">		List&lt;SessionInformation&gt; sessionsToBeExpired = sessions.subList(<span class="number">0</span>, maximumSessionsExceededBy);</span><br><span class="line">		<span class="keyword">for</span> (SessionInformation session: sessionsToBeExpired) &#123;</span><br><span class="line">			session.expireNow();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段核心代码主要逻辑：</p>
+<ol>
+<li>首先调用 sessionRegistry.getAllSessions 方法获取当前用户的所有 session，该方法在调用时，传递两个参数，一个是当前用户的 authentication，另一个参数 false 表示不包含已经过期的 session（在用户登录成功后，会将用户的 sessionid 存起来，其中 key 是用户的主体（principal），value 则是该主题对应的 sessionid 组成的一个集合）。 </li>
+<li>接下来计算出当前用户已经有几个有效 session 了，同时获取允许的 session 并发数。 </li>
+<li>如果当前 session 数（sessionCount）小于 session 并发数（allowedSessions），则不做任何处理；如果 allowedSessions 的值为 -1，表示对 session 数量不做任何限制。 </li>
+<li>如果当前 session 数（sessionCount）等于 session 并发数（allowedSessions），那就先看看当前 session 是否不为 null，并且已经存在于 sessions 中了，如果已经存在了，那都是自家人，不做任何处理；如果当前 session 为 null，那么意味着将有一个新的 session 被创建出来，届时当前 session 数（sessionCount）就会超过 session 并发数（allowedSessions）。 </li>
+<li>如果前面的代码中都没能 return 掉，那么将进入策略判断方法 allowableSessionsExceeded 中。 </li>
+<li>allowableSessionsExceeded 方法中，首先会有 exceptionIfMaximumExceeded 属性，这就是我们在 SecurityConfig 中配置的 maxSessionsPreventsLogin 的值，默认为 false，如果为 true，就直接抛出异常，那么这次登录就失败了（对应 2.2 小节的效果），如果为 false，则对 sessions 按照请求时间进行排序，然后再使多余的 session 过期即可（对应 踢掉之前登陆用户的效果）。</li>
+</ol>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/" title="Spring-Security-8-自动踢掉另一个用户">https://52zhongneng.cn/2022/07/07/Spring-Security-8-自动踢掉另一个用户/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring-Security/" rel="tag"><i class="fa fa-tag"></i>Spring-Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/" rel="prev" title="Spring-Security-7-自定义认证逻辑">
+      <i class="fa fa-chevron-left"></i> Spring-Security-7-自定义认证逻辑
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/" rel="next" title="Spring-Security-9-攻击与防御">
+      Spring-Security-9-攻击与防御 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#验证默认情况"><span class="nav-number">1.</span> <span class="nav-text">验证默认情况</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#需求分析"><span class="nav-number">2.</span> <span class="nav-text">需求分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方案1-踢前一用户下线"><span class="nav-number">3.</span> <span class="nav-text">方案1 踢前一用户下线</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">3.1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TODO解释原因：为什么此时还可以同一用户在两个PC登陆。"><span class="nav-number">3.2.</span> <span class="nav-text">TODO解释原因：为什么此时还可以同一用户在两个PC登陆。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">3.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方案2-禁止第二个用户登陆"><span class="nav-number">4.</span> <span class="nav-text">方案2 禁止第二个用户登陆</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-1"><span class="nav-number">4.1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-1"><span class="nav-number">4.2.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">5.</span> <span class="nav-text">原理</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

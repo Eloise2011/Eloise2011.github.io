@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本博客用于简历排版, 每一份简历都是根据职位描述的内容进行针对性的撰写, 其中个人信息, 工作履历和教育背景部分因为隐私问题以及其高可重构性略去, 后期导出后按需添加.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CV">
+<meta property="og:url" content="https://52zhongneng.cn/2000/01/01/CV/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="本博客用于简历排版, 每一份简历都是根据职位描述的内容进行针对性的撰写, 其中个人信息, 工作履历和教育背景部分因为隐私问题以及其高可重构性略去, 后期导出后按需添加.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2000/01/01/CV/Redis-Architecture.png">
+<meta property="og:image" content="https://52zhongneng.cn/2000/01/01/CV/Architecture.png">
+<meta property="article:published_time" content="1999-12-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-07T02:20:39.662Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="CV">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2000/01/01/CV/Redis-Architecture.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2000/01/01/CV/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>CV | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2000/01/01/CV/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CV
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2000-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2000-01-01T00:00:00+08:00">2000-01-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-07 10:20:39" itemprop="dateModified" datetime="2022-07-07T10:20:39+08:00">2022-07-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/EffiencyTools/" itemprop="url" rel="index">
+                    <span itemprop="name">EffiencyTools</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本博客用于简历排版, 每一份简历都是根据职位描述的内容进行针对性的撰写, 其中个人信息, 工作履历和教育背景部分因为隐私问题以及其高可重构性略去, 后期导出后按需添加. </p>
+<a id="more"></a>
+<h1 id="个人信息"><a href="#个人信息" class="headerlink" title="个人信息"></a>个人信息</h1><p>姓名： 李伟岸                                            DoB： 1991-08-01                                            性别： 男</p>
+<p>学历： 理学硕士研究生                            电话： <span style="color:Red"><strong>2B Specified</strong></span>                                         邮件：<span style="color:Red"><strong>2B Specified</strong></span></p>
+<h1 id="教育经历"><a href="#教育经历" class="headerlink" title="教育经历"></a>教育经历</h1><p>2015.08 -  2016.11     硕士            曼彻斯特大学（英）                高级计算机科学和信息技术管理</p>
+<p>2011.09 - 2015.07      本科             沈阳工业大学                          信息与计算机科学    </p>
+<h1 id="求职意向"><a href="#求职意向" class="headerlink" title="求职意向"></a>求职意向</h1><p>工作性质： 全职                    目标职能： Java后端开发工程师                    目标地点： 广州</p>
+<h1 id="工作技能"><a href="#工作技能" class="headerlink" title="工作技能"></a>工作技能</h1><ol>
+<li><p>对Spring，Mybatis，SpringMVC构建系统有深刻认识。能根据MyBatis源码进行个性化定制可组装的动态SQL。<strong><del>Till Chapter 20</del></strong></p>
+</li>
+<li><p>精通Spring Boot整合web开发异常处理, 静态资源处理,跨域问题解决,定时任务,接口文档整合等常见业务场景, 阅读过相关源码。 <del><strong>Till 30</strong></del></p>
+</li>
+<li><p>熟练应用 Spring Cloud（Eureka、Ribbon、OpenFeign、Hystrix, Config, Gateway）以及alibaba的(Nacos、Sentinel)     等分布式组件, 并能对不同微服务业务场景分析组件优劣势给出选型方案相关的合理建议。<del><strong>Till 40</strong></del></p>
+</li>
+<li><p>精通分布式系统的常见权限框架，对Shiro和Spring Security作为权限框架实现SSO继承CAS，LDAP等操作熟练。阅读过源码。<del><strong>Till 60</strong></del></p>
+</li>
+<li><p>精通Nginx作为反向代理服务器，负载均衡，动静分离，URL rewrite及其安全访问控制使用相关的操作。<del><strong>Till 65</strong></del></p>
+</li>
+<li><p>精通MySQL Innodb 存储引擎 Buffer Pool、事务、锁、索引底层工作原理，能根据 explain执行计划优化 SQL。 <del><strong>Till 80</strong></del></p>
+</li>
+<li><p>深入理解Redis数据结构、持久化、复制、主从、集群工作原理，熟悉缓存雪崩、缓存穿透、缓存击穿解决方案。<del><strong>Till 90</strong></del></p>
+</li>
+<li><p>对Kafka RocketMQ作为消息中间件的常见实用场景有生产使用经验。<del><strong>Till 100</strong></del></p>
+</li>
+<li><p>深入理解JVM底层工作原理和垃圾回收机制，熟练使用jstat、jmap、mat进行jvm调优并制定jvm模版。<del><strong>Till 120</strong></del></p>
+</li>
+<li><p>了解并使用过Hadoop、Hive、Flume，zookeeper等大数据相关技术. <del><strong>Till 130</strong></del></p>
+</li>
+<li><p>了解并使用过持续集成组件Jekins，容器化部署以及自动化编排 docker k8s. <del><strong>Till 140</strong></del></p>
+<p>系统工具： Linux， git， SSH 客户端， postman， Jmeter，arthas. <del><strong>Till 150</strong></del><br><span style="color:Blue"><strong>搭建过个人Hexo博客, 对上述大部分知识点进行过详细记录 并持续学习更新中。</strong></span></p>
+</li>
+</ol>
+<h1 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h1><p>2019.06 - 至今          <span style="color:Red"><strong>2B Specified</strong></span>     集团职能-数字化办公室-数据治理与产品技术</p>
+<p>2017.03-2019.03     <span style="color:Red"><strong>2B Specified</strong></span>  后端一组-Java 开发    </p>
+<h1 id="项目经验"><a href="#项目经验" class="headerlink" title="项目经验"></a>项目经验</h1><h2 id="1-数据资源开放共享项目"><a href="#1-数据资源开放共享项目" class="headerlink" title="1. 数据资源开放共享项目"></a>1. 数据资源开放共享项目</h2><p>背景： 该项目是数字化办公室的数据银行产品下属的模块，与其他四个模块(数据治理，数据安全， 元数据， 数据资产)共同协调对接， 是大部门用以对外(指集团其他职能部门, 而非集团外)提供数据服务的。</p>
+<p>工作流程：</p>
+<ol>
+<li><p>业务用户在元数据申请需要的服务(对应一张业务数据表)， 申请流程走完该表就流转到数据治理模块，显示为已上架的状态， 允许继续注册。</p>
+</li>
+<li><p>用户登陆数据治理模块， 查询到刚才申请的表， 点击页面注册按钮， 跳转到开放模块的前台页面。 跳转的过程中会带过来一个tableKey(该tableKey是治理模块按照不同系统， 不同库，不同表自定义的主键key， 用来区分不同表， 具体规则：系统id-库名_表名称)。</p>
+</li>
+<li><p>除了tableKey还会附带该tableKey对应的元信息： schema，table，fields，业务owner，ITowner，mip， 更新频率， 所属事业部等。用户在开放模块点击注册会触发服务生成。</p>
+</li>
+<li><p>根据这些信息开放后台进行如下处理：</p>
+<p>a). 查询该tableKey对应的表在开放后台是否有预先配置成数据源。没有则提示用户配置并终止。</p>
+<p>b). 如果已经配置查询， 则查询该tableKey对应的数据表类型是否是针对有特殊时效性的敏感指标， 如果是即表明数据源在字典表中配置， 如果不是则在数据源表配置。</p>
+<p>c). 接下来生成数据集， 接口，和服务。 服务对外公开，以供访问具体业务数据。</p>
+<p><img src="/2000/01/01/CV/Redis-Architecture.png" alt="缓存方案"></p>
+</li>
+<li><p>目前该项目迭代版本已经支持： 从页面直接填写元信息注册， 数据治理跳转注册， 多个批量注册(excel导入)， 查询数据服务热点数据缓存。</p>
+</li>
+</ol>
+<h2 id="2-IICC接口平台"><a href="#2-IICC接口平台" class="headerlink" title="2. IICC接口平台"></a>2. IICC接口平台</h2><p>该项目专门用来给工业互联网(集团各个工厂大屏)提供数据支持。 用来跟进员工出勤/转岗/离职率， 生产用料准备进度，生产进度，按时完工率， 物流进度， 按时交付率等主要生产指标的数据逻辑处理和可视化呈现。 主要思路和上一个类似， 只是该项目用到的数据源相对比较少， 统一配置且在启动项目时统一加载(每次如果有新数据源就需要重启项目,而上一个项目是直接在配置后即刻加载生效)。而且该项目是在简化MyBatis原生代码的基础上提供动态SQL的支持。 使得ETL同事也可在该平台进行接口开发。</p>
+<h2 id="3-日志收集"><a href="#3-日志收集" class="headerlink" title="3. 日志收集"></a>3. 日志收集</h2><ol>
+<li><p>根据使用的Flume版本，查询官方文档，在服务器上配置log4JAppender文档发送数据到Flume主机对应端口。         </p>
+</li>
+<li><p>使用Flume的avro类型的Source, 获取服务器行的日志数据，配合rege_ extractor类型的interceptor将时间戳加到事件头中。使用HDFS类型的Sink将日志扇出到HDFS的指定目录下，并在路径上拼接了格式为reportDate=%Y-%m-%d的时间戳，设置其只按照时间（而非文件大小或数量）进行滚动生成最终的文件。数据类型设置为DataStream，为了更好的本地化，将时区设置为GMT+8 最后将Source和Sink绑定到 Memory类型的Channel上形成最终的Flume agent配置文档。</p>
+</li>
+<li><p>利用Hive工具</p>
+</li>
+</ol>
+<p>a)         创建数据库LogAnlDB并进入：</p>
+<p>b)         创建外部分区表原表Original按照日期partition（含有所有前端埋点收集到的数据指标近20项）</p>
+<p>c)         数据清洗表dataClear，只提取原表中与分析业务相关的8个指标.</p>
+<p>d)         将原表中对应8项指标数据插入到数据清洗表中</p>
+<p>e)         对清洗表中数据进行HQL操作得到中间值，转存到临时表Temp中。（Temp只含有3列：分别是分区值即日期， 指标名称和指标对应值）</p>
+<p>f)          创建最终的统计表Stat,并将Temp中临时存储指标对应的值（共8行）查询出来插入Stat统计表中作为一行统计记录。 </p>
+<ol start="4">
+<li><p>使用Sqoop工具命令将hive中的数据落地到MySQL中。 </p>
+</li>
+<li><p>将3，4中涉及的代码编写HQL脚本文档，结合linux的定时任务crontab将其设置为每天凌晨进行自动采集数据分析。</p>
+<p><img src="/2000/01/01/CV/Architecture.png" alt="dataflow"></p>
+</li>
+</ol>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2000/01/01/CV/" title="CV">https://52zhongneng.cn/2000/01/01/CV/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CV/" rel="tag"><i class="fa fa-tag"></i>CV</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2008/02/14/typora-manual/" rel="next" title="极简系列教程之一 Typora">
+      极简系列教程之一 Typora <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#个人信息"><span class="nav-number">1.</span> <span class="nav-text">个人信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#教育经历"><span class="nav-number">2.</span> <span class="nav-text">教育经历</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#求职意向"><span class="nav-number">3.</span> <span class="nav-text">求职意向</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工作技能"><span class="nav-number">4.</span> <span class="nav-text">工作技能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工作经历"><span class="nav-number">5.</span> <span class="nav-text">工作经历</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#项目经验"><span class="nav-number">6.</span> <span class="nav-text">项目经验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-数据资源开放共享项目"><span class="nav-number">6.1.</span> <span class="nav-text">1. 数据资源开放共享项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-IICC接口平台"><span class="nav-number">6.2.</span> <span class="nav-text">2. IICC接口平台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-日志收集"><span class="nav-number">6.3.</span> <span class="nav-text">3. 日志收集</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

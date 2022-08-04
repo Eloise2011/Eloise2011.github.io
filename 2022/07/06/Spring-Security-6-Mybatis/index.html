@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="之前的章节介绍过用JPA进行数据交互存储用户数据信息，今天将介绍如何使用MyBatis作为持久层框架搭配Spring Security进行用户校验。原理和之前JPA的一致。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-Security-6-MyBatis">
+<meta property="og:url" content="https://52zhongneng.cn/2022/07/06/Spring-Security-6-Mybatis/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="之前的章节介绍过用JPA进行数据交互存储用户数据信息，今天将介绍如何使用MyBatis作为持久层框架搭配Spring Security进行用户校验。原理和之前JPA的一致。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/06/Spring-Security-6-Mybatis/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9FJSON.png">
+<meta property="article:published_time" content="2022-07-06T13:31:48.000Z">
+<meta property="article:modified_time" content="2022-07-07T02:57:28.088Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Spring-Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2022/07/06/Spring-Security-6-Mybatis/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9FJSON.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2022/07/06/Spring-Security-6-Mybatis/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring-Security-6-MyBatis | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2022/07/06/Spring-Security-6-Mybatis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring-Security-6-MyBatis
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-06 21:31:48" itemprop="dateCreated datePublished" datetime="2022-07-06T21:31:48+08:00">2022-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-07 10:57:28" itemprop="dateModified" datetime="2022-07-07T10:57:28+08:00">2022-07-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">安全框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>9 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>之前的章节介绍过用JPA进行数据交互存储用户数据信息，今天将介绍如何使用MyBatis作为持久层框架搭配Spring Security进行用户校验。<br>原理和之前JPA的一致。</p>
+<a id="more"></a>
+<h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><h2 id="建库建表-并插入用户数据用于后续测试"><a href="#建库建表-并插入用户数据用于后续测试" class="headerlink" title="建库建表(并插入用户数据用于后续测试)"></a>建库建表(并插入用户数据用于后续测试)</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> springsecurityMybatis;</span><br><span class="line"><span class="keyword">use</span> springsecurityMybatis;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> <span class="keyword">client</span>(</span><br><span class="line">    <span class="string">`id`</span> <span class="built_in">bigint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">    <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`phone`</span><span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`telephone`</span><span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`address`</span><span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`userface`</span><span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`remarks`</span><span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`account_non_expired`</span> <span class="built_in">bit</span>(<span class="number">1</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">1</span>,</span><br><span class="line">    <span class="string">`account_non_locked`</span> <span class="built_in">bit</span>(<span class="number">1</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">1</span>,</span><br><span class="line">    <span class="string">`credentials_non_expired`</span> <span class="built_in">bit</span>(<span class="number">1</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">1</span>,</span><br><span class="line">    <span class="string">`enable`</span> <span class="built_in">bit</span>(<span class="number">1</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">DEFAULT</span> <span class="number">1</span>,</span><br><span class="line">    <span class="string">`password`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`username`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_0900_ai_ci;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> <span class="keyword">cos</span>(</span><br><span class="line">   <span class="string">`id`</span> <span class="built_in">bigint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">   <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">   <span class="string">`name_zh`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">    PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_0900_ai_ci;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> client_cos_relation(</span><br><span class="line">    <span class="string">`id`</span> <span class="built_in">bigint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">    <span class="string">`client_id`</span> <span class="built_in">bigint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    <span class="string">`cos_id`</span> <span class="built_in">bigint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> ,</span><br><span class="line">    PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_0900_ai_ci;</span><br><span class="line"><span class="comment">-- 插入数据</span></span><br><span class="line"><span class="comment">-- 用户优先级/权限 由大到小 (super &gt; admin &gt; user &gt; guest)</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> client_cos_relation (<span class="keyword">id</span>,client_id,cos_id) <span class="keyword">values</span></span><br><span class="line"> (<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>),(<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>),(<span class="number">3</span>,<span class="number">1</span>,<span class="number">3</span>),(<span class="number">4</span>,<span class="number">1</span>,<span class="number">4</span>)</span><br><span class="line">,(<span class="number">5</span>,<span class="number">2</span>,<span class="number">2</span>),(<span class="number">6</span>,<span class="number">2</span>,<span class="number">3</span>),(<span class="number">7</span>,<span class="number">2</span>,<span class="number">4</span>)</span><br><span class="line">,(<span class="number">8</span>,<span class="number">3</span>,<span class="number">3</span>),(<span class="number">9</span>,<span class="number">3</span>,<span class="number">4</span>)</span><br><span class="line">,(<span class="number">10</span>,<span class="number">4</span>,<span class="number">4</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">client</span></span><br><span class="line">    (<span class="keyword">name</span>, phone, telephone, address, userface, remarks, account_non_expired, account_non_locked, credentials_non_expired, <span class="keyword">enable</span>, <span class="keyword">password</span>, username)</span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">     (<span class="string">'Benedict'</span>,<span class="string">'123'</span>,<span class="string">'020-123'</span>,<span class="string">'Manchester'</span>,<span class="string">'face1'</span>,<span class="string">'haha'</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="string">'111'</span>,<span class="string">'Benedict'</span>)</span><br><span class="line">    ,(<span class="string">'本尼迪克特'</span>,<span class="string">'123'</span>,<span class="string">'021-123'</span>,<span class="string">'曼彻斯特'</span>,<span class="string">'face2'</span>,<span class="string">'hehe'</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="string">'111'</span>,<span class="string">'本尼迪克特'</span>)</span><br><span class="line">    ,(<span class="string">'卷福'</span>,<span class="string">'123'</span>,<span class="string">'027-123'</span>,<span class="string">'曼城'</span>,<span class="string">'face3'</span>,<span class="string">'呵呵'</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="string">'111'</span>,<span class="string">'卷福'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">cos</span> (<span class="keyword">id</span>, <span class="keyword">name</span>, name_zh) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">'super'</span>,<span class="string">'超级管理员'</span>),(<span class="number">2</span>,<span class="string">'admin'</span>,<span class="string">'管理员'</span>),(<span class="number">3</span>,<span class="string">'user'</span>,<span class="string">'普通用户'</span>),(<span class="number">4</span>,<span class="string">'guest'</span>,<span class="string">'访客'</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="建实体类"><a href="#建实体类" class="headerlink" title="建实体类"></a>建实体类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.model;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.annotation.JsonIgnore;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.GrantedAuthority;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.authority.SimpleGrantedAuthority;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UserDetails;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * 用来演示使用Mybatis作为持久层框架的例子中的实体类(等价于原来整合JPA例子中的User类)</span></span><br><span class="line"><span class="comment"> * 注意: 除了UserDetails里是必须的，其他都是用户可以自己定义添加的</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-05 10:32</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> <span class="keyword">implements</span> <span class="title">UserDetails</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 主键id</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用户拥有的角色</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    List&lt;Cos&gt; coses;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * username used to authenticate the user. Cannot be &lt;code&gt;null&lt;/code&gt;.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * password used to authenticate the user.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Indicates whether the user's account has expired. An expired account cannot be</span></span><br><span class="line"><span class="comment">     * authenticated.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> accountNonExpired;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Indicates whether the user is locked or unlocked. A locked user cannot be</span></span><br><span class="line"><span class="comment">     * authenticated.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> accountNonLocked;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Indicates whether the user's credentials (password) has expired. Expired</span></span><br><span class="line"><span class="comment">     * credentials prevent authentication.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> credentialsNonExpired;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Indicates whether the user is enabled or disabled. A disabled user cannot be</span></span><br><span class="line"><span class="comment">     * authenticated.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> enable;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String phone;</span><br><span class="line">    <span class="keyword">private</span> String telephone;</span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line">    <span class="keyword">private</span> String userface;</span><br><span class="line">    <span class="keyword">private</span> String remarks;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUsername</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> username;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPassword</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> password;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAccountNonExpired</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.accountNonExpired;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAccountNonLocked</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.accountNonLocked;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isCredentialsNonExpired</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.credentialsNonExpired;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEnabled</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.enable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Long <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Cos&gt; <span class="title">getCoses</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> coses;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEnable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> enable;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@JsonIgnore</span></span><br><span class="line">    <span class="keyword">public</span> Collection&lt;? extends GrantedAuthority&gt; getAuthorities()&#123;</span><br><span class="line">        List&lt;SimpleGrantedAuthority&gt; authorities = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Cos cos:getCoses()) &#123;</span><br><span class="line">            authorities.add(<span class="keyword">new</span> SimpleGrantedAuthority(cos.getName()));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> authorities;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPhone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> phone;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPhone</span><span class="params">(String phone)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.phone = phone;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTelephone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> telephone;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTelephone</span><span class="params">(String telephone)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.telephone = telephone;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAddress</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> address;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAddress</span><span class="params">(String address)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.address = address;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUserface</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userface;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserface</span><span class="params">(String userface)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.userface = userface;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getRemarks</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> remarks;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRemarks</span><span class="params">(String remarks)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.remarks = remarks;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCoses</span><span class="params">(List&lt;Cos&gt; coses)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.coses = coses;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Client&#123;"</span> +</span><br><span class="line">                <span class="string">"id="</span> + id +</span><br><span class="line">                <span class="string">", coses="</span> + coses +</span><br><span class="line">                <span class="string">", username='"</span> + username + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", password='"</span> + password + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", accountNonExpired="</span> + accountNonExpired +</span><br><span class="line">                <span class="string">", accountNonLocked="</span> + accountNonLocked +</span><br><span class="line">                <span class="string">", credentialsNonExpired="</span> + credentialsNonExpired +</span><br><span class="line">                <span class="string">", enable="</span> + enable +</span><br><span class="line">                <span class="string">", name='"</span> + name + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", phone='"</span> + phone + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", telephone='"</span> + telephone + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", address='"</span> + address + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", userface='"</span> + userface + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", remarks='"</span> + remarks + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="建Dao-Service"><a href="#建Dao-Service" class="headerlink" title="建Dao Service"></a>建Dao Service</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CosMapper</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Cos&gt; <span class="title">loadCosesByUid</span><span class="params">(@Param(<span class="string">"clientId"</span>)</span> Long cid)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ClientMapper</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Client <span class="title">loadUserByUsername</span><span class="params">(@Param(<span class="string">"username"</span>)</span> String username)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="建Service"><a href="#建Service" class="headerlink" title="建Service"></a>建Service</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.example.dao.ClientMapper;</span><br><span class="line"><span class="keyword">import</span> org.example.dao.CosMapper;</span><br><span class="line"><span class="keyword">import</span> org.example.model.Client;</span><br><span class="line"><span class="keyword">import</span> org.example.model.Cos;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UserDetails;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UserDetailsService;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UsernameNotFoundException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.annotation.Resource;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-05 11:12</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClientService</span> <span class="keyword">implements</span> <span class="title">UserDetailsService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    ClientMapper clientMapper;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    CosMapper cosMapper;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> UserDetails <span class="title">loadUserByUsername</span><span class="params">(String username)</span> <span class="keyword">throws</span> UsernameNotFoundException </span>&#123;</span><br><span class="line">        Client client = clientMapper.loadUserByUsername(username);</span><br><span class="line">        System.out.println(<span class="string">"查询到的 client = "</span> + client);</span><br><span class="line">        <span class="keyword">if</span>(client == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> UsernameNotFoundException(<span class="string">"当前用户名不存在: "</span>+username);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"其具有的角色权限如下"</span>);</span><br><span class="line">        List&lt;Cos&gt; coses = cosMapper.loadCosesByUid(client.getId());</span><br><span class="line">        client.setCoses(coses);</span><br><span class="line">        coses.stream().forEach(System.out::println);</span><br><span class="line">        <span class="keyword">return</span> client;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="修改SecurityConfig-configure-httpSecurity"><a href="#修改SecurityConfig-configure-httpSecurity" class="headerlink" title="修改SecurityConfig#configure(httpSecurity)"></a>修改SecurityConfig#configure(httpSecurity)</h2><p>注意⚠️: 要将原来持久化令牌方案解决记住我功能时的相关配置注释掉， 如果保留就要响应做好建表或者开启首次<br>这里直接注释掉了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注释掉使用持久化令牌的配置</span></span><br><span class="line"><span class="comment">//.tokenRepository(jdbcTokenRepository())</span></span><br><span class="line"><span class="comment">// 注释掉jdbcTokenRepository bean</span></span><br><span class="line"><span class="comment">//    @Bean</span></span><br><span class="line"><span class="comment">//    JdbcTokenRepositoryImpl jdbcTokenRepository() &#123;</span></span><br><span class="line"><span class="comment">//        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();</span></span><br><span class="line"><span class="comment">//        jdbcTokenRepository.setDataSource(dataSource);</span></span><br><span class="line"><span class="comment">//        //只能执行一次 之后再执行会报错 Table 'persistent_logins' already exists</span></span><br><span class="line"><span class="comment">//        jdbcTokenRepository.setCreateTableOnStartup(true); //会执行建表脚本，具体可见JdbcTokenRepositoryImpl#initDao()方法</span></span><br><span class="line"><span class="comment">//        return jdbcTokenRepository;</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//添加了super角色继承关系</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">RoleHierarchy <span class="title">roleHierarchy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    RoleHierarchyImpl hierarchy = <span class="keyword">new</span> RoleHierarchyImpl();</span><br><span class="line">    hierarchy.setHierarchy(<span class="string">"ROLE_super &gt; ROLE_admin &gt; ROLE_user &gt; ROLE_guest"</span>); </span><br><span class="line">    <span class="keyword">return</span> hierarchy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注入clientService 并关联使用这个service做authentication</span></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">ClientService clientService;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(AuthenticationManagerBuilder auth)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        auth.userDetailsService(clientService);</span><br><span class="line">        <span class="comment">//auth.userDetailsService(userService);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><h2 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h2><p>启动项目 访问登陆页面：<code>http://localhost:9999/login.html</code><br>使用Benedict用户(具有超级管理员角色，四个权限都有) 登陆，发现返回JSON如下</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"authorities"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"authority"</span>: <span class="string">"super"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"authority"</span>: <span class="string">"admin"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"authority"</span>: <span class="string">"user"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"authority"</span>: <span class="string">"guest"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"details"</span>: &#123;</span><br><span class="line">    <span class="attr">"remoteAddress"</span>: <span class="string">"0:0:0:0:0:0:0:1"</span>,</span><br><span class="line">    <span class="attr">"sessionId"</span>: <span class="literal">null</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"authenticated"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"principal"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"coses"</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attr">"name"</span>: <span class="string">"super"</span>,</span><br><span class="line">        <span class="attr">"nameZh"</span>: <span class="string">"超级管理员"</span></span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="attr">"name"</span>: <span class="string">"admin"</span>,</span><br><span class="line">        <span class="attr">"nameZh"</span>: <span class="string">"管理员"</span></span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="number">3</span>,</span><br><span class="line">        <span class="attr">"name"</span>: <span class="string">"user"</span>,</span><br><span class="line">        <span class="attr">"nameZh"</span>: <span class="string">"普通用户"</span></span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">"id"</span>: <span class="number">4</span>,</span><br><span class="line">        <span class="attr">"name"</span>: <span class="string">"guest"</span>,</span><br><span class="line">        <span class="attr">"nameZh"</span>: <span class="string">"访客"</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"username"</span>: <span class="string">"Benedict"</span>,</span><br><span class="line">    <span class="attr">"password"</span>: <span class="string">"111"</span>,</span><br><span class="line">    <span class="attr">"accountNonExpired"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"accountNonLocked"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"credentialsNonExpired"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"enable"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"Benedict"</span>,</span><br><span class="line">    <span class="attr">"phone"</span>: <span class="string">"123"</span>,</span><br><span class="line">    <span class="attr">"telephone"</span>: <span class="string">"020-123"</span>,</span><br><span class="line">    <span class="attr">"address"</span>: <span class="string">"Manchester"</span>,</span><br><span class="line">    <span class="attr">"userface"</span>: <span class="string">"face1"</span>,</span><br><span class="line">    <span class="attr">"remarks"</span>: <span class="string">"haha"</span>,</span><br><span class="line">    <span class="attr">"enabled"</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"credentials"</span>: <span class="literal">null</span>,</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"Benedict"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/07/06/Spring-Security-6-Mybatis/%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9FJSON.png" alt="登陆成功JSON"></p>
+<h2 id="访问hello等4个接口"><a href="#访问hello等4个接口" class="headerlink" title="访问hello等4个接口"></a>访问hello等4个接口</h2><p>发现只能访问 /hello接口， 其他三个都返回<strong>403</strong> 说明权限有问题。仔细观察上面返回的JSON数据中角色并没有像之前JPA中的”ROLE_”前缀<br>即使在<code>SecurityConfig#roleHierarchy()</code>加了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hierarchy.setHierarchy(<span class="string">"super &gt; admin &gt; user &gt; guest"</span>);</span><br></pre></td></tr></table></figure>
+<p>重启项目， 角色权限继承依然没有生效。</p>
+<p>这个问题的解决待到后续文章处理。</p>
+<h1 id="TODO-MyBatis实现角色权限继承"><a href="#TODO-MyBatis实现角色权限继承" class="headerlink" title=" TODO MyBatis实现角色权限继承 "></a><span style="color:red"> TODO MyBatis实现角色权限继承 </span></h1>
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2022/07/06/Spring-Security-6-Mybatis/" title="Spring-Security-6-MyBatis">https://52zhongneng.cn/2022/07/06/Spring-Security-6-Mybatis/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring-Security/" rel="tag"><i class="fa fa-tag"></i>Spring-Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/05/Spring-Security-5-RememberMe/" rel="prev" title="Spring-Security-5-RememberMe">
+      <i class="fa fa-chevron-left"></i> Spring-Security-5-RememberMe
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/07/Spring-Cloud-01-%E6%9C%8D%E5%8A%A1%E7%BB%84%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/index/" rel="next" title="Spring-Cloud-01-服务组册与发现/Index">
+      Spring-Cloud-01-服务组册与发现/Index <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#环境准备"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#建库建表-并插入用户数据用于后续测试"><span class="nav-number">1.1.</span> <span class="nav-text">建库建表(并插入用户数据用于后续测试)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建实体类"><span class="nav-number">1.2.</span> <span class="nav-text">建实体类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建Dao-Service"><span class="nav-number">1.3.</span> <span class="nav-text">建Dao Service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建Service"><span class="nav-number">1.4.</span> <span class="nav-text">建Service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改SecurityConfig-configure-httpSecurity"><span class="nav-number">1.5.</span> <span class="nav-text">修改SecurityConfig#configure(httpSecurity)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试"><span class="nav-number">2.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#登陆"><span class="nav-number">2.1.</span> <span class="nav-text">登陆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问hello等4个接口"><span class="nav-number">2.2.</span> <span class="nav-text">访问hello等4个接口</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TODO-MyBatis实现角色权限继承"><span class="nav-number">3.</span> <span class="nav-text"> TODO MyBatis实现角色权限继承 </span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

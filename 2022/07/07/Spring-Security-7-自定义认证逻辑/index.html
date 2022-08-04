@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文将通过验证码校验的例子来演示自定义AuthenticationProvider以重新规划登陆认证流程，最终深入理解AuthenticationProvider底层原理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-Security-7-自定义认证逻辑">
+<meta property="og:url" content="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="本文将通过验证码校验的例子来演示自定义AuthenticationProvider以重新规划登陆认证流程，最终深入理解AuthenticationProvider底层原理。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E9%AA%8C%E8%AF%81%E7%A0%81.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E6%B5%8B%E8%AF%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E9%80%BB%E8%BE%91%E8%8E%B7%E5%8F%96%E7%9A%84%E9%AA%8C%E8%AF%81%E7%A0%81.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E6%B5%8B%E8%AF%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E9%80%BB%E8%BE%91%E8%8E%B7%E5%8F%96%E7%9A%84%E9%AA%8C%E8%AF%81%E7%A0%812.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E6%B5%8B%E8%AF%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E9%80%BB%E8%BE%91%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/Authentication%E7%9A%84%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png">
+<meta property="article:published_time" content="2022-07-07T13:31:48.000Z">
+<meta property="article:modified_time" content="2022-07-07T02:57:36.671Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Spring-Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E9%AA%8C%E8%AF%81%E7%A0%81.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring-Security-7-自定义认证逻辑 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring-Security-7-自定义认证逻辑
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-07-07 21:31:48 / Modified: 10:57:36" itemprop="dateCreated datePublished" datetime="2022-07-07T21:31:48+08:00">2022-07-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">安全框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>10 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文将通过验证码校验的例子来演示自定义AuthenticationProvider以重新规划登陆认证流程，最终深入理解AuthenticationProvider底层原理。</p>
+<a id="more"></a>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Processes an Authentication request.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AuthenticationManager</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Attempts to authenticate the passed Authentication object, returning a fully populated Authentication object (including granted authorities) if successful.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Authentication <span class="title">authenticate</span><span class="params">(Authentication authentication)</span> <span class="keyword">throws</span> AuthenticationException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Indicates a class can process a specific Authentication implementation</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AuthenticationProvider</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Performs authentication with the same contract as AuthenticationManager.authenticate(Authentication).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Authentication <span class="title">authenticate</span><span class="params">(Authentication authentication)</span> <span class="keyword">throws</span> AuthenticationException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns true if this AuthenticationProvider supports the indicated Authentication object.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">supports</span><span class="params">(Class&lt;?&gt; authentication)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><h2 id="准备验证码"><a href="#准备验证码" class="headerlink" title="准备验证码"></a>准备验证码</h2><h3 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">&lt;!--验证码的开源依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.penggle<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>kaptcha<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="验证码配置"><a href="#验证码配置" class="headerlink" title="验证码配置"></a>验证码配置</h3><p>新建验证码配置类 设定生成验证码的基本参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.google.code.kaptcha.Producer;</span><br><span class="line"><span class="keyword">import</span> com.google.code.kaptcha.impl.DefaultKaptcha;</span><br><span class="line"><span class="keyword">import</span> com.google.code.kaptcha.util.Config;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 验证码相关的配置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-05 22:53</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VerifyCodeConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function">Producer <span class="title">verifyCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Properties properties = <span class="keyword">new</span> Properties();</span><br><span class="line">        properties.setProperty(<span class="string">"kaptcha.image.width"</span>, <span class="string">"200"</span>);</span><br><span class="line">        properties.setProperty(<span class="string">"kaptcha.image.height"</span>, <span class="string">"80"</span>);</span><br><span class="line">        properties.setProperty(<span class="string">"kaptcha.textproducer.char.string"</span>, <span class="string">"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>); <span class="comment">// 组成验证码的字符集</span></span><br><span class="line">        properties.setProperty(<span class="string">"kaptcha.textproducer.char.length"</span>, <span class="string">"5"</span>); <span class="comment">// 验证码长度</span></span><br><span class="line">        DefaultKaptcha defaultKaptcha = <span class="keyword">new</span> DefaultKaptcha();</span><br><span class="line">        defaultKaptcha.setConfig(<span class="keyword">new</span> Config(properties));</span><br><span class="line">        <span class="keyword">return</span> defaultKaptcha;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="验证码controller"><a href="#验证码controller" class="headerlink" title="验证码controller"></a>验证码controller</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.google.code.kaptcha.Producer;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.imageio.ImageIO;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletOutputStream;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpSession;</span><br><span class="line"><span class="keyword">import</span> java.awt.image.BufferedImage;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-05 23:04</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VerifyCodeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    Producer producer;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"verifyCode"</span>, method = RequestMethod.GET)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getCode</span><span class="params">(HttpServletResponse response, HttpSession httpSession)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">//指明返回图片</span></span><br><span class="line">        response.setContentType(<span class="string">"image/jpeg"</span>);</span><br><span class="line">        <span class="comment">//生成文本</span></span><br><span class="line">        String code = producer.createText();</span><br><span class="line">        System.out.println(<span class="string">"验证码code = "</span> + code);</span><br><span class="line">        <span class="comment">//生成含有上述文本的图片</span></span><br><span class="line">        BufferedImage bufferedImage = producer.createImage(code);</span><br><span class="line">        <span class="comment">//将图片bufferedImage按"JPG"格式写到输出流out返回 </span></span><br><span class="line">        <span class="keyword">try</span> (ServletOutputStream jos = response.getOutputStream()) &#123;</span><br><span class="line">            ImageIO.write(bufferedImage, <span class="string">"jpg"</span>, jos);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="过滤器设置"><a href="#过滤器设置" class="headerlink" title="过滤器设置"></a>过滤器设置</h3><p>为了测试验证码生成接口的方便, 修改<code>SecurityConfig#configure(HttpSecurity http)</code>添加如下行 以放行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.antMatchers(<span class="string">"/verifyCode"</span>).permitAll()</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证码生成测试"><a href="#验证码生成测试" class="headerlink" title="验证码生成测试"></a>验证码生成测试</h2><p>启动项目请求 <code>http://localhost:9999/verifyCode</code> 看返回信息如下：<br><img src="/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E9%AA%8C%E8%AF%81%E7%A0%81.png" alt="验证码生成成功"><br>验证码生成成功。</p>
+<h2 id="AuthenticationProvider-实现认证"><a href="#AuthenticationProvider-实现认证" class="headerlink" title="AuthenticationProvider 实现认证"></a>AuthenticationProvider 实现认证</h2><p>自定义 AuthenticationProvider : MyAuthenticationProvider</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.security.authentication.AuthenticationServiceException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.authentication.UsernamePasswordAuthenticationToken;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.authentication.dao.DaoAuthenticationProvider;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.AuthenticationException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.security.core.userdetails.UserDetails;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.context.request.RequestContextHolder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.context.request.ServletRequestAttributes;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-05 23:31</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAuthenticationProvider</span> <span class="keyword">extends</span> <span class="title">DaoAuthenticationProvider</span> </span>&#123;</span><br><span class="line">    <span class="comment">/** 下面是抽象类 AbstractUserDetailsAuthenticationProvider#additionalAuthenticationChecks()方法的注释。</span></span><br><span class="line"><span class="comment">     * Allows subclasses to perform any additional checks of a returned (or cached) UserDetails for a given authentication request.</span></span><br><span class="line"><span class="comment">     * Generally a subclass will at least compare the Authentication.getCredentials() with a UserDetails.getPassword().</span></span><br><span class="line"><span class="comment">     * If custom logic is needed to compare additional properties of UserDetails and/or UsernamePasswordAuthenticationToken,</span></span><br><span class="line"><span class="comment">     * these should also appear in this method.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> userDetails</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> authentication</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> AuthenticationException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">additionalAuthenticationChecks</span><span class="params">(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)</span> <span class="keyword">throws</span> AuthenticationException </span>&#123;</span><br><span class="line">        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();</span><br><span class="line">        <span class="comment">//用户前端输入的</span></span><br><span class="line">        String code = request.getParameter(<span class="string">"code"</span>);</span><br><span class="line">        <span class="comment">//后台生成的</span></span><br><span class="line">        String verifyCode = (String) request.getSession().getAttribute(<span class="string">"verifyCode"</span>);</span><br><span class="line">        <span class="keyword">if</span>(verifyCode == <span class="keyword">null</span> || code == <span class="keyword">null</span> || !code.equals(verifyCode))&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AuthenticationServiceException(<span class="string">"验证么输入错误, 请注意大小写哦～"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">super</span>.additionalAuthenticationChecks(userDetails, authentication);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>##修改<code>SecurityConfig</code><br>添加如下配置<br>1。 配置自定义的AuthticationProvider 并注入Spring容器<br>2。 把自定义的AuthticationProvider：MyAuthenticationProvider 交由AuthenticationManager管理。就会在认证时执行里面的逻辑<br>3。 在rememberMe配置后也加上关联: clientService 的配置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">MyAuthenticationProvider <span class="title">myAuthenticationProvider</span><span class="params">()</span></span>&#123;</span><br><span class="line">    MyAuthenticationProvider myAuthenticationProvider = <span class="keyword">new</span> MyAuthenticationProvider();</span><br><span class="line">    myAuthenticationProvider.setPasswordEncoder(passwordEncoder());</span><br><span class="line">    myAuthenticationProvider.setUserDetailsService(clientService);</span><br><span class="line">    <span class="keyword">return</span> myAuthenticationProvider;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> AuthenticationManager <span class="title">authenticationManager</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ArrayList&lt;AuthenticationProvider&gt; pms = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    pms.add(myAuthenticationProvider());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ProviderManager(pms); <span class="comment">//版本不同, 之前有可变参数的构造 该版本只能是List&lt;AuthenticationProvider&gt;参数构造了</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// *******</span></span><br><span class="line">.userDetailsService(clientService)</span><br></pre></td></tr></table></figure>
+<p>为了能在前端接收用户输入，修改login.html 添加</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"input"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"code"</span> <span class="attr">id</span>=<span class="string">"vCode"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"rememberMe"</span>&gt;</span>验证码:<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>访问: 重启项目首先获取验证码.<br><img src="/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E6%B5%8B%E8%AF%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E9%80%BB%E8%BE%91%E8%8E%B7%E5%8F%96%E7%9A%84%E9%AA%8C%E8%AF%81%E7%A0%81.png" alt="测试自定义校验逻辑获取的验证码"><br><img src="/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E6%B5%8B%E8%AF%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E9%80%BB%E8%BE%91%E8%8E%B7%E5%8F%96%E7%9A%84%E9%AA%8C%E8%AF%81%E7%A0%812.png" alt="测试自定义校验逻辑获取的验证码2"><br><img src="/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/%E6%B5%8B%E8%AF%95%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E9%80%BB%E8%BE%91%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F.png" alt="测试自定义校验逻辑登陆成功"></p>
+<h1 id="查看IP地址等"><a href="#查看IP地址等" class="headerlink" title="查看IP地址等"></a>查看IP地址等</h1><h2 id="Authentication源码"><a href="#Authentication源码" class="headerlink" title="Authentication源码"></a>Authentication源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Represents the token for an authentication request or for an authenticated principal once the request has been processed by the AuthenticationManager.authenticate(Authentication) method.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Authentication</span> <span class="keyword">extends</span> <span class="title">Principal</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Set by an AuthenticationManager to indicate the authorities that the principal has been granted. Note that classes should not rely on this value as being valid unless it has been set by a trusted AuthenticationManager.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Collection&lt;? extends GrantedAuthority&gt; getAuthorities();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The credentials that prove the principal is correct. This is usually a password, but could be anything relevant to the AuthenticationManager. Callers are expected to populate the credentials.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Object <span class="title">getCredentials</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Stores additional details about the authentication request. These might be an IP address, certificate serial number etc.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Object <span class="title">getDetails</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The identity of the principal being authenticated. In the case of an authentication request with username and password, this would be the username. Callers are expected to populate the principal for an authentication request.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Object <span class="title">getPrincipal</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/***/</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isAuthenticated</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/***/</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setAuthenticated</span><span class="params">(<span class="keyword">boolean</span> isAuthenticated)</span> <span class="keyword">throws</span> IllegalArgumentException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出Authentication是对Principal的进一步封装。其中的方法: getDetails q其注释表示该方法用来获取用户携带的额外信息，可能是当前请求的 例如 IP 地址、证书信息等等。之类的东西。<br>实际上，在默认情况下，这里存储的就是用户登录的 <code>IP</code> 地址和 <code>sessionId</code>。我们从源码角度来看下。<br>用户登录必经的一个过滤器就是 <code>UsernamePasswordAuthenticationFilter</code>，在该类的 <code>attemptAuthentication</code> 方法中，对请求参数做提取，在 <code>attemptAuthentication</code> 方法中，会调用到一个方法，就是 <code>setDetails</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setDetails</span><span class="params">(HttpServletRequest request,</span></span></span><br><span class="line"><span class="function"><span class="params">		UsernamePasswordAuthenticationToken authRequest)</span> </span>&#123;</span><br><span class="line">	authRequest.setDetails(authenticationDetailsSource.buildDetails(request));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从<code>Authentication</code>的继承体系可以看出<code>UsernamePasswordAuthenticationToken</code> 是 <code>Authentication</code> 的具体实现，所以这里实际上就是在设置 <code>details</code>.<br><img src="/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/Authentication%E7%9A%84%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png" alt="Authentication的继承体系"></p>
+<p>至于 <code>details</code> 的值，则是通过 <code>authenticationDetailsSource</code> 来构建的. 我们来看下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebAuthenticationDetailsSource</span> <span class="keyword">implements</span></span></span><br><span class="line"><span class="class">		<span class="title">AuthenticationDetailsSource</span>&lt;<span class="title">HttpServletRequest</span>, <span class="title">WebAuthenticationDetails</span>&gt; </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> WebAuthenticationDetails <span class="title">buildDetails</span><span class="params">(HttpServletRequest context)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> WebAuthenticationDetails(context);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebAuthenticationDetails</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> String remoteAddress;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> String sessionId;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">WebAuthenticationDetails</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.remoteAddress = request.getRemoteAddr();</span><br><span class="line"></span><br><span class="line">		HttpSession session = request.getSession(<span class="keyword">false</span>);</span><br><span class="line">		<span class="keyword">this</span>.sessionId = (session != <span class="keyword">null</span>) ? session.getId() : <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">//省略其他方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>默认通过 WebAuthenticationDetailsSource 来构建 WebAuthenticationDetails，并将结果设置到 Authentication 的 details 属性中去。而 WebAuthenticationDetails 中定义的属性，大家看一下基本上就明白，这就是保存了用户登录地址和 sessionId。</p>
+<p>那么看到这里，大家基本上就明白了，用户登录的 IP 地址实际上我们可以直接从 WebAuthenticationDetails 中获取到。</p>
+<p>我举一个简单例子，例如我们登录成功后，可以通过如下方式随时随地拿到用户 IP：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetDetailsIPSession</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">GetDetailsIPSession</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span><br><span class="line">        WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();</span><br><span class="line">        System.out.println(details);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个获取过程之所以放在 service 来做，就是为了演示随时随地这个特性。然后我们在 controller 中调用该方法，当访问接口时，可以看到如下日志：</p>
+<p>可以看到，用户的 IP 地址和 SessionId 都给出来了。这两个属性在 WebAuthenticationDetails 中都有对应的 get 方法，也可以单独获取属性值。<br>WebAuthenticationDetails 也可以自己定制，因为默认它只提供了 IP 和 sessionid 两个信息，如果我们想保存关于 Http 请求的更多信息，就可以通过自定义 WebAuthenticationDetails 来实现。<br>如果我们要定制 WebAuthenticationDetails，还要连同 WebAuthenticationDetailsSource 一起重新定义。<br><strong><code>MyWebAuthenticationDetailsSource</code></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.security.authentication.AuthenticationDetailsSource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Joshua.H.Brooks</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2022-07-06 12:12</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyWebAuthenticationDetailsSource</span> <span class="keyword">implements</span> <span class="title">AuthenticationDetailsSource</span>&lt;<span class="title">HttpServletRequest</span>,<span class="title">MyWebAuthenticationDetails</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyWebAuthenticationDetails <span class="title">buildDetails</span><span class="params">(HttpServletRequest context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyWebAuthenticationDetails(context);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2022/07/07/Spring-Security-7-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AE%A4%E8%AF%81%E9%80%BB%E8%BE%91/" title="Spring-Security-7-自定义认证逻辑">https://52zhongneng.cn/2022/07/07/Spring-Security-7-自定义认证逻辑/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring-Security/" rel="tag"><i class="fa fa-tag"></i>Spring-Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/07/Spring-Cloud-01-%E6%9C%8D%E5%8A%A1%E7%BB%84%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/SpringCloud/" rel="prev" title="Spring-Cloud-01-服务组册与发现/SpringCloud">
+      <i class="fa fa-chevron-left"></i> Spring-Cloud-01-服务组册与发现/SpringCloud
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/" rel="next" title="Spring-Security-8-自动踢掉另一个用户">
+      Spring-Security-8-自动踢掉另一个用户 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#环境准备"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备验证码"><span class="nav-number">1.1.</span> <span class="nav-text">准备验证码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引入依赖"><span class="nav-number">1.1.1.</span> <span class="nav-text">引入依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证码配置"><span class="nav-number">1.1.2.</span> <span class="nav-text">验证码配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证码controller"><span class="nav-number">1.1.3.</span> <span class="nav-text">验证码controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过滤器设置"><span class="nav-number">1.1.4.</span> <span class="nav-text">过滤器设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证码生成测试"><span class="nav-number">1.2.</span> <span class="nav-text">验证码生成测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AuthenticationProvider-实现认证"><span class="nav-number">1.3.</span> <span class="nav-text">AuthenticationProvider 实现认证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试"><span class="nav-number">2.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看IP地址等"><span class="nav-number">3.</span> <span class="nav-text">查看IP地址等</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Authentication源码"><span class="nav-number">3.1.</span> <span class="nav-text">Authentication源码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

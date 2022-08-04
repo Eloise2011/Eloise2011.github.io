@@ -33,15 +33,15 @@
     var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="本章是redis系列第3讲， 主要介绍redis hyper log 和 bloom filter等高级类型的应用场景。">
+  <meta name="description" content="本章是redis系列第3讲， 主要介绍redis hyper log 和 bloom filter等高级类型的应用场景。以及redis常见面试题">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis_03">
 <meta property="og:url" content="https://52zhongneng.cn/2020/07/31/redis-03/index.html">
 <meta property="og:site_name" content="Eloise&#39;s Paradise">
-<meta property="og:description" content="本章是redis系列第3讲， 主要介绍redis hyper log 和 bloom filter等高级类型的应用场景。">
+<meta property="og:description" content="本章是redis系列第3讲， 主要介绍redis hyper log 和 bloom filter等高级类型的应用场景。以及redis常见面试题">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-07-31T02:11:23.000Z">
-<meta property="article:modified_time" content="2022-05-11T07:14:30.161Z">
+<meta property="article:modified_time" content="2022-06-29T05:05:19.833Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -128,17 +128,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">34</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">24</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">77</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -283,7 +283,7 @@ listPostUrl.forEach(changeBanner);
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-05-11 15:14:30" itemprop="dateModified" datetime="2022-05-11T15:14:30+08:00">2022-05-11</time>
+                <time title="Modified: 2022-06-29 13:05:19" itemprop="dateModified" datetime="2022-06-29T13:05:19+08:00">2022-06-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -303,7 +303,7 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>54</span>
+              <span>587</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -330,8 +330,46 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本章是redis系列第3讲， 主要介绍redis hyper log 和 bloom filter等高级类型的应用场景。</p>
+        <p>本章是redis系列第3讲， 主要介绍redis hyper log 和 bloom filter等高级类型的应用场景。以及redis常见面试题</p>
 <a id="more"></a>
+
+
+
+
+
+<h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><pre><code>既不在缓存， 也不在数据库。 这样的请求都会到达DB会给其造成压力。</code></pre><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 给类似的key写入空值到缓存。后期可以缓存返回提示信息。 思路和实现简单，但是会造成额外的内存开销以及短时的数据一致性问题。		这种方式要注意两点， 第一， 需要在缓存查不到时写入空值到缓存，查到缓存时需要进行空值判断。</span><br><span class="line">2. 布隆过滤器。 实现复杂，但是效果优于上一种。</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">短时间内大量的缓存key失效或者redis服务宕机。</span><br></pre></td></tr></table></figure>
+
+<h3 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>. 如果是因为短时间内大量key导致的， 那么可以考虑避免这种情况的发生， 可以为不同的key设置不同的过期时间</span><br><span class="line"><span class="number">2</span>. 如果是服务宕机场景， 那么可考虑将redis设计为高可用集群。</span><br><span class="line"><span class="number">3</span>. 另外， 还可以为业务添加多级缓存  nginx缓存 redis缓存。jvm本地缓存。最后到DB</span><br><span class="line"><span class="number">4</span>. 引入限流策略。</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h2><h3 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">缓存击穿也就热点key问题， 就是指一个被高并发访问且重建热点数据的业务实现复杂的热点key失效，导致无数请求会在瞬间打到DB上造成严重后果。</span><br></pre></td></tr></table></figure>
+
+<h3 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h3><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>互斥锁</td>
+<td>实现简单<br>保证一致性<br><br>没有额外内存消耗</td>
+<td>线程需要等待<br>可能导致死锁<br></td>
+</tr>
+<tr>
+<td>逻辑过期</td>
+<td>线程无需等待 效率高<br>不会导致死锁</td>
+<td>需要额外的内存空间来维护一个逻辑过期属性<br>实现复杂<br>不保证一致性</td>
+</tr>
+</tbody></table>
+
     </div>
 
 
@@ -452,6 +490,7 @@ listPostUrl.forEach(changeBanner);
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存穿透"><span class="nav-number">1.</span> <span class="nav-text">缓存穿透</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">1.2.</span> <span class="nav-text">解决方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存雪崩"><span class="nav-number">2.</span> <span class="nav-text">缓存雪崩</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案-1"><span class="nav-number">2.1.</span> <span class="nav-text">解决方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存击穿"><span class="nav-number">3.</span> <span class="nav-text">缓存击穿</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义-1"><span class="nav-number">3.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案-2"><span class="nav-number">3.2.</span> <span class="nav-text">解决方案</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -469,20 +508,20 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-count">33</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -570,13 +609,13 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">880k</span>
+    <span title="Symbols count total">1.1m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">13:20</span>
+    <span title="Reading time total">16:03</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本章将介绍Spring Security中如何使用数据库数据作为登陆用户信息进行认证操作等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-Security-3-用户数据入库-JDBC">
+<meta property="og:url" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="本章将介绍Spring Security中如何使用数据库数据作为登陆用户信息进行认证操作等。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/UserDetailsService%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/JdbcUserDetailsManager%E6%BA%90%E7%A0%81.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E8%A7%92%E8%89%B2%E5%90%8D%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%BC%95%E5%8F%91%E5%BC%82%E5%B8%B8.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E8%A7%92%E8%89%B2%E5%90%8D%E7%A7%B0%E4%B8%80%E8%87%B4%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E9%AA%8C%E8%AF%81%E8%A7%92%E8%89%B2%E7%BB%A7%E6%89%BF.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E8%A7%92%E8%89%B2%E5%90%8D%E5%BC%82%E5%B8%B8%E6%BA%90%E7%A0%81%E5%8E%9F%E7%90%86.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E8%A7%92%E8%89%B2%E4%BF%A1%E6%81%AF.png">
+<meta property="article:published_time" content="2022-07-03T13:31:48.000Z">
+<meta property="article:modified_time" content="2022-07-07T02:57:03.987Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Spring-Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/UserDetailsService%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring-Security-3-用户数据入库-JDBC | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring-Security-3-用户数据入库-JDBC
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-03 21:31:48" itemprop="dateCreated datePublished" datetime="2022-07-03T21:31:48+08:00">2022-07-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-07 10:57:03" itemprop="dateModified" datetime="2022-07-07T10:57:03+08:00">2022-07-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">安全框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.8k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本章将介绍Spring Security中如何使用数据库数据作为登陆用户信息进行认证操作等。</p>
+<a id="more"></a>
+
+
+
+<p>之前的章节中, Spring Security 使用的用户数据都是内存中的。 但是项目中，大部分情况下都是自己设计权限数据库<br>不过，Spring Security 也给我们提供了一个它自己设计好的权限数据库，这里我们先来看看这是怎么回事！先来学这个简单的，然后我们再去看复杂的。</p>
+<p>UserDetailService<br>Spring Security 支持多种不同的数据源，这些不同的数据源最终都将被封装成 UserDetailsService 的实例，<br>既可以自己封装实现UserDetailsService接口的类，也可以使用系统默认提供的 UserDetailsService 实例，例如之前文章中介绍的 InMemoryUserDetailsManager。<br>为了弄清楚具体的原理， 先看看UserDetailsService的继承关系。<br><img src="/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/UserDetailsService%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png" alt="UserDetailsService继承关系"></p>
+<p>2.JdbcUserDetailsManager<br>JdbcUserDetailsManager 自己提供了一个数据库模型，这个数据库模型保存在如下位置：<br><code>org/springframework/security/core/userdetails/jdbc/users.ddl</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">users</span></span><br><span class="line">(</span><br><span class="line">    username varchar_ignorecase(<span class="number">50</span>) <span class="keyword">not</span> <span class="literal">null</span> primary <span class="keyword">key</span>,</span><br><span class="line">    <span class="keyword">password</span> varchar_ignorecase(<span class="number">500</span>) <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">    enabled <span class="built_in">boolean</span> <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> authorities</span><br><span class="line">(</span><br><span class="line">    username varchar_ignorecase(<span class="number">50</span>) <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">    authority varchar_ignorecase(<span class="number">50</span>) <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">constraint</span> fk_authorities_users <span class="keyword">foreign</span> <span class="keyword">key</span> (username) <span class="keyword">references</span> <span class="keyword">users</span> (username)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> <span class="keyword">index</span> ix_auth_username <span class="keyword">on</span> authorities (username, authority);</span><br></pre></td></tr></table></figure>
+
+<p>而且观察该类中的CRUD脚本中使用的字段也能看出：<br><img src="/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/JdbcUserDetailsManager%E6%BA%90%E7%A0%81.png" alt="JdbcUserDetailsManager源码"></p>
+<p>由于Spring Security底层建表使用的DB引擎是HSQL， 所以想要在本地MySQL建立与上面一样的表和索引需要对语法进行替换，然后在本地建库建表，如下</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 建库</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> springsecurity;</span><br><span class="line"><span class="keyword">use</span> springsecurity;</span><br><span class="line"><span class="comment"># 建表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">users</span></span><br><span class="line">(</span><br><span class="line">    username <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">not</span> <span class="literal">null</span> primary <span class="keyword">key</span>,</span><br><span class="line">    <span class="keyword">password</span> <span class="built_in">varchar</span>(<span class="number">500</span>) <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">    enabled <span class="built_in">boolean</span> <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> authorities</span><br><span class="line">(</span><br><span class="line">    username <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">    authority <span class="built_in">varchar</span>(<span class="number">50</span>) <span class="keyword">not</span> <span class="literal">null</span>,</span><br><span class="line">    <span class="keyword">constraint</span> fk_authorities_users <span class="keyword">foreign</span> <span class="keyword">key</span> (username) <span class="keyword">references</span> <span class="keyword">users</span> (username)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> <span class="keyword">index</span> ix_auth_username <span class="keyword">on</span> authorities (username, authority);</span><br></pre></td></tr></table></figure>
+<p>执行完 SQL 脚本后，我们可以看到一共创建了两张表：users 和 authorities。</p>
+<p>users 表中保存用户的基本信息，包括用户名、用户密码以及账户是否可用。<br>authorities 中保存了用户的角色。<br>authorities 和 users 通过 username 关联起来。<br>配置完成后，接下来，我们将上篇文章中通过 InMemoryUserDetailsManager 提供的用户数据用 JdbcUserDetailsManager 代替掉，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//    @Bean</span></span><br><span class="line"><span class="comment">//    protected UserDetailsService userDetailsService() &#123;</span></span><br><span class="line"><span class="comment">//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();</span></span><br><span class="line"><span class="comment">//        manager.createUser(User.withUsername("Alex").password("123").roles("admin").build());</span></span><br><span class="line"><span class="comment">//        manager.createUser(User.withUsername("Brooks").password("456").roles("user").build());</span></span><br><span class="line"><span class="comment">//        return manager;</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    DataSource dataSource;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> UserDetailsService <span class="title">userDetailsServiceBean</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        JdbcUserDetailsManager manager = <span class="keyword">new</span> JdbcUserDetailsManager();</span><br><span class="line">        manager.setDataSource(dataSource); <span class="comment">//关联数据源</span></span><br><span class="line">        <span class="keyword">if</span>(!manager.userExists(<span class="string">"Zed"</span>))&#123;</span><br><span class="line">        manager.createUser(User.withUsername(<span class="string">"Zed"</span>).password(<span class="string">"111"</span>).roles(<span class="string">"ADMIN"</span>).build());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!manager.userExists(<span class="string">"Yuki"</span>))&#123;</span><br><span class="line">        manager.createUser(User.withUsername(<span class="string">"Yuki"</span>).password(<span class="string">"222"</span>).roles(<span class="string">"USER"</span>).build());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!manager.userExists(<span class="string">"Xoxo"</span>))&#123;</span><br><span class="line">        manager.createUser(User.withUsername(<span class="string">"Xoxo"</span>).password(<span class="string">"333"</span>).roles(<span class="string">"GUEST"</span>).build());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> manager;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这段配置的含义如下：</p>
+<ol>
+<li>首先构建一个 JdbcUserDetailsManager 实例。</li>
+<li>给 JdbcUserDetailsManager 实例添加一个 DataSource 对象。</li>
+<li>调用 userExists 方法判断用户是否存在，如果不存在，就创建一个新的用户出来（因为每次项目启动时这段代码都会执行，所以加一个判断，避免重复创建用户）。</li>
+<li>用户的创建方法和我们之前 InMemoryUserDetailsManager 中的创建方法基本一致。<br>这里的 createUser 或者 userExists 方法其实都是调用写好的 SQL 去判断的，我们从它的源码里就能看出来（部分）：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcUserDetailsManager</span> <span class="keyword">extends</span> <span class="title">JdbcDaoImpl</span> <span class="keyword">implements</span> <span class="title">UserDetailsManager</span>,</span></span><br><span class="line"><span class="class">      <span class="title">GroupManager</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEF_USER_EXISTS_SQL = <span class="string">"select username from users where username = ?"</span>;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">private</span> String userExistsSql = DEF_USER_EXISTS_SQL;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">userExists</span><span class="params">(String username)</span> </span>&#123;</span><br><span class="line">      List&lt;String&gt; users = getJdbcTemplate().queryForList(userExistsSql,</span><br><span class="line">            <span class="keyword">new</span> String[] &#123; username &#125;, String<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (users.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> IncorrectResultSizeDataAccessException(</span><br><span class="line">               <span class="string">"More than one user found with name '"</span> + username + <span class="string">"'"</span>, <span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> users.size() == <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意⚠️ </p>
+<ol>
+<li><p>因为要与数据库交互, 不要忘记注入DataSource对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">DataSource dataSource;</span><br></pre></td></tr></table></figure></li>
+<li><p>角色前面不要加ROLE_ 否则会报错<br><img src="/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E8%A7%92%E8%89%B2%E5%90%8D%E9%85%8D%E7%BD%AE%E9%94%99%E8%AF%AF%E5%BC%95%E5%8F%91%E5%BC%82%E5%B8%B8.png" alt="角色名配置错误引发异常"></p>
+</li>
+<li><p>角色名称大小写敏感而且要与原来角色继承配置里的配置保持一致。否则也会报错。<br><img src="/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E8%A7%92%E8%89%B2%E5%90%8D%E7%A7%B0%E4%B8%80%E8%87%B4%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F.png" alt="角色名称一致大小写敏感"><br><img src="/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E9%AA%8C%E8%AF%81%E8%A7%92%E8%89%B2%E7%BB%A7%E6%89%BF.png" alt="验证角色继承User能访问guest角色的权限接口"></p>
+</li>
+<li><p>当然要也要记得在configure(HttpSecurity http)里加上 <code>.antMatchers(&quot;/guest/**&quot;).hasRole(&quot;guest&quot;)</code></p>
+</li>
+</ol>
+<p>查看源码发现是已经为其添加了ROLE_前缀了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> UserBuilder <span class="title">roles</span><span class="params">(String... roles)</span> </span>&#123;</span><br><span class="line">    List&lt;GrantedAuthority&gt; authorities = <span class="keyword">new</span> ArrayList&lt;&gt;(</span><br><span class="line">            roles.length);</span><br><span class="line">    <span class="keyword">for</span> (String role : roles) &#123;</span><br><span class="line">        Assert.isTrue(!role.startsWith(<span class="string">"ROLE_"</span>), () -&gt; role</span><br><span class="line">        + <span class="string">" cannot start with ROLE_ (it is automatically added)"</span>);</span><br><span class="line">        authorities.add(<span class="keyword">new</span> SimpleGrantedAuthority(<span class="string">"ROLE_"</span> + role));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> authorities(authorities);&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E8%A7%92%E8%89%B2%E5%90%8D%E5%BC%82%E5%B8%B8%E6%BA%90%E7%A0%81%E5%8E%9F%E7%90%86.png" alt></p>
+<ol start="3">
+<li>添加pom依赖和修改yml<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9999</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">security:</span></span><br><span class="line">    <span class="attr">user:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Joshua</span></span><br><span class="line">      <span class="attr">password:</span> <span class="number">123</span></span><br><span class="line">      <span class="attr">roles:</span> <span class="string">admin</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/springsecurity?useUnicode=true&amp;serverTimezone=Asia/Shanghai&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br></pre></td></tr></table></figure>
+
+<p>测试<br>启动项目， 发现后台已经插入了上面三个用户的信息了。<br><img src="/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF.png" alt="用户信息"><br><img src="/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/%E8%A7%92%E8%89%B2%E4%BF%A1%E6%81%AF.png" alt="角色信息"></p>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2022/07/03/Spring-Security-3-%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%85%A5%E5%BA%93-JDBC/" title="Spring-Security-3-用户数据入库-JDBC">https://52zhongneng.cn/2022/07/03/Spring-Security-3-用户数据入库-JDBC/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring-Security/" rel="tag"><i class="fa fa-tag"></i>Spring-Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/02/Spring-Security-2-%E6%8E%88%E6%9D%83/" rel="prev" title="Spring-Security-2-授权">
+      <i class="fa fa-chevron-left"></i> Spring-Security-2-授权
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/04/Spring-Security-4-JPA%E5%81%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" rel="next" title="Spring-Security-4-JPA做数据源">
+      Spring-Security-4-JPA做数据源 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

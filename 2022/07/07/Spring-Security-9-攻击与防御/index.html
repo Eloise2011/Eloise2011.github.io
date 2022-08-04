@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="[Spring Security] 这么麻烦，不如自己写一个 Filter 拦截请求，简单实用。自己写当然也可以实现，但是大部分情况下，大家都不是专业的 Web 安全工程师，所以考虑问题也不过就是认证和授权，这两个问题处理好了，似乎系统就很安全了。 其实不是这样的！各种各样的 Web 攻击每天都在发生，什么固定会话攻击、csrf 攻击等等，如果不了解这些攻击，那么做出来的系统肯定也不能防御这些攻击">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-Security-9-攻击与防御">
+<meta property="og:url" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="[Spring Security] 这么麻烦，不如自己写一个 Filter 拦截请求，简单实用。自己写当然也可以实现，但是大部分情况下，大家都不是专业的 Web 安全工程师，所以考虑问题也不过就是认证和授权，这两个问题处理好了，似乎系统就很安全了。 其实不是这样的！各种各样的 Web 攻击每天都在发生，什么固定会话攻击、csrf 攻击等等，如果不了解这些攻击，那么做出来的系统肯定也不能防御这些攻击">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E9%98%B2%E7%81%AB%E5%A2%99HttpFirewall%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80%E4%B8%8D%E8%83%BD%E6%9C%89%E5%88%86%E5%8F%B7-%E6%B5%8B%E8%AF%95.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80%E4%B8%8D%E8%83%BD%E6%9C%89%E5%88%86%E5%8F%B7-%E6%8A%A5%E9%94%99.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80%E4%B8%8D%E8%83%BD%E6%9C%89%E5%88%86%E5%8F%B7-%E6%B5%8B%E8%AF%952.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%AF%B7%E6%B1%82%E8%B7%AF%E5%BE%84%E4%B8%8D%E8%83%BD%E6%9C%89%E5%88%86%E5%8F%B7-%E6%B5%8B%E8%AF%953.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/url%E9%BB%91%E5%90%8D%E5%8D%95%E5%AE%9A%E5%88%B6%E6%BA%90%E7%A0%81%E6%88%AA%E5%9B%BE.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/response%E5%88%86%E6%9E%90HTTPONLY.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%87%AA%E5%8A%A8%E5%B8%A6%E4%B8%8A%E4%B9%8B%E5%89%8DSet-Cookie%E9%87%8C%E7%9A%84JSESSIONID.png">
+<meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/SessionManagementConfigurer%E6%88%AA%E5%9B%BE.png">
+<meta property="article:published_time" content="2022-07-07T14:33:48.000Z">
+<meta property="article:modified_time" content="2022-07-08T03:35:42.741Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Spring-Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E9%98%B2%E7%81%AB%E5%A2%99HttpFirewall%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png">
+
+<link rel="canonical" href="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Spring-Security-9-攻击与防御 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">14</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">76</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring-Security-9-攻击与防御
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-07-07 22:33:48" itemprop="dateCreated datePublished" datetime="2022-07-07T22:33:48+08:00">2022-07-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-08 11:35:42" itemprop="dateModified" datetime="2022-07-08T11:35:42+08:00">2022-07-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">安全框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>11 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[Spring Security] 这么麻烦，不如自己写一个 Filter 拦截请求，简单实用。<br>自己写当然也可以实现，但是大部分情况下，大家都不是专业的 Web 安全工程师，所以考虑问题也不过就是认证和授权，这两个问题处理好了，似乎系统就很安全了。</p>
+<p>其实不是这样的！<br>各种各样的 Web 攻击每天都在发生，什么固定会话攻击、csrf 攻击等等，如果不了解这些攻击，那么做出来的系统肯定也不能防御这些攻击。<br>使用 Spring Security 的好处就是，即使不了解这些攻击，也不用担心这些攻击，因为 Spring Security 已经帮你做好防御工作了。<br>我们常说相比于 Shiro，Spring Security 更加重量级，重量级有重量级的好处，比如功能全，安全管理更加完备。用了 Spring Security，你都不知道自己的系统有多安全！</p>
+<p>本篇文章就来和大家聊一聊 Spring Security 中为常见的攻击所做的一些安全防御机制自带的防火墙机制。</p>
+<h1 id="自带防火墙"><a href="#自带防火墙" class="headerlink" title="自带防火墙"></a>自带防火墙</h1><h2 id="防火墙体系"><a href="#防火墙体系" class="headerlink" title="防火墙体系"></a>防火墙体系</h2><p>[Spring Security] 中自带的防火墙机制是由接口 <code>HttpFirewall</code>和他的实现子类(如下图)实现相关防护功能的. 看名字就知道这是一个请求防火墙，它可以自动处理掉一些非法请求。<br><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E9%98%B2%E7%81%AB%E5%A2%99HttpFirewall%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png" alt="防火墙HttpFirewall继承体系"></p>
+<ol>
+<li>DefaultHttpFirewall 的限制相对于 StrictHttpFirewall 要宽松一些，当然也意味着安全性不如 StrictHttpFirewall。 </li>
+<li>Spring Security 中默认使用的是 StrictHttpFirewall。<h2 id="防火墙防护措施"><a href="#防火墙防护措施" class="headerlink" title="防火墙防护措施"></a>防火墙防护措施</h2>那么 StrictHttpFirewall 都是从哪些方面来保护我们的应用呢？我们来挨个看下。<h3 id="白名单"><a href="#白名单" class="headerlink" title="白名单"></a>白名单</h3>首先，对于请求的方法，只允许白名单中的方法，也就是说，不是所有的 HTTP 请求方法都可以执行。 这点我们可以从 StrictHttpFirewall 的源码中看出来：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StrictHttpFirewall</span> <span class="keyword">implements</span> <span class="title">HttpFirewall</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Set&lt;String&gt; allowedHttpMethods = createDefaultAllowedHttpMethods();</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Set&lt;String&gt; <span class="title">createDefaultAllowedHttpMethods</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		Set&lt;String&gt; result = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">		result.add(HttpMethod.DELETE.name());</span><br><span class="line">		result.add(HttpMethod.GET.name());</span><br><span class="line">		result.add(HttpMethod.HEAD.name());</span><br><span class="line">		result.add(HttpMethod.OPTIONS.name());</span><br><span class="line">		result.add(HttpMethod.PATCH.name());</span><br><span class="line">		result.add(HttpMethod.POST.name());</span><br><span class="line">		result.add(HttpMethod.PUT.name());</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rejectForbiddenHttpMethod</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.allowedHttpMethods == ALLOW_ANY_HTTP_METHOD) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (!<span class="keyword">this</span>.allowedHttpMethods.contains(request.getMethod())) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> RequestRejectedException(<span class="string">"The request was rejected because the HTTP method \""</span> +</span><br><span class="line">					request.getMethod() +</span><br><span class="line">					<span class="string">"\" was not included within the whitelist "</span> +</span><br><span class="line">					<span class="keyword">this</span>.allowedHttpMethods);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+从这段代码中我们看出来，你的 HTTP 请求方法必须是 DELETE、GET、HEAD、OPTIONS、PATCH、POST 以及 PUT 中的一个，请求才能发送成功，否则的话，就会抛出 RequestRejectedException 异常。<br>那如果你想发送其他 HTTP 请求方法，例如 TRACE ，该怎么办呢？我们只需要自己重新提供一个 StrictHttpFirewall 实例即可，如下：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">HttpFirewall <span class="title">httpFirewall</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    StrictHttpFirewall firewall = <span class="keyword">new</span> StrictHttpFirewall();</span><br><span class="line">    firewall.setUnsafeAllowAnyHttpMethod(<span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">return</span> firewall;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+当然能够定制的地方还很多, 可以在两个实现类 <code>StrictHttpFirewall和DefaultHttpFirewall</code> 中看具体的配置项.<h3 id="请求地址不能有分号"><a href="#请求地址不能有分号" class="headerlink" title="请求地址不能有分号"></a>请求地址不能有分号</h3>使用Shiro 的时候，如果禁用了 Cookie，那么 <code>JSESSIONID</code> 就会出现在地址栏里，像下面这样：<br><code>http://localhost:8888/hi;JSESSIONID=89CCC246EB2C567BFBC781547C00315D</code><br>这种传递 JSESSIONID 的方式实际上是非常不安全的，所以在 Spring Security 中，这种传参方式<strong>默认禁用</strong>了。</li>
+</ol>
+<p>如果你使用了 Spring Security，请求地址是不能有 <strong>;</strong> 的，如果请求地址有 <strong>;</strong> ，就会自动跳转到如下页面：<br><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80%E4%B8%8D%E8%83%BD%E6%9C%89%E5%88%86%E5%8F%B7-%E6%B5%8B%E8%AF%95.png" alt="请求地址不能有分号-测试"><br><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80%E4%B8%8D%E8%83%BD%E6%9C%89%E5%88%86%E5%8F%B7-%E6%8A%A5%E9%94%99.png" alt="请求地址不能有分号-报错"><br>当然，如果特殊业务场景你希望地址栏能够被允许出现 ; ,那么同样在注入的定制 <code>**HttpFirewall bean**</code>里加入允许分号的配置行： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall.setAllowSemicolon(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<p>重启再访问<br><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80%E4%B8%8D%E8%83%BD%E6%9C%89%E5%88%86%E5%8F%B7-%E6%B5%8B%E8%AF%952.png" alt="请求地址不能有分号-测试2"><br>可以看见此时已经不再报之前不允许分号的错.<br>注意⚠️:</p>
+<ol>
+<li>之所以是401是因为测试demo是在之前的基础上做的. 也就是之前文章配置的<code>authenticationEntryPoint</code>处理未授权访问生效中.如果没有配置这个会报错404.</li>
+<li>注意，在 URL 地址中，; 编码之后是 %3b 或者 %3B，所以地址中同样不能出现 %3b 或者 %3B</li>
+</ol>
+<p>题外话, 上面说的特殊业务场景希望地址栏能够被允许出现 ; 在SpringMVC中使用<code>@MatrixVariable</code>注解就是这样特殊的场景.<br>新建/hello/id</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/hello/&#123;id&#125;"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">(@PathVariable Integer id,@MatrixVariable String name)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"id = "</span> + id);</span><br><span class="line">    System.out.println(<span class="string">"name = "</span> + name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置MVC不要自动移除 ; , </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">extends</span> <span class="title">WebMvcConfigurationSupport</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configurePathMatch</span><span class="params">(PathMatchConfigurer configurer)</span> </span>&#123;</span><br><span class="line">        UrlPathHelper urlPathHelper = <span class="keyword">new</span> UrlPathHelper();</span><br><span class="line">        urlPathHelper.setRemoveSemicolonContent(<span class="keyword">false</span>);</span><br><span class="line">        configurer.setUrlPathHelper(urlPathHelper);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>项目也已经配置了Spring Security 中允许 URL 中存在 ; ,</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall.setAllowSemicolon(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
+<p>记得在<strong><code>SecurityConfig#configure(httpsession)</code></strong>中配置放行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.antMatchers(<span class="string">"/hi/**"</span>).permitAll()</span><br></pre></td></tr></table></figure>
+<p>重启项目测试<br><code>http://localhost:9999/hi/123;name=Joshua</code><br>返回结果如下, 说明Spring Security配合使用<code>@MatrixVariable</code>注解允许URL路径中使用分号 ;的配置生效了</p>
+<p><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%AF%B7%E6%B1%82%E8%B7%AF%E5%BE%84%E4%B8%8D%E8%83%BD%E6%9C%89%E5%88%86%E5%8F%B7-%E6%B5%8B%E8%AF%953.png" alt="请求路径不能有分号放行与@MatrixVariable注解测试"></p>
+<p>[Spring Security] 默认情况下除了禁止分号出现在URL中外, 还有其他特殊符号也不允许. </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">StrictHttpFirewall</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    urlBlacklistsAddAll(FORBIDDEN_SEMICOLON);</span><br><span class="line">    urlBlacklistsAddAll(FORBIDDEN_FORWARDSLASH);</span><br><span class="line">    urlBlacklistsAddAll(FORBIDDEN_DOUBLE_FORWARDSLASH);</span><br><span class="line">    urlBlacklistsAddAll(FORBIDDEN_BACKSLASH);</span><br><span class="line">    <span class="keyword">this</span>.encodedUrlBlacklist.add(ENCODED_PERCENT);</span><br><span class="line">    <span class="keyword">this</span>.encodedUrlBlacklist.addAll(FORBIDDEN_ENCODED_PERIOD);</span><br><span class="line">    <span class="keyword">this</span>.decodedUrlBlacklist.add(PERCENT);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>当然默认的也可以被打开,通过添加如下配置即可:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 定制允许整个系统的请求方法为只允许：HttpMethod.GET.name()和 HttpMethod.POST.name()</span></span><br><span class="line"><span class="comment"> * 其他请求方式会被拒绝❌</span></span><br><span class="line"><span class="comment"> * 以及URL中是否允许： %  / \ //等</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">HttpFirewall <span class="title">httpFirewall</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    StrictHttpFirewall firewall = <span class="keyword">new</span> StrictHttpFirewall();</span><br><span class="line">    firewall.setAllowedHttpMethods(Collections.unmodifiableList(Arrays.asList(HttpMethod.GET.name(),HttpMethod.POST.name())));</span><br><span class="line">    <span class="comment">//Sets if any HTTP method is allowed.</span></span><br><span class="line">    <span class="comment">//firewall.setUnsafeAllowAnyHttpMethod(true);</span></span><br><span class="line">    <span class="comment">//should semicolons be allowed in the URL. Default is false</span></span><br><span class="line">    firewall.setAllowSemicolon(<span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">//Determines if double slash "//" that is URL encoded "%2F%2F" should be allowed in the path or not. The default is to not allow.</span></span><br><span class="line">    firewall.setAllowUrlEncodedDoubleSlash(<span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">//Determines if a percent "%" that is URL encoded "%25" should be allowed in the path or not. The default is not to allow this behavior because it is a frequent source of security exploits.</span></span><br><span class="line">    firewall.setAllowUrlEncodedPercent(<span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">//Determines if a backslash "\" or a URL encoded backslash "%5C" should be allowed in the path or not. The default is not to allow this behavior because it is a frequent source of security exploits.</span></span><br><span class="line">    firewall.setAllowBackSlash(<span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">//Determines if a slash "/" that is URL encoded "%2F" should be allowed in the path or not. The default is to not allow this behavior because it is a common way to bypass URL based security.</span></span><br><span class="line">    firewall.setAllowUrlEncodedSlash(<span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">//Determines if a period "." that is URL encoded "%2E" should be allowed in the path or not. The default is to not allow this behavior because it is a frequent source of security exploits.</span></span><br><span class="line">    firewall.setAllowUrlEncodedPeriod(<span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">return</span> firewall;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="注意⚠️"><a href="#注意⚠️" class="headerlink" title="注意⚠️:"></a>注意⚠️:</h3><ol>
+<li><strong>要区分是加入encodedUrlBlacklist还是decodedUrlBlacklist<code>urlBlacklistsAddAll 是向 this.encodedUrlBlacklist 和 this.decodedUrlBlacklist 都加入, 源码如下:</code></strong><br><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/url%E9%BB%91%E5%90%8D%E5%8D%95%E5%AE%9A%E5%88%B6%E6%BA%90%E7%A0%81%E6%88%AA%E5%9B%BE.png" alt="url黑名单定制源码截图"></li>
+<li>上面所说的这些限制，都是针对请求的<span style="color:red"> <strong><code>requestURI</code></strong></span> 进行的限制，而不是针对请求参数。例如你的请求格式是：<code>http://localhost:9999/hi/123;name=Joshua%Hoffman%Brooks</code> 时, 即使是默认的配置不允许❌<strong>%</strong> 也可以正常访问. 相关源码如下:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StrictHttpFirewall</span> <span class="keyword">implements</span> <span class="title">HttpFirewall</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> FirewalledRequest <span class="title">getFirewalledRequest</span><span class="params">(HttpServletRequest request)</span> <span class="keyword">throws</span> RequestRejectedException </span>&#123;</span><br><span class="line">		rejectForbiddenHttpMethod(request);</span><br><span class="line">		rejectedBlacklistedUrls(request);</span><br><span class="line">		rejectedUntrustedHosts(request);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (!isNormalized(request)) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> RequestRejectedException(<span class="string">"The request was rejected because the URL was not normalized."</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		String requestUri = request.getRequestURI();</span><br><span class="line">		<span class="keyword">if</span> (!containsOnlyPrintableAsciiCharacters(requestUri)) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> RequestRejectedException(<span class="string">"The requestURI was rejected because it can only contain printable ASCII characters."</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> FirewalledRequest(request) &#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rejectedBlacklistedUrls</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (String forbidden : <span class="keyword">this</span>.encodedUrlBlacklist) &#123;</span><br><span class="line">			<span class="keyword">if</span> (encodedUrlContains(request, forbidden)) &#123;</span><br><span class="line">				<span class="keyword">throw</span> <span class="keyword">new</span> RequestRejectedException(<span class="string">"The request was rejected because the URL contained a potentially malicious String \""</span> + forbidden + <span class="string">"\""</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (String forbidden : <span class="keyword">this</span>.decodedUrlBlacklist) &#123;</span><br><span class="line">			<span class="keyword">if</span> (decodedUrlContains(request, forbidden)) &#123;</span><br><span class="line">				<span class="keyword">throw</span> <span class="keyword">new</span> RequestRejectedException(<span class="string">"The request was rejected because the URL contained a potentially malicious String \""</span> + forbidden + <span class="string">"\""</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">encodedUrlContains</span><span class="params">(HttpServletRequest request, String value)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (valueContains(request.getContextPath(), value)) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> valueContains(request.getRequestURI(), value);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">decodedUrlContains</span><span class="params">(HttpServletRequest request, String value)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (valueContains(request.getServletPath(), value)) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (valueContains(request.getPathInfo(), value)) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">valueContains</span><span class="params">(String value, String contains)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> value != <span class="keyword">null</span> &amp;&amp; value.contains(contains);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>虽然[Spring Security]开放了设置,可以让用户手动修改这些限制，但是<strong>不建议</strong>大家做任何修改，保持默认的即可(原因在上面的@Bean HttpFirewall httpFirewall()注释中有提到). 除非有特殊需求, 或者即使有特殊需求也要慎重考虑是否打开和对打开后的相关安全影响有全盘考虑后再做决定并一并提出对应的解决方案.</li>
+</ol>
+<h3 id="必须是标准化URL"><a href="#必须是标准化URL" class="headerlink" title="必须是标准化URL"></a>必须是标准化URL</h3><p>标准化 URL 主要从四个方面来判断，我们来看下源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isNormalized</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!isNormalized(request.getRequestURI())) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!isNormalized(request.getContextPath())) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!isNormalized(request.getServletPath())) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (!isNormalized(request.getPathInfo())) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>getRequestURI 就是获取请求协议之外的字符； </li>
+<li>getContextPath 是获取上下文路径，相当于是 project 的名字； </li>
+<li>getServletPath 这个就是请求的 servlet 路径， </li>
+<li>getPathInfo 则是除过 contextPath 和 servletPath 之后剩余的部分。<br>这四种路径中，都不能包含如下字符串：</li>
+</ol>
+<p><strong><code>&quot;./&quot;, &quot;/../&quot; or &quot;/.&quot;</code></strong></p>
+<h1 id="会话固定攻击"><a href="#会话固定攻击" class="headerlink" title="会话固定攻击"></a>会话固定攻击</h1><p>[Spring-Security] 系列文章的[第8篇] 我们聊了 Spring Security 中的 session 并发问题，实现了如何像 QQ 一样，用户在一台设备上登录成功之后，就会自动踢掉另一台设备上的登录的功能。<br>当然，Spring Security 中，关于 session 的功能不仅仅是这些，还有各种各样的对常见网络攻击提供相应的防御策略，本节就来看看：什么是会话固定攻击以及 Spring Security 中如何防止会话固定攻击。</p>
+<h2 id="了解HttpSession"><a href="#了解HttpSession" class="headerlink" title="了解HttpSession"></a>了解HttpSession</h2><p>讲会话固定攻击之前，先来了解下 HttpSession。<br>HttpSession 是一个服务端的概念，服务端生成的 HttpSession 都会有一个对应的 sessionid，这个 sessionid 会通过 cookie 传递给前端，前端以后发送请求的时候，就带上这个 sessionid 参数，服务端看到这个 sessionid 就会把这个前端请求和服务端的某一个 HttpSession 对应起来，形成“会话”的感觉。<br>浏览器关闭并不会导致服务端的 HttpSession 失效，想让服务端的 HttpSession 失效，要么手动调用 HttpSession#invalidate 方法；要么等到 session 自动过期；要么重启服务端。<br>但是为什么有的人会感觉浏览器关闭之后 session 就失效了呢？这是因为浏览器关闭之后，保存在浏览器里边的 sessionid 就丢了（默认情况下），所以当浏览器再次访问服务端的时候，服务端会给浏览器重新分配一个 sessionid ，这个 sessionid 和之前的 HttpSession 对应不上，所以用户就会感觉 session 失效。<br>注意前面我用了一个默认情况下，<strong>也就是说，我们可以通过手动配置，让浏览器重启之后 sessionid 不丢失，但是这样会带来安全隐患，所以一般不建议。</strong><br>以 Spring Boot 为例，服务端生成 sessionid 之后，返回给前端的响应头是这样的：<br><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/response%E5%88%86%E6%9E%90HTTPONLY.png" alt="ResponseHeaders里的Set-Cookie的HttpOnly属性"><br>在服务端的响应头中有一个<code>Set-Cookie</code>字段，该字段指示浏览器更新 <code>sessionid</code>，同时大家注意还有一个 <strong><code>HttpOnly</code></strong> 属性，这个表示通过 JS 脚本无法读取到 Cookie 信息，这样能有效的防止 XSS 攻击。<br>下一次浏览器再去发送请求的时候，就会自觉的携带上这个 <strong><code>JSESSIONID</code></strong> 了：<br><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%87%AA%E5%8A%A8%E5%B8%A6%E4%B8%8A%E4%B9%8B%E5%89%8DSet-Cookie%E9%87%8C%E7%9A%84JSESSIONID.png" alt="自动带上之前Set-Cookie里的JSESSIONID"></p>
+<h2 id="引入-会话固定攻击-SFA"><a href="#引入-会话固定攻击-SFA" class="headerlink" title="引入(会话固定攻击)SFA"></a>引入(会话固定攻击)SFA</h2><p>会话固定攻击 英文叫做 Session Fixation Attack.<br>正常来说，只要你不关闭浏览器，并且服务端的 <strong><code>HttpSession</code></strong> 也没有过期，那么维系服务端和浏览器的 sessionid 是不会发生变化的，而会话固定攻击，则是利用这一机制，借助受害者用相同的会话 ID 获取认证和授权，然后利用该会话 ID 劫持受害者的会话以成功冒充受害者，造成会话固定攻击。</p>
+<p>一般来说，会话固定攻击的流程是这样，以淘宝为例：</p>
+<ol>
+<li><p>攻击者自己可以正常访问淘宝网站，在访问的过程中，淘宝网站给攻击者分配了一个 <code>sessionid</code>。 </p>
+</li>
+<li><p>攻击者利用自己拿到的 sessionid 构造一个淘宝网站的链接，并把该链接发送给受害者。 </p>
+</li>
+<li><p>受害者使用该链接登录淘宝网站（该链接中含有 sessionid），登录成功后，一个合法的会话就成功建立。 </p>
+</li>
+<li><p>攻击者利用手里的 sessionid 冒充受害者。<br>在这个过程中，如果淘宝网站支持 URL 重写，那么攻击还会变得更加容易。<br>什么是 URL 重写？就是用户如果在浏览器中禁用了 cookie，那么 sessionid 自然也用不了了，所以有的服务端就支持把 sessionid 放在请求地址中：<br><code>http://www.somesite.com;JSESSIONID=xxxxxx</code><br>如果服务端支持这种 URL 重写，那么对于攻击者来说，按照上面的攻击流程，构造一个这种地址简直太简单不过了。<br>不过这种请求地址大家在 Spring Security 中应该很少见到（原因请见下文），但是在 Shiro 中可能多多少少有见过</p>
+<h2 id="如何防御SFA"><a href="#如何防御SFA" class="headerlink" title="如何防御SFA"></a>如何防御SFA</h2><p>这个问题的根源在 sessionid 不变，如果用户在未登录时拿到的是一个 sessionid，登录之后服务端给用户重新换一个 sessionid，就可以防止会话固定攻击了。<br>如果你使用了 Spring Security ，其实是不用担心这个问题的，因为 Spring Security 中默认已经做了防御工作了。<br>Spring Security 中的防御主要体现在三个方面：</p>
+</li>
+<li><p>首先就是上一节讲的 <strong><code>StrictHttpFirewall</code></strong>，请求地址中有 ; 请求会被直接拒绝。 </p>
+</li>
+<li><p>另一方面就是响应的 Set-Cookie 字段中有 <strong><code>HttpOnly</code></strong> 属性，这种方式避免了通过 XSS 攻击来获取 Cookie 中的会话信息进而达成会话固定攻击。 </p>
+</li>
+<li><p>第三点则是让 sessionid 变一下。既然问题是由于 sessionid 不变导致的，那我就让 sessionid 变一下。<br>具体配置如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.and()</span><br><span class="line">.sessionManagement()</span><br><span class="line">.sessionFixation()</span><br><span class="line">.migrateSession()</span><br><span class="line">.maximumSessions(<span class="number">1</span>)</span><br><span class="line">.maxSessionsPreventsLogin(<span class="keyword">true</span>)</span><br></pre></td></tr></table></figure>
+<p>如图:<br><img src="/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/SessionManagementConfigurer%E6%88%AA%E5%9B%BE.png" alt="如何配置使登陆前后sessionId变化"></p>
+</li>
+</ol>
+<p>可以看到，在这里，我们有四个选项：</p>
+<ol>
+<li>migrateSession 表示在登录成功之后，创建一个新的会话，然后讲旧的 session 中的信息复制到新的 session 中，默认即此。 </li>
+<li>none 表示不做任何事情，继续使用旧的 session。 </li>
+<li>changeSessionId 表示 session 不变，但是会修改 sessionid，这实际上用到了 Servlet 容器提供的防御会话固定攻击。 </li>
+<li>newSession 表示登录后创建一个新的 session。</li>
+</ol>
+<p><strong>默认的 migrateSession</strong> ，在用户匿名访问的时候是一个 sessionid，当用户成功登录之后，又是另外一个 sessionid，这样就可以有效避免会话固定攻击。</p>
+<p><strong>这种三方案，可以让我们有效避免会话固定攻击！</strong></p>
+<p>具体逻辑可参考<strong><code>org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer</code></strong>源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**Specifies that a new session should be created and the session attributes from the original HttpSession should be retained.*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SessionManagementConfigurer&lt;H&gt; <span class="title">migrateSession</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setSessionFixationAuthenticationStrategy(<span class="keyword">new</span> SessionFixationProtectionStrategy());</span><br><span class="line">	<span class="keyword">return</span> SessionManagementConfigurer.<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**Specifies that no session fixation protection should be enabled. This may be useful when utilizing other mechanisms for protecting against session fixation. For example, if application container session fixation protection is already in use. Otherwise, this option is not recommended.*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SessionManagementConfigurer&lt;H&gt; <span class="title">none</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setSessionFixationAuthenticationStrategy(<span class="keyword">new</span> NullAuthenticatedSessionStrategy());</span><br><span class="line">    <span class="keyword">return</span> SessionManagementConfigurer.<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**Specifies that the Servlet container-provided session fixation protection should be used. When a session authenticates, the Servlet method HttpServletRequest#changeSessionId() is called to change the session ID and retain all session attributes.*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SessionManagementConfigurer&lt;H&gt; <span class="title">changeSessionId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setSessionFixationAuthenticationStrategy(<span class="keyword">new</span> ChangeSessionIdAuthenticationStrategy());</span><br><span class="line">    <span class="keyword">return</span> SessionManagementConfigurer.<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**Specifies that a new session should be created, but the session attributes from the original HttpSession should not be retained.*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SessionManagementConfigurer&lt;H&gt; <span class="title">newSession</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SessionFixationProtectionStrategy sessionFixationProtectionStrategy = <span class="keyword">new</span> SessionFixationProtectionStrategy();</span><br><span class="line">    sessionFixationProtectionStrategy.setMigrateSessionAttributes(<span class="keyword">false</span>);</span><br><span class="line">    setSessionFixationAuthenticationStrategy(sessionFixationProtectionStrategy);</span><br><span class="line">    <span class="keyword">return</span> SessionManagementConfigurer.<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>说了这么多，大家发现，如果你使用了 Spring Security，其实你什么都不用做,因为Spring Security默认已经采用 <a href="###如何防御SFA">如何防御SFA</a>里提到的三点做了防御，Spring Security 之强大，可见一斑。</strong></p>
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://52zhongneng.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/" title="Spring-Security-9-攻击与防御">https://52zhongneng.cn/2022/07/07/Spring-Security-9-攻击与防御/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring-Security/" rel="tag"><i class="fa fa-tag"></i>Spring-Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/07/Spring-Security-8-%E8%87%AA%E5%8A%A8%E8%B8%A2%E6%8E%89%E5%8F%A6%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7/" rel="prev" title="Spring-Security-8-自动踢掉另一个用户">
+      <i class="fa fa-chevron-left"></i> Spring-Security-8-自动踢掉另一个用户
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/" rel="next" title="Spring-Security-10-集群化部署Session管理">
+      Spring-Security-10-集群化部署Session管理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#自带防火墙"><span class="nav-number">1.</span> <span class="nav-text">自带防火墙</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#防火墙体系"><span class="nav-number">1.1.</span> <span class="nav-text">防火墙体系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#防火墙防护措施"><span class="nav-number">1.2.</span> <span class="nav-text">防火墙防护措施</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#白名单"><span class="nav-number">1.2.1.</span> <span class="nav-text">白名单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求地址不能有分号"><span class="nav-number">1.2.2.</span> <span class="nav-text">请求地址不能有分号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意⚠️"><span class="nav-number">1.2.3.</span> <span class="nav-text">注意⚠️:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#必须是标准化URL"><span class="nav-number">1.2.4.</span> <span class="nav-text">必须是标准化URL</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#会话固定攻击"><span class="nav-number">2.</span> <span class="nav-text">会话固定攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#了解HttpSession"><span class="nav-number">2.1.</span> <span class="nav-text">了解HttpSession</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引入-会话固定攻击-SFA"><span class="nav-number">2.2.</span> <span class="nav-text">引入(会话固定攻击)SFA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何防御SFA"><span class="nav-number">2.3.</span> <span class="nav-text">如何防御SFA</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.1m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">16:03</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>
