@@ -33,12 +33,12 @@
     var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="1.集群会话方案在传统的单服务架构中，一般来说，只有一个服务器，那么不存在 Session 共享问题，但是在分布式&#x2F;集群项目中，Session 共享则是一个必须面对的问题，先看一个简单的架构图： 在这样的架构中，会出现一些单服务中不存在的问题，例如客户端发起一个请求，这个请求到达 Nginx 上之后，被 Nginx 转发到 Tomcat A 上，然后在 Tomcat A 上往 session 中保">
+  <meta name="description" content="前面的文章中介绍了 Spring Security 如何像微信 一样，自动踢掉已登录用户，但是那是基于单体应用的，如果我们的项目是集群化部署，这个问题该如何解决呢？ 今天我们就来看看集群化部署，Spring Security 要如何处理 session 并发。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring-Security-10-集群化部署Session管理">
 <meta property="og:url" content="https://52zhongneng.cn/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/index.html">
 <meta property="og:site_name" content="Eloise&#39;s Paradise">
-<meta property="og:description" content="1.集群会话方案在传统的单服务架构中，一般来说，只有一个服务器，那么不存在 Session 共享问题，但是在分布式&#x2F;集群项目中，Session 共享则是一个必须面对的问题，先看一个简单的架构图： 在这样的架构中，会出现一些单服务中不存在的问题，例如客户端发起一个请求，这个请求到达 Nginx 上之后，被 Nginx 转发到 Tomcat A 上，然后在 Tomcat A 上往 session 中保">
+<meta property="og:description" content="前面的文章中介绍了 Spring Security 如何像微信 一样，自动踢掉已登录用户，但是那是基于单体应用的，如果我们的项目是集群化部署，这个问题该如何解决呢？ 今天我们就来看看集群化部署，Spring Security 要如何处理 session 并发。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/%E4%BC%A0%E7%BB%9F%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2%E6%9E%B6%E6%9E%84.png">
 <meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/session%E5%85%B1%E4%BA%AB%E5%90%8E%E7%9A%84%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2%E6%9E%B6%E6%9E%84.png">
@@ -53,7 +53,7 @@
 <meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/set%E6%8E%A5%E5%8F%A3.png">
 <meta property="og:image" content="https://52zhongneng.cn/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/get%E6%8E%A5%E5%8F%A3.png">
 <meta property="article:published_time" content="2022-07-07T14:34:48.000Z">
-<meta property="article:modified_time" content="2022-07-08T09:58:13.905Z">
+<meta property="article:modified_time" content="2022-08-09T03:31:31.531Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="Spring-Security">
 <meta name="twitter:card" content="summary">
@@ -296,7 +296,7 @@ listPostUrl.forEach(changeBanner);
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-07-08 17:58:13" itemprop="dateModified" datetime="2022-07-08T17:58:13+08:00">2022-07-08</time>
+                <time title="Modified: 2022-08-09 11:31:31" itemprop="dateModified" datetime="2022-08-09T11:31:31+08:00">2022-08-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -316,7 +316,7 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.6k</span>
+              <span>4.7k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -339,7 +339,15 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="1-集群会话方案"><a href="#1-集群会话方案" class="headerlink" title="1.集群会话方案"></a>1.集群会话方案</h1><p>在传统的单服务架构中，一般来说，只有一个服务器，那么不存在 Session 共享问题，但是在分布式/集群项目中，Session 共享则是一个必须面对的问题，先看一个简单的架构图：</p>
+        <p>前面的文章中介绍了 Spring Security 如何像微信 一样，自动踢掉已登录用户，但是那是基于单体应用的，如果我们的项目是集群化部署，这个问题该如何解决呢？</p>
+<p>今天我们就来看看集群化部署，Spring Security 要如何处理 session 并发。</p>
+<a id="more"></a>
+
+
+
+
+
+<h1 id="1-集群会话方案"><a href="#1-集群会话方案" class="headerlink" title="1.集群会话方案"></a>1.集群会话方案</h1><p>在传统的单服务架构中，一般来说，只有一个服务器，那么不存在 Session 共享问题，但是在分布式/集群项目中，Session 共享则是一个必须面对的问题，先看一个简单的架构图：</p>
 <p><img src="/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/%E4%BC%A0%E7%BB%9F%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2%E6%9E%B6%E6%9E%84.png" alt="传统集群化部署架构"><br>在这样的架构中，会出现一些单服务中不存在的问题，例如客户端发起一个请求，这个请求到达 Nginx 上之后，被 Nginx 转发到 Tomcat A 上，然后在 Tomcat A 上往 session 中保存了一份数据，下次又来一个请求，这个请求被转发到 Tomcat B 上，此时再去 Session 中获取数据，发现没有之前的数据。</p>
 <h2 id="session-共享"><a href="#session-共享" class="headerlink" title="session 共享"></a>session 共享</h2><p>对于这一类问题的解决，目前比较主流的方案就是将各个服务之间需要共享的数据，保存到一个公共的地方（主流方案就是 Redis）：<br><img src="/2022/07/07/Spring-Security-10-%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2Session%E7%AE%A1%E7%90%86/session%E5%85%B1%E4%BA%AB%E5%90%8E%E7%9A%84%E9%9B%86%E7%BE%A4%E5%8C%96%E9%83%A8%E7%BD%B2%E6%9E%B6%E6%9E%84.png" alt="session共享后的集群化部署架构"><br>当所有 Tomcat 需要往 Session 中写数据时，都往 Redis 中写，当所有 Tomcat 需要读数据时，都从 Redis 中读。这样，不同的服务就可以使用相同的 Session 数据了。<br>这样的方案，可以由开发者手动实现，即手动往 Redis 中存储数据，手动从 Redis 中读取数据，相当于使用一些 Redis 客户端工具来实现这样的功能，毫无疑问，<strong>手动实现工作量还是蛮大的</strong>。<br>一个简化的方案就是使用 Spring Session 来实现这一功能，_<strong>Spring Session 就是使用 Spring 中的代理过滤器，将所有的 Session 操作拦截下来，自动的将数据 同步到 Redis 中</strong>_，或者自动的从 Redis 中读取数据。<br>对于开发者来说，所有关于 Session 同步的操作都是透明的，开发者使用 Spring Session，一旦配置完成后，具体的用法就像使用一个普通的 Session 一样。</p>
 <h2 id="session-拷贝"><a href="#session-拷贝" class="headerlink" title="session 拷贝"></a>session 拷贝</h2><p>session 拷贝就是不利用 redis，直接在各个 Tomcat 之间进行 session 数据拷贝，但是这种方式效率有点低，Tomcat A、B、C 中任意一个的 session 发生了变化，都需要拷贝到其他 Tomcat 上，如果集群中的服务器数量特别多的话，<strong><em>这种方式不仅效率低，还会有很严重的延迟。所以这种方案一般作为了解即可。</em></strong></p>
