@@ -909,10 +909,16 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-01-21 08:10:22 / Modified: 08:24:39" itemprop="dateCreated datePublished" datetime="2024-01-21T08:10:22+08:00">2024-01-21</time>
+              <time title="Created: 2024-01-21 08:10:22" itemprop="dateCreated datePublished" datetime="2024-01-21T08:10:22+08:00">2024-01-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-15 22:00:39" itemprop="dateModified" datetime="2024-03-15T22:00:39+08:00">2024-03-15</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -931,14 +937,14 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
+              <span>8.6k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>8 mins.</span>
             </span>
 
 
@@ -958,7 +964,133 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-          
+          <h2 id="IAM-introduction"><a href="#IAM-introduction" class="headerlink" title="IAM introduction"></a>IAM introduction</h2><ul>
+<li>IAM = <em>Identity and Access Management</em>, <strong>Global service</strong></li>
+<li>Root account created by default, shouldn’t be used or shared </li>
+<li>Users are people within your organization, and can be grouped </li>
+<li><strong>Groups only contain users, not other groups</strong></li>
+<li>Users <strong>don’t have to</strong> belong to a group, and user can belong to multiple groups<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Logic%20of%20User%20and%20Groups.png" alt="Logic of User and Groups"></li>
+</ul>
+<p>By defining such IAM Policy, we are allowing our users to use some services in AWS.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/IAM%20Policy%20JSON.png" alt="IAM Policy JSON"><br>Least Privileged Permission basically means that do not give permission more than a user need. </p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Direct%20to%20the%20Create%20User%20page%20of%20IAM%20service%20and%20complete%20the%20details%20.png" alt="Direct to the Create User page of IAM service and complete the details "></p>
+<p>Notes:<br>Permission can be granted via Group Inheritance and Direct attaching.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Permission%20Granting%20Ways.png" alt="Permission Granting Ways"></p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/IAM%20Policies%20inheritance.png" alt="IAM Policies inheritance"></p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/IAM%20Policy%20Structure.png" alt="IAM Policy Structure"><br>In above policy screenshot, please pay attention to which are optional parameters and which are required.<br>policy json:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"2023-10-17"</span>,</span><br><span class="line">    <span class="attr">"Id"</span> : <span class="string">"S3-Account-Permissions"</span>,</span><br><span class="line">    <span class="attr">"Statement"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"Sid"</span>: <span class="string">"1"</span>,</span><br><span class="line">            <span class="attr">"Effect"</span>: <span class="string">"Allow"</span>,</span><br><span class="line">            <span class="attr">"Principal"</span>: &#123;</span><br><span class="line">                <span class="attr">"AWS"</span>: [<span class="string">"arn:aws: iam: :123456789012:root"</span>]</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"Action"</span>: [</span><br><span class="line">                <span class="string">"s3: GetObject"</span>,</span><br><span class="line">                <span class="string">"s3: PutObject"</span></span><br><span class="line">                ],</span><br><span class="line">            <span class="attr">"Resource"</span>: [<span class="string">"arn:aws:s3:::mybucket/*"</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="IAM-Policy-Hands-on"><a href="#IAM-Policy-Hands-on" class="headerlink" title="IAM Policy Hands-on"></a>IAM Policy Hands-on</h2><p>From previous tutorials, we have created an IAM user with root account and added it to the admin group. Hence, this IAM user: Joshua-IAM-user is capable of doing anything that admin can do out of the policy inheritance.<br>We log in aws console in an incognito window with this IAM user:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/IAM%20user%20login.png" alt="IAM user login"><br>and check its permissions as below:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/spot%20the%20IAM%20user.png" alt="spot the IAM user"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Check%20permission%20of%20IAM%20user.png" alt="Check permission of IAM user"><br>then remove the IAM user from the admin group:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/remove%20the%20IAM%20user%20from%20admin%20group.png" alt="remove the IAM user from admin group"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Successful%20prompt%20of%20removing%20user%20from%20group%20.png" alt="Successful prompt of removing user from group "><br>Compare the view of IAM user before &amp; after being removed from the admin group:<br>before:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Generate%20Policy%20is%20previously%20visible%20to%20IAM%20user.png" alt="Generate Policy is previously visible to IAM user"><br>after:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Generate%20Policy%20frame%20is%20now%20Not%20Visible%20to%20IAM%20user.png" alt="Generate Policy frame is now Not Visible to IAM user"></p>
+<p>Policy details Check:</p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Json%20view%20of%20Policy.png" alt="Json view of Policy"></p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Policy%20explaination.png" alt="Policy explaination"></p>
+<p>Policy creation:<br>First redirect to the policy creation page:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/redirect%20to%20the%20page%20of%20policy%20creation.png" alt="redirect to the page of policy creation"><br>Then you can create step by step from specifying the services, actions, resources and conditions like below by the visual mode:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Create%20Policy%20with%20visual%20steps-1.png" alt="Create Policy with visual steps-1"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Create%20Policy%20with%20visual%20steps-2.png" alt="Create Policy with visual steps-2"><br>Or paste a JSON block like:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Create%20Policy%20with%20JSON.png" alt="Create Policy with JSON"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"Version"</span>: <span class="string">"2012-10-17"</span>,</span><br><span class="line">    <span class="attr">"Statement"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"Effect"</span>: <span class="string">"Allow"</span>,</span><br><span class="line">            <span class="attr">"Action"</span>: [</span><br><span class="line">                <span class="string">"iam:GenerateCredentialReport"</span>,</span><br><span class="line">                <span class="string">"iam:GenerateServiceLastAccessedDetails"</span>,</span><br><span class="line">                <span class="string">"iam:Get*"</span>,</span><br><span class="line">                <span class="string">"iam:List*"</span>,</span><br><span class="line">                <span class="string">"iam:SimulateCustomPolicy"</span>,</span><br><span class="line">                <span class="string">"iam:SimulatePrincipalPolicy"</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="attr">"Resource"</span>: <span class="string">"*"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>A strong password is really helpful for brute forcing attacks against your account<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/IAM%20Password%20Policy.png" alt="IAM Password Policy"></p>
+<p>Another security mechanism is MFT: aka multi-factor authentication.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/MFA%20mechanism.png" alt="MFA mechanism"></p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/MFA%20device%20options.png" alt="MFA device options"></p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/How%20to%20direct%20to%20password%20pocliy%20editting%20page.png" alt="How to direct to password pocliy editting page"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/IAM%20default%20password%20policy.png" alt="IAM default password policy"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/IAM%20password%20policy%20customization.png" alt="IAM password policy customization"></p>
+<p>You can turn on the MFA feature for your root account to make it securer. But to do this, you must have your MFA device always available. Otherwise, you might be blocked from logging in again.</p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/How%20to%20direct%20to%20MFA%20editting%20page.png" alt="How to direct to MFA editting page"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Start%20assign%20MFA%20to%20root%20account.png" alt="Start assign MFA to root account"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Follow%20the%20prompt%20to%20scan%20the%20QRcode%20and%20enter%202%20successive%20MFA%20codes%20.png" alt="Follow the prompt to scan the QRcode and enter 2 successive MFA codes "><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Success%20signal%20of%20MFA%20assigning.png" alt="Success signal of MFA assigning"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Now%20you%20can%20see%20the%20MFA%20assigning%20status%20in%20the%20dashboard.png" alt="Now you can see the MFA assigning status in the dashboard"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Sign%20out%20and%20login%20again%20to%20test%20the%20MFA%20is%20turned%20on.png" alt="Sign out and login again to test the MFA is turned on"></p>
+<h2 id="How-can-users-access-AWS"><a href="#How-can-users-access-AWS" class="headerlink" title="How can users access AWS"></a>How can users access AWS</h2><p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/How%20can%20users%20access%20AWS.png" alt="How can users access AWS"><br>Access keys</p>
+<p>Use access keys to make secure REST or HTTP Query protocol requests to AWS service APls. For your protection, you should never share your secret keys with anyone. <span style="color:pink"><strong><em>As a best practice, we recommend frequent key rotation.</em></strong></span> Learn more</p>
+<h3 id="What’s-the-AWS-CLI"><a href="#What’s-the-AWS-CLI" class="headerlink" title="What’s the AWS CLI?"></a>What’s the AWS CLI?</h3><p>• A tool that enables you to interact with AWS services using commands in your command-line shell<br>• Direct access to the public APls of AWS services<br>• You can develop scripts to manage your resources<br>• It’s open-source, official: <a href="https://github.com/aws/aws-cli" target="_blank" rel="noopener">https://github.com/aws/aws-cli</a><br>• Alternative to using AWS Management Console<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/screenshot%20of%20AWS%20CLI.png" alt="screenshot of AWS CLI"></p>
+<h3 id="What’s-the-AWS-SDK"><a href="#What’s-the-AWS-SDK" class="headerlink" title="What’s the AWS SDK?"></a>What’s the AWS SDK?</h3><p>• AWS Software Development Kit (AWS SDK) • Language-specific APls (set of libraries)<br>• Enables you to access and manage AWS services programmatically<br>• Embedded within your application<br>• Supports</p>
+<blockquote>
+<ol>
+<li>SDKs (JavaScript, Python, PHP, NET, Ruby, Java, Go, Node.js, C++)</li>
+<li>Mobile SDKs (Android, iOS, …)</li>
+<li>loT Device SDKs (Embedded C, Arduino, …)</li>
+</ol>
+</blockquote>
+<p>Example: <strong><em>AWS CLI is built on AWS SDK for Python</em></strong> <span style="color:blue">Such as the popular python one: boto</span></p>
+<h2 id="AWS-installation-in-various-environments"><a href="#AWS-installation-in-various-environments" class="headerlink" title="AWS installation (in various environments)"></a>AWS installation (in various environments)</h2><p>You can refer the <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html" target="_blank" rel="noopener"><strong>official documentation</strong></a> whenever you get an installation issue.</p>
+<h3 id="Mac-OS-X"><a href="#Mac-OS-X" class="headerlink" title="Mac OS X:"></a>Mac OS X:</h3><blockquote>
+<p>Download the PKG file via the official website. (shown above)<br>Double-click the package file you just downloaded and click “continue” all the way to the end<br>Open a terminal session and type <code>shell aws--version</code> to Verify whether it’s installed successfully.<br> If yes, it will give you back the version of the AWS CLI just like the illustration below.<br> <img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/signal%20of%20AWS%20CLI%20installation%20success-Mac.png" alt="signal of AWS CLI installation success-Mac"></p>
+</blockquote>
+<h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows:"></a>Windows:</h3><p><span style="color: #ff5555"> Exactly same three steps(to Mac version) need taking to install AWS CLI in Windows.</span><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/signal%20of%20AWS%20CLI%20installation%20success-Windows.png" alt="signal of AWS CLI installation success-Windows"></p>
+<h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux:"></a>Linux:</h3><p><strong>To install</strong> the AWS CLI, run the following commands.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"</span><br><span class="line">unzip awscliv2.zip</span><br><span class="line">sudo ./aws/install</span><br></pre></td></tr></table></figure>
+<p><strong>To update</strong> your current installation of the AWS CLI, add your existing symlink and installer information to construct the install command using the –bin-dir, –install-dir, and –update parameters. The following command block uses an example symlink of <code>/usr/local/bin</code> and example installer location of <code>/usr/local/aws-cli</code>.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"</span><br><span class="line">unzip awscliv2.zip</span><br><span class="line">sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update</span><br></pre></td></tr></table></figure>
+
+<p>To verify, also run <code>aws --verison</code>.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/signal%20of%20AWS%20CLI%20installation%20success-Linux.png" alt="signal of AWS CLI installation success-Linux"></p>
+<h2 id="access-key-generation-amp-AWS-CLI-configuration"><a href="#access-key-generation-amp-AWS-CLI-configuration" class="headerlink" title="access key generation &amp; AWS CLI configuration"></a>access key generation &amp; AWS CLI configuration</h2><h3 id="How-to-generate-access-keys-IAM-User"><a href="#How-to-generate-access-keys-IAM-User" class="headerlink" title="How to generate access keys (IAM User)"></a>How to generate access keys (IAM User)</h3><ol>
+<li>Direct to the security credentials page<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/direct%20to%20the%20security%20credentials%20page.png" alt="direct to the security credentials page"></li>
+<li>Click the button to create access key<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Click%20the%20button%20to%20create%20access%20key.png" alt="Click the button to create access key"></li>
+<li>select the use case and confirm the agreement and NEXT<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/elect%20use%20case%20and%20confirm%20agreement.png" alt="select use case and confirm agreement"></li>
+<li>Tag the key as you wish and hit the create button<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Tag%20the%20key%20as%20you%20wish%20and%20hit%20the%20create%20button.png" alt="Tag the key as you wish and hit the create button"></li>
+<li>Now you will see the successful prompt, PLEASE read it through.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Success%20prompt%20of%20access%20key%20creation.png" alt="Success prompt of access key creation"></li>
+</ol>
+<blockquote>
+<ul>
+<li><span style="color:#0055FF">This is the only time that the secret access key can be viewed or downloaded. You cannot recover it later. However, you can create a new access key any time.</span></li>
+<li><span style="color:#05FF09">Given above, one must copy the plain text of the access key and secret access key (you can regard them as username and password) to local note or download the csv file.</span></li>
+<li><span style="color:#FF00FF">This manual suit for creating a new access key for ROOT user as well.</span></li>
+</ul>
+</blockquote>
+<h3 id="AWS-CLI-configuration"><a href="#AWS-CLI-configuration" class="headerlink" title="AWS CLI configuration"></a>AWS CLI configuration</h3><p><span>Once your access key generated, the first thing you need to do is configure the AWS CLI.</span></p>
+<blockquote>
+<ol>
+<li>Open terminal window and execute the command below:</li>
+</ol>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws configure</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ol start="2">
+<li>You will be greeted with the <strong>access key</strong>, just enter it.</li>
+<li>You will be greeted with the <strong>secret access key</strong>, just enter it.</li>
+<li>You will be prompted with the <strong>Default region name</strong> that you want to configure the CLI. Just choose the one close to you. I keep it the same one with the mentor. Just in case of it not in accordance with what’s taught in the course.</li>
+<li>You will be prompted with the <strong>Default output format</strong>. For this one, you can just hit enter to ignore.</li>
+<li>Access key created successfully, and you need to verify with a sample command</li>
+</ol>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws iam list-users</span><br></pre></td></tr></table></figure>
+<p>If it’s successful, you will be responded with a JSON block like, information about users that you created with this account:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"Users"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"Path"</span>: <span class="string">"/"</span>,</span><br><span class="line">            <span class="attr">"UserName"</span>: <span class="string">"Joshua-IAM-user"</span>,</span><br><span class="line">            <span class="attr">"UserId"</span>: <span class="string">"AIDASAY7B6YVYE3UUWCCG"</span>,</span><br><span class="line">            <span class="attr">"Arn"</span>: <span class="string">"arn:aws:iam::139114706475:user/Joshua-IAM-user"</span>,</span><br><span class="line">            <span class="attr">"CreateDate"</span>: <span class="string">"2023-09-24T02:41:26+00:00"</span>,</span><br><span class="line">            <span class="attr">"PasswordLastUsed"</span>: <span class="string">"2024-03-13T15:14:37+00:00"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Illustration of AWS CLI configuration and verification<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/AWS%20CLI%20configuration%20step%20by%20step.png" alt="AWS CLI configuration step by step"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/AWS%20CLI%20configuration%20verification.png" alt="Illustration of AWS CLI configuration verification"></p>
+<p>If we get the user list permission removed from that IAM user via Management condole with the ROOT account, and then check the user list in the management portal, it will throw an error like:<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Error%20message%20shown%20when%20listing%20user%20without%20proper%20permission.png" alt="Error message shown when listing user without proper permission"><br>At this moment, if we execute the user list command <code>aws iam list-users</code> in CLI, it will return nothing, neither error.</p>
+<h2 id="Delete-Access-Key-Optional"><a href="#Delete-Access-Key-Optional" class="headerlink" title="Delete Access Key (Optional)"></a>Delete Access Key (Optional)</h2><ol>
+<li>First, deactivate access key<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Delete%20Access%20key-step1.png" alt="Delete Access key-step1."></li>
+<li>Refresh and hit delete button, and then type the access key in the box<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Delete%20Access%20key-step2.png" alt="Delete Access key-step2."></li>
+<li>You can verify from the dashboard that access key is already deleted.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Delete%20Access%20key-step3.png" alt="Delete Access key-step3."></li>
+</ol>
+<h2 id="CloudShell"><a href="#CloudShell" class="headerlink" title="CloudShell"></a>CloudShell</h2><h3 id="What-is-AWS-CloudShell"><a href="#What-is-AWS-CloudShell" class="headerlink" title="What is AWS CloudShell?"></a>What is AWS CloudShell?</h3><p>AWS CloudShell is a browser-based, pre-authenticated shell that you can launch directly from the AWS Management Console. You can navigate to CloudShell from the AWS Management Console a few different ways. For more information, see <a href="https://docs.aws.amazon.com/cloudshell/latest/userguide/welcome.html#how-to-get-started" target="_blank" rel="noopener">How to get started with AWS CloudShell?</a><br>You can run AWS CLI commands using your preferred shell, such as Bash, PowerShell, or Z shell. And you can do this without downloading or installing command line tools.</p>
+<p>When you launch AWS CloudShell, a compute environment that’s based on Amazon Linux 2023 is created. Within this environment, you can access <a href="https://docs.aws.amazon.com/cloudshell/latest/userguide/vm-specs.html#vm-configuration" target="_blank" rel="noopener"><strong>an extensive range of pre-installed development tools</strong></a>, options for uploading and downloading files, and file storage that persists between sessions.</p>
+<p>Try it now: <a href="https://docs.aws.amazon.com/cloudshell/latest/userguide/getting-started.html" target="_blank" rel="noopener"><strong>Getting started with AWS CloudShell</strong></a></p>
+<h3 id="How-to-get-Started-with-CloudShell"><a href="#How-to-get-Started-with-CloudShell" class="headerlink" title="How to get Started with CloudShell"></a>How to get Started with CloudShell</h3><blockquote>
+<ul>
+<li>On the navigation bar, choose the CloudShell icon.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/starting%20cloudshell%20via%20navigation%20bar.png" alt="starting cloudshell via navigation bar"></li>
+<li>In the Search box, type “CloudShell”, and then choose CloudShell in the services.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/starting%20cloudshell%20via%20searchbox.png" alt="starting cloudshell via searchbox"></li>
+<li>Choose CloudShell on the Console Toolbar, on the bottom left of the console.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/starting%20cloudshell%20via%20console%20toolbar.png" alt="starting cloudshell via console toolbar"></li>
+</ul>
+</blockquote>
+<p>And if you don’t see it, just make sure you check out the cloud shell availability regions because it’s not a global service that’s available in all regions.<br>Supported AWS Regions for AWS CloudShell, you need to be aware that this list changes dynamically over time:<br><strong>It’s completely fine that you don’t use CloudShell as long as you configure the aws cli the way we did in previous steps.</strong><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Supported%20AWS%20Regions%20for%20AWS%20CloudShell.png" alt="Supported AWS Regions for AWS CloudShell"></p>
+<hr>
+<p>You can adjust the height of your CloudShell session by dragging =.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/dragging%20the%20equal%20symbol%20to%20adjust%20the%20height%20of%20your%20CloudShell.png" alt="dragging the equal symbol to adjust the height of your CloudShell"><br>running commands in cloudshell:</p>
+<p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/CloudShell%20commands%20execution.png" alt="CloudShell commands execution"></p>
+<h2 id="IAM-Roles"><a href="#IAM-Roles" class="headerlink" title="IAM Roles"></a>IAM Roles</h2><h3 id="analogy-of-IAM-Roles"><a href="#analogy-of-IAM-Roles" class="headerlink" title="analogy of IAM Roles"></a>analogy of IAM Roles</h3><p>when other services wants to access aws with your AWS account, they need to do this on behalf of you. The way this works is through the role assignment.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/analogy%20of%20IAM%20Roles.png" alt="EC2 with IAM roles can access"></p>
+<h3 id="IAM-roles-hands-on"><a href="#IAM-roles-hands-on" class="headerlink" title="IAM roles hands-on"></a>IAM roles hands-on</h3><h4 id="IAM-role-creation"><a href="#IAM-role-creation" class="headerlink" title="IAM role creation"></a>IAM role creation</h4><p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Create%20IAM%20Role%20-%20step1.png" alt="Create IAM Role - step1"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Create%20IAM%20Role%20-%20step2.png" alt="Create IAM Role - step2"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Create%20IAM%20Role%20-%20step3.png" alt="Create IAM Role - step3"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Create%20IAM%20Role%20-%20step4.png" alt="Create IAM Role - step4"></p>
+<p>Now you can check the role created and verify its information<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Check%20IAM%20role%20list.png" alt="Check IAM role list"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Verify%20the%20information%20of%20the%20IAM%20role%20just%20created.png" alt="Verify the information of the IAM role just created"></p>
+<h2 id="IAM-Tools"><a href="#IAM-Tools" class="headerlink" title="IAM Tools"></a>IAM Tools</h2><p>The credentials report lists all your IAM users in this account and the status of their various credentials. After a report is created, it is stored for up to four hours.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Two%20types%20of%20IAM%20secutiry%20tools.png" alt="Two types of IAM secutiry tools"></p>
+<h3 id="Credential-Report"><a href="#Credential-Report" class="headerlink" title="Credential Report"></a>Credential Report</h3><p><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Crenditial%20Report.png" alt="Crenditial Report"><br>This credential report will download a csv file, in which you can find the user/account information such as mfa_enabled, password_enabled and password_last_changed. </p>
+<h3 id="Access-Advisor"><a href="#Access-Advisor" class="headerlink" title="Access Advisor"></a>Access Advisor</h3><p>Access Advisor shows the services that this user can access and when those services were last accessed and by whom. Review this data to remove unused permissions.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Access%20Advisor.png" alt="Access Advisor"></p>
+<h2 id="IAM-Guidelines-amp-Best-Practices"><a href="#IAM-Guidelines-amp-Best-Practices" class="headerlink" title="IAM Guidelines &amp; Best Practices"></a>IAM Guidelines &amp; Best Practices</h2><blockquote>
+<ul>
+<li>Don’t use the root account except for AWS account setup </li>
+<li>One physical user = One AWS user</li>
+<li>Assign users to groups and assign permissions to groups</li>
+<li>Create a strong password policy</li>
+<li>Use and enforce the use of Multi-Factor Authentication (MFA)</li>
+<li>Create and use Roles for giving permissions to AWS services </li>
+<li>Use Access Keys for Programmatic Access (CLI / SDK)</li>
+<li>Audit permissions of your account using IAM Credentials Report &amp; IAM Access Advisor </li>
+<li>Never share IAM users &amp; Access Keys</li>
+</ul>
+</blockquote>
+<h2 id="Shared-Responsibility-Model-for-IAM"><a href="#Shared-Responsibility-Model-for-IAM" class="headerlink" title="Shared Responsibility Model for IAM"></a>Shared Responsibility Model for IAM</h2><p>Put simply, Shared Responsibility means that AWS is responsible for all the infrastructure and you are responsible for how you use and manage them.<br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/Shared%20Responsibility%20Model%20for%20IAM.png" alt="Shared Responsibility Model for IAM"><br><img src="/2024/01/21/AWS-Section4-IAM-Identity-and-Access-Management/IAM%20summary.png" alt="IAM summary"></p>
+
       
     </div>
 
@@ -1113,10 +1245,16 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-01-21 08:09:49 / Modified: 09:09:46" itemprop="dateCreated datePublished" datetime="2024-01-21T08:09:49+08:00">2024-01-21</time>
+              <time title="Created: 2024-01-21 08:09:49" itemprop="dateCreated datePublished" datetime="2024-01-21T08:09:49+08:00">2024-01-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-12 09:31:09" itemprop="dateModified" datetime="2024-03-12T09:31:09+08:00">2024-03-12</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -1162,7 +1300,7 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Traditional-IT-Overview"><a href="#Traditional-IT-Overview" class="headerlink" title="Traditional IT Overview"></a>Traditional IT Overview</h2><p><img src="/2024/01/21/AWS-Section3-What-is-Cloud-Computing/Xnip2023-12-18_07-39-02.png" alt="Traditional Network"><br>Problems with traditional IT approach:</p>
+          <h2 id="Traditional-IT-Overview"><a href="#Traditional-IT-Overview" class="headerlink" title="Traditional IT Overview"></a>Traditional IT Overview</h2><p><img src="/2024/01/21/AWS-Section3-What-is-Cloud-Computing/IT%20Terminology.png" alt="Traditional Network"><br>Problems with traditional IT approach:</p>
 <ul>
 <li>Pay for the rent for the data center</li>
 <li>Pay for power supply, cooling, maintenance</li>
@@ -1180,7 +1318,7 @@ listPostUrl.forEach(changeBanner);
 <li>Do you want two tomorrow? Of course.</li>
 </ul>
 <p>The cloud really allows you to adapt to the type and size you need. Then you can access all these resources, not with 24-hour notice, not with two hours notice, <strong>but instantly</strong>, you don’t need to order things in advance.<br>When you want a server, and you’ll see this in this course, you’ll have it within seconds.<br><br>Then the cloud will also give you a really nice interface so you can easily access your servers, your storage, databases, and a set of application services. Something about the cloud, but in specific AWS, which is <strong>Amazon Web Services owns and maintains</strong> the network-connected hardware required for these application services while you provision and use what you need via a web application.</p>
-<p>So with this interface, we’ll make all these things a reality.<br><br>Now, let’s go back to our traditional IT.<br><br>So we’re changing. We have our office or our garage, but now instead of building our own data center we’re going to use the cloud, and in the cloud, which is also a data center, is just not our data center, we’re going to have servers one, two, three, as we need and as we go and we’re just going to pay for exactly what we’re using. So you have actually been using the cloud without even knowing it because it is omnipresent, but not necessarily visible.<br><br>So if you use a web client such as Gmail, well, for example, it’s an email cloud service and you’re going to pay only for the emails you stored. You’re not provisioning servers when you use Gmail, you just use it. Maybe you’ve stored some data on the cloud, maybe through Dropbox, Google Drive, Google Photos, iCloud, I don’t know.<br><br>But with Dropbox, for example, it’s a cloud store service, you’re going to put your files on Dropbox. And originally, fun fact, Dropbox was built on AWS. So we’ve been using a cloud storage service as well without knowing it. And Netflix, it’s huge. It is built entirely on AWS and it provides you a cloud service, which is to get video on-demand. Now, obviously these cloud services are very different from AWS, but we’ll learn what it goes behind these services and how AWS can help you build these kinds of cloud services.<br></p>
+<p>So with this interface, we’ll make all these things a reality.<br><br>Now, let’s go back to our traditional IT.<br><br>So we’re changing. We have our office or our garage, but now instead of building our own data center we’re going to use the cloud, and in the cloud, which is also a data center, is just not our data center, we’re going to have servers one, two, three, as we need and as we go and we’re just going to pay for exactly what we’re using. So you have actually been using the cloud without even knowing it because it is omnipresent, but not necessarily visible.<br><br>So if you use a web client such as Gmail, well, for example, it’s an email cloud service and you’re going to pay only for the emails you stored. You’re not provisioning servers when you use Gmail, you just use it. Maybe you’ve stored some data on the cloud, maybe through Dropbox, Google Drive, Google Photos, iCloud, I don’t know.<br><br>But with Dropbox, for example, it’s a cloud store service, you’re going to put your files on Dropbox. And originally, fun fact, Dropbox was built on AWS. So we’ve been using a cloud storage service as well without knowing it. And Netflix, it’s huge. It is built entirely on AWS and it provides you a cloud service, which is to get video on-demand. Now, obviously these cloud services are very different from AWS, but we’ll learn what it goes behind these services and how AWS can help you build these kinds of cloud services.<br><br><img src="/2024/01/21/AWS-Section3-What-is-Cloud-Computing/Cloud%20Services%20you%20might%20use.png" alt="Cloud Services you might use without even knowing it"></p>
 <hr>
 <p>There are different kinds of clouds out there. Clouds can be divided into three categories based on deployment models, namely Private Cloud, Public Cloud and Hybrid Cloud.<br></p>
 <blockquote>
@@ -1213,6 +1351,7 @@ listPostUrl.forEach(changeBanner);
 </ol>
 </blockquote>
 </blockquote>
+<p><img src="/2024/01/21/AWS-Section3-What-is-Cloud-Computing/Deployment%20Models%20of%20the%20Cloud.png" alt="Deployment Models of the Cloud.png"></p>
 <hr>
 <ul>
 <li><strong>Five Characteristics</strong> of Cloud Computing<ol>
@@ -1245,7 +1384,7 @@ listPostUrl.forEach(changeBanner);
 <p><strong>Six Advantages</strong> of Cloud Computing</p>
 <ol>
 <li>Trade capital expenses for operational expenses, so CAPEX or OPEX.<ul>
-<li>That means that you don’t own hardware, you’re going to pay on-demand and that will reduce your total cost of ownership, your TCO, and your operational expense. &lt;/br/&gt;</li>
+<li>That means that you don’t own hardware, you’re going to pay on-demand and that will reduce your total cost of ownership, your TCO, and your operational expense. <br></li>
 <li>That means that you don’t buy the hardware in advance, you’re just going to rent it from AWS.</li>
 </ul>
 </li>
@@ -1273,7 +1412,7 @@ listPostUrl.forEach(changeBanner);
 <hr>
 <p>Problems Solved by the Cloud<br><img src="/2024/01/21/AWS-Section3-What-is-Cloud-Computing/Xnip2023-12-19_09-21-38.png" alt="Problems Solved by the Cloud"></p>
 <hr>
-<h2 id="The-Different-Types-of-Cloud-Computing"><a href="#The-Different-Types-of-Cloud-Computing" class="headerlink" title="The-Different-Types-of-Cloud-Computing"></a>The-Different-Types-of-Cloud-Computing</h2><ul>
+<h2 id="The-Different-Types-of-Cloud-Computing"><a href="#The-Different-Types-of-Cloud-Computing" class="headerlink" title="The Different Types of Cloud Computing"></a>The Different Types of Cloud Computing</h2><ul>
 <li><strong>IaaS</strong> (Infrastructure as a Service)</li>
 </ul>
 <ol>
@@ -1631,7 +1770,7 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">16:28</span>
+    <span title="Reading time total">16:37</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>
