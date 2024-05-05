@@ -33,18 +33,98 @@
     var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Less Is More">
+  <meta name="description" content="Billing SetupBefore we move on to the next section for this aws course, we need to first set the right budget plan to avoid unnecessary charge.By default, the billing information is inaccessible to IA">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AWS-Section5-EC2-Elastic-Compute-Cloud">
 <meta property="og:url" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/index.html">
 <meta property="og:site_name" content="Eloise&#39;s Paradise">
-<meta property="og:description" content="Less Is More">
+<meta property="og:description" content="Billing SetupBefore we move on to the next section for this aws course, we need to first set the right budget plan to avoid unnecessary charge.By default, the billing information is inaccessible to IA">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Directing%20to%20billing%20enablement%20for%20IAM%20user%20from%20root%20account%20setting%20.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/ENable%20IAM%20user%20and%20role%20to%20access%20billing%20information.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Update-IAM-Budget-Setup-Permission.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20can%20see%20billing%20info%20after%20enabled%20by%20root%20account.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budges-1.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-2.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-3.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-4.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Basics.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20configuration.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Top%205%20Typical%20EC2%20types.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Hands-on%20EC2%20introduction.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step1.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step2.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step3.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Joshua%27s-Tutorial_key-Pair%7C-creation.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/storage-configuration.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step4.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step5.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step6.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20Summary.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launching%20in%20progress.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20Success%20and%20logs.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20can%20be%20now%20seen%20in%20the%20instance%20list.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-01-General%20Details.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-02-StatusAlarms.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-03-Monitoring.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-04-security.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-05-Networking.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-06-Storage.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-07-Tags.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/public%20IP%20link.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/What%20you%20see%20when%20open%20public%20IP%20link.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type%20Overview.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/General%20Type%20EC2%20Instance.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Types%20from%20Official%20aws%20doc.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Compute%20Optimized.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Memory%20Optimized.png.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Storage%20Optimized.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Top%205%20Typical%20EC2%20types.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Illustration%20of%20Security%20Groups.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/How%20Security%20Group%20looks%20like%20in%20web%20menagement%20portal.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Groups%20Diagram.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Referencing%20other%20security%20groups%20Diagram.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20dashboard%20menu.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20List.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20Check-details.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20Check-inbound%20rules.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20inbound%20rule%20representation.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Source%20of%20inbound%20rule%20lanuch%20wizard%201%20was%20specified.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/public%20in%20inaccessible%20NOW.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Compatibility%20of%20SSH%20on%20different%20OS.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Choose%20the%20one%20OS-specific%20SSH%20lecture.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/SSH%20Troubleshooting.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/SSH%20into%20EC2%20instance%20step-by-step.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Try%20to%20connect%20instance.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/instance%20connection%20method%20selection.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Executing%20command%20in%20browser-based%20EC2%20instance%20ssh%20session.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Execute%20swa%20iam%20commands%20with%20inappropriate%20permission.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Adding%20IAM%20read-only%20role%20to%20instance%20step%201.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Adding%20IAM%20read-only%20role%20to%20instance%20step%202.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Check%20IAM%20role%20of%20instance%20AFTER%20role%20assignment.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Check%20IAM%20role%20of%20instance%20before%20role%20assignment.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/rerun%20the%20iam%20command%20when%20role%20added.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Proof%20of%20IAM%20role.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/rerun%20the%20iam%20command%20when%20role%20added%20but%20permission%20removed%20from%20role.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/When%20connection%20without%20proper%20security%20group%20attached%20to%20the%20instance.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/try%20connect%20EC2%20instance%20via%20SSH%20client.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Instances%20Purchasing%20Options.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20On%20Demand%20instance%20properties.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Reserved%20instance%20properties.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Saving%20Plan%20properties.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Spot%20instance%20properties.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Dedicated%20Hosts%20properties.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Dedicated%20instance%20properties.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Capacity%20Reservations.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/A%20glimpse%20of%20comparison%20of%20various%20pricing.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Shared%20Responsibility%20Model%20for%20EC2.png">
 <meta property="article:published_time" content="2024-01-21T00:10:51.000Z">
-<meta property="article:modified_time" content="2024-01-21T00:24:39.605Z">
+<meta property="article:modified_time" content="2024-03-17T06:14:35.047Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="AWS">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png">
 
 <link rel="canonical" href="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/">
 
@@ -275,10 +355,16 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-01-21 08:10:51 / Modified: 08:24:39" itemprop="dateCreated datePublished" datetime="2024-01-21T08:10:51+08:00">2024-01-21</time>
+              <time title="Created: 2024-01-21 08:10:51" itemprop="dateCreated datePublished" datetime="2024-01-21T08:10:51+08:00">2024-01-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-17 14:14:35" itemprop="dateModified" datetime="2024-03-17T14:14:35+08:00">2024-03-17</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -297,22 +383,18 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
+              <span>11k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>10 mins.</span>
             </span>
 
 
            
-          
-          <div class="out-img-topic">
-          <img src=/image/JW2.jpeg class="img-topic">
-          </div>
           
 
         </div>
@@ -324,7 +406,97 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <h2 id="Billing-Setup"><a href="#Billing-Setup" class="headerlink" title="Billing Setup"></a>Billing Setup</h2><p>Before we move on to the next section for this aws course, we need to first set the right budget plan to avoid unnecessary charge.<br>By default, the billing information is inaccessible to IAM users, hence, you need to enable this via the root account.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png" alt="IAM user was not allowed to check billing info"></p>
+<h3 id="enable-IAM-user-to-check-billing-info"><a href="#enable-IAM-user-to-check-billing-info" class="headerlink" title="enable IAM user to check billing info"></a>enable IAM user to check billing info</h3><p>Go to the setting menu<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Directing%20to%20billing%20enablement%20for%20IAM%20user%20from%20root%20account%20setting%20.png" alt="Directing to billing enablement for IAM user from root account setting "><br>enable IAM User<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/ENable%20IAM%20user%20and%20role%20to%20access%20billing%20information.png" alt="ENable IAM user and role to access billing information"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Update-IAM-Budget-Setup-Permission.png" alt="Update-IAM-Budget-Setup-Permission"><br>post verification<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20can%20see%20billing%20info%20after%20enabled%20by%20root%20account.png" alt="IAM user can see billing info after enabled by root account"><br>But this is just for learning purposes. To follow the best practices, we recommend to keep the IAM user and role access to billing information feature <strong>deactivated</strong>.</p>
+<h2 id="budget-creation"><a href="#budget-creation" class="headerlink" title="budget creation"></a>budget creation</h2><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budges-1.png" alt="Budges-1"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-2.png" alt="Budgets-2"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-3.png" alt="Budgets-3"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-4.png" alt="Budgets-4"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Basics.png" alt="EC2 Basics"><br>So we have lots and lots of options and as you’ll see in the hands-on, even more options at other certification levels that you need to know in EC2 instances, but at a core of it what you need to remember is that you can choose pretty much how you want your visual machine to be, and you can rent it from AWS. And that is the power of the cloud. You can do this by just in the blink of the eye, really.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20configuration.png" alt="EC2 configuration"></p>
+<h2 id="EC2-User-Data"><a href="#EC2-User-Data" class="headerlink" title="EC2 User Data"></a>EC2 User Data</h2><blockquote>
+<p>It is possible to bootstrap our instances using an EC2 User data script.<br><em>Bootstrapping means launching commands when a machine starts</em>.<br>That script is <strong>only run once</strong> at the instance first start.<br>EC2 user data is used to automate boot tasks such as:</p>
+<blockquote>
+<ul>
+<li>Installing updates </li>
+<li>Installing software </li>
+<li>Downloading common files from the internet </li>
+<li>Anything you can think of<br><span style="color:red">The EC2 User Data Script runs with the root user</span><br>So it could be whatever you want, but just know that the more you add into your User Data script, the more your instant has to do at boot time and longer it will take to bring the instance up.</li>
+</ul>
+</blockquote>
+</blockquote>
+<h2 id="EC2-instance-example"><a href="#EC2-instance-example" class="headerlink" title="EC2 instance example"></a>EC2 instance example</h2><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Top%205%20Typical%20EC2%20types.png" alt="Top 5 Typical EC2 types"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Hands-on%20EC2%20introduction.png" alt="Hands-on EC2 introduction"></p>
+<h2 id="EC2-instance-launch"><a href="#EC2-instance-launch" class="headerlink" title="EC2 instance launch"></a>EC2 instance launch</h2><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step1.png" alt="Launch EC2 Instance-Step1"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step2.png" alt="Launch EC2 Instance-Step2"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step3.png" alt="Launch EC2 Instance-Step3"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Joshua%27s-Tutorial_key-Pair%7C-creation.png" alt="Joshua&#39;s-Tutorial_key-Pair|-creation"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/storage-configuration.png" alt="How advanced options look like when launching EBS EC2 instance"><br>You can change the default settings such as the <strong>Delete on terminate</strong> option, but for now we will just keep it as it is.<br><a href="https://us-east-1.console.aws.amazon.com/ec2/home?region=us-east-1#LaunchInstances:" target="_blank" rel="noopener"><strong>From official link here</strong></a>, you can compare all the EC2 instance specifications.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step4.png" alt="Launch EC2 Instance-Step4"><br>You can see above, the “Allow SSH traffic from” checkbox is checked because we are using SSH in this course to communicate with this instance.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step5.png" alt="Launch EC2 Instance-Step5"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step6.png" alt="Launch EC2 Instance-Step6"><br>When all set, you can toggle the menus to see the summary as below:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20Summary.png" alt="Launch Summary"><br>Hit the launch instance button, it will start the launching and one started it will prompt a green bar in the top of the page with launching logs shown below:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launching%20in%20progress.png" alt="Launching in progress"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20Success%20and%20logs.png" alt="Launch Success and logs"><br>IF you go to the instance dashboard, you will find the instance just launched there, running.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20can%20be%20now%20seen%20in%20the%20instance%20list.png" alt="Instance can be now seen in the instance list"><br>Thanks to the cloud, I am able to create an instance or 100 of them very quickly in less than 10 seconds without me owning any single server.<br>So that is extremely powerful, and we just scratched the surface of the power of the cloud, obviously because the course is just getting started, but you can get a feeling of the advances and the speed we can have on the cloud thanks to this.<br>You can check the details of the instance like below: (need to check the checkbox of the instance and switch between the tabs for different information you require to inspect)<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-01-General%20Details.png" alt="Instance Details-01-General Details"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-02-StatusAlarms.png" alt="Instance Details-02-StatusAlarms"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-03-Monitoring.png" alt="Instance Details-03-Monitoring"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-04-security.png" alt="Instance Details-04-security"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-05-Networking.png" alt="Instance Details-05-Networking"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-06-Storage.png" alt="Instance Details-06-Storage"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-07-Tags.png" alt="Instance Details-07-Tags"><br>From the details tab of the instance, you can open the hyperlink of the public IP,<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/public%20IP%20link.png" alt="public IP link"><br>and you will see this: (if it’s not showing, you need to change the protocol to http from https because while configuring the instance we checked <strong>only</strong> allow <span style="color:red">HTTP</span> traffic from internet)<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/What%20you%20see%20when%20open%20public%20IP%20link.png" alt="What you see when open public IP link"><br><strong>If you stop an instance, and then you start it later on, then AWS probably changes its public IPv4. But private IPv4 will stay same</strong></p>
+<h2 id="Instance-Types"><a href="#Instance-Types" class="headerlink" title="Instance Types"></a>Instance Types</h2><p><a href="https://aws.amazon.com/ec2/instance-types/" target="_blank" rel="noopener"></a><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type%20Overview.png" alt="Instance Type Overview"></p>
+<h3 id="General-Type"><a href="#General-Type" class="headerlink" title="General Type"></a>General Type</h3><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/General%20Type%20EC2%20Instance.png" alt="General Type EC2 Instance"><br><strong>this list will evolve over time, please check the AWS website for the latest information</strong><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Types%20from%20Official%20aws%20doc.png" alt="Instance Types from Official aws doc"></p>
+<h3 id="Compute-Optimized"><a href="#Compute-Optimized" class="headerlink" title="Compute Optimized"></a>Compute Optimized</h3><p>Compute Optimized instances are ideal for compute bound applications that benefit from high performance processors. Instances belonging to this category are well suited for batch processing workloads, media transcoding, high performance web servers, high performance computing (HPC), scientific modeling, dedicated gaming servers and ad server engines, machine learning inference and other compute intensive applications.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Compute%20Optimized.png" alt="Instance Type-Compute Optimized"></p>
+<h3 id="Memory-Optimized"><a href="#Memory-Optimized" class="headerlink" title="Memory Optimized"></a>Memory Optimized</h3><p>Memory optimized instances are designed to deliver fast performance for workloads that process large data sets in memory.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Memory%20Optimized.png.png" alt="Instance Type-Memory Optimized"></p>
+<h3 id="Storage-Optimized"><a href="#Storage-Optimized" class="headerlink" title="Storage Optimized"></a>Storage Optimized</h3><p>Storage optimized instances are designed for workloads that require high, sequential read and write access to very large data sets on local storage. They are optimized to deliver tens of thousands of low-latency, random I/O operations per second (IOPS) to applications.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Storage%20Optimized.png" alt="Instance Type-Storage Optimized"><br>To recap the types with a comparison graph, consider the following example:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Top%205%20Typical%20EC2%20types.png" alt="Top 5 Typical EC2 types"><br><a href="https://www.ec2instances.info/" target="_blank" rel="noopener">from here</a> you can check all the instances available shown as a list with spec and pricing. <strong>Or</strong> <a href="https://instances.vantage.sh/" target="_blank" rel="noopener">here</a>, if the first link is <strong>NOT</strong> working.</p>
+<h2 id="Security-Groups-amp-Classic-Ports-Overview"><a href="#Security-Groups-amp-Classic-Ports-Overview" class="headerlink" title="Security Groups &amp; Classic Ports Overview"></a>Security Groups &amp; Classic Ports Overview</h2><h3 id="Illustration-of-Security-Groups"><a href="#Illustration-of-Security-Groups" class="headerlink" title="Illustration of Security Groups"></a>Illustration of Security Groups</h3><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Illustration%20of%20Security%20Groups.png" alt="Illustration of Security Groups"><br>Deeper Dive</p>
+<ul>
+<li>Security groups are acting as a “firewall”‘ on EC2 instances </li>
+<li>They regulate:<ul>
+<li><blockquote>
+<p>Access to Ports </p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>Authorised IP ranges - IPv4 and IPv6 </p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>Control of inbound network (from other to the instance)</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>Control of outbound network (from the instance to other)</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/How%20Security%20Group%20looks%20like%20in%20web%20menagement%20portal.png" alt="How Security Group looks like in web menagement portal"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Groups%20Diagram.png" alt="Security Groups Diagram"><br>Only those authorized port and IPs can be leveraged to access the EC2 instance <strong>from outside</strong>, traffic from any unauthorized port will be blocked.<br><br>By default, any aws EC2 instance is allowed to access outside networks. You can change this setting as you wish.<br><strong>Good to knows :</strong></p>
+<ol>
+<li>Can be attached to multiple instances. (N * N) </li>
+<li>Locked down to a region /VPC combination </li>
+<li>Does live “outside” the EC2 - if traffic is blocked the EC2 instance won’t see it </li>
+<li><strong>It’s good to maintain one separate security group for SSH access</strong> </li>
+<li>If your application is not accessible (time out), then it’s a security group issue • If your application gives a “connection refused” error, then it’s an application error, or it’s not launched </li>
+<li>All <strong>in</strong>bound traffic is <span style="color:red"><strong>blocked</strong></span> by default </li>
+<li>All <strong>out</strong>bound traffic is <span style="color:green"><strong>authorised</strong></span> by default<br>Now there is a small advanced feature that I really, really like, and I think it’s perfect if you start using load balancers, and we’ll see this in the next lecture as well, which is how to reference security groups from other security groups.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Referencing%20other%20security%20groups%20Diagram.png" alt="Referencing other security groups Diagram"><br>So let me explain things (of above snippet).<br>So we have an EC2 instance, and it has a security group,what I call group number one. And the inbound rules is basically saying, I’m authorizing security group number one inbound and security group number two.<br><br>So why would we even do this?<br>Well, if we launch another EC2 instance,and it has security group two attached to it, well, by using the security group run rule that we just set up, we basically allow our EC2 instance to go connect straight through on the port we decided onto our first EC2 instance.<br><br>Similarly, if we have another EC2 instance with a security group one attached, well, we’ve also authorized this one to communicate straight back to our instances. And so regardless of the IP of our EC2 instances, because they have the right security group attached to them, they’re able to communicate straight through to other instances.<br>And that’s awesome because it doesn’t make you think about IPs all the time.<br>And if you have another EC2 instance, maybe with security group number three attached to it, well, because group number three wasn’t authorized in the inbound rules of security group number one, then it’s being denied and things don’t work.<br><br>So that’s a bit of an advanced feature, but we’ll see it when we’ll deal with load balancers ‘cause it’s quite a common pattern. I just want you to know about it. Again, just remember this diagram.<br>And by now you should be really good at security groups and understand them correctly.</li>
+</ol>
+<p><strong>Classic Ports to know</strong><br>• 22 = SSH (Secure Shell) - log into a Linux instance<br>• 21 = FTP (File Transfer Protocol) - upload files into a file share<br>• 22 = SFTP (Secure File Transfer Protocol) - upload files using SSH<br>• 80 = HTTP - access unsecured websites<br>• 443 = HTTPS - access secured websites<br>• 3389 = RDP (Remote Desktop Protocol) - log into a Windows instance</p>
+<h3 id="Security-Groups-Hands-on"><a href="#Security-Groups-Hands-on" class="headerlink" title="Security Groups Hands-on"></a>Security Groups Hands-on</h3><p>Find the menu:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20dashboard%20menu.png" alt="Security Group dashboard menu"><br>See the Security Group list:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20List.png" alt="Security Group List"><br>check details:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20Check-details.png" alt="Security Group Check-details"><br>check the inbound rules(edit to see more info):<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20Check-inbound%20rules.png" alt="Security Group Check-inbound rules"><br>inbound rule representation:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20inbound%20rule%20representation.png" alt="Security Group inbound rule representation"><br>A simple example of the inbound rules is that when we delete the record of HTTP (port 80) rule or narrow down the source IP range, we will no longer be able to access the instance from outside with the http protocol with public IPv4.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Source%20of%20inbound%20rule%20lanuch%20wizard%201%20was%20specified.png" alt="Source of inbound rule lanuch wizard 1 was specified"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/public%20in%20inaccessible%20NOW.png" alt="public in inaccessible NOW"><br>A tip:<br>So if you see a timeout when trying to establish any kind of connection into your EC2 instances, for example, if you try to SSH into it, but there’s a timeout, or if you try to do an HTTP query, but there’s a timeout, or if you try to do anything with it and there is a timeout, this is <strong>100%, for sure,</strong> the cause of an EC2 security group. Okay, so in that case, go to your security group rules and make sure that they are correct, because if they’re not correct, then you will get a timeout. So to fix this, we can add back a rule.</p>
+<h2 id="SSH"><a href="#SSH" class="headerlink" title="SSH"></a>SSH</h2><h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Compatibility%20of%20SSH%20on%20different%20OS.png" alt="Compatibility of SSH on different OS"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Choose%20the%20one%20OS-specific%20SSH%20lecture.png" alt="Choose the one OS-specific SSH lecture"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/SSH%20Troubleshooting.png" alt="SSH Troubleshooting"></p>
+<h3 id="How-to-SSH-into-your-EC2-instance-from-Mac-Linux"><a href="#How-to-SSH-into-your-EC2-instance-from-Mac-Linux" class="headerlink" title="How to SSH into your EC2 instance from Mac / Linux"></a>How to SSH into your EC2 instance from Mac / Linux</h3><p>SSH is one of the most important function. It allows you to control a remote machine, all using the command line.</p>
+<ol>
+<li>Retrieve the pem file which was created when launching the EC2 instance. For me, it’s the one called “<strong>Joshua’s-Tutorial_key-Pair.pem</strong>“ stored in local drive: <strong>/Users/JoshuaBrooks/Downloads</strong></li>
+<li>Get the public IPv4 address of the instance.</li>
+<li>Check the security groups bundled to the instance and ensure that it’s available from the IP that I am trying to SSH into via the corresponding port. (The inbound rule is 0.0.0.0/0:22, should be fine)</li>
+<li>execute the ssh command to SSH into the instance: <code>shell ssh -i ec2-user@34.207.232.181</code><br>So the reason why we use <strong>ec2-user</strong> is, because the Amazon Linux 2 AMI has one user already set up for us and that user is named <strong>ec2-user</strong>.</li>
+<li><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/SSH%20into%20EC2%20instance%20step-by-step.png" alt="SSH into EC2 instance step-by-step"></li>
+</ol>
+<h3 id="SSH-troubleshooting"><a href="#SSH-troubleshooting" class="headerlink" title="SSH troubleshooting"></a>SSH troubleshooting</h3><p>1) There’s a connection timeout</p>
+<blockquote>
+<p>This is a security group issue. Any timeout (not just for SSH) is related to security groups or a firewall. Ensure your security group looks like this and correctly assigned to your EC2 instance.<br>2) There’s still a connection timeout issue<br>If your security group is properly configured as above, and you still have connection timeout issues, then that means a corporate firewall or a personal firewall is blocking the connection. <strong>Please use EC2 Instance Connect as described in the next lecture.</strong><br>3) SSH does not work on Windows<br>If it says: <span style="color:brown"><code>ssh command not found</code></span>, that means you have to use Putty Follow again the video. If things don’t work, please use EC2 Instance Connect as described in the next lecture<br>4) There’s a connection refused<br>This means the instance is reachable, but no SSH utility is running on the instance</p>
+<ol>
+<li>Try to restart the instance.<br></li>
+<li>If it doesn’t work, terminate the instance and create a new one. Make sure you’re using Amazon Linux 2.<br></li>
+</ol>
+</blockquote>
+<h3 id="EC2-Instance-Connect"><a href="#EC2-Instance-Connect" class="headerlink" title="EC2 Instance Connect"></a>EC2 Instance Connect</h3><p>If we check the checkbox of the <strong>Josh’s 1st Instance</strong> instance(we created earlier), and hit the connect button on the top corner of the portal:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Try%20to%20connect%20instance.png" alt="Try to connect instance"><br>It will redirect us to a page of connection method selection page:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/instance%20connection%20method%20selection.png" alt="instance connection method selection"><br>Once we hit the connect button, it will create us a new browser based session wherein we can execute aws / linux command just like what we did in terminal.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Executing%20command%20in%20browser-based%20EC2%20instance%20ssh%20session.png" alt="Executing command in browser-based EC2 instance ssh session"><br>If we execute:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aws iam list-users</span><br></pre></td></tr></table></figure>
+<p>We will be returned with a error message / prompt:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Execute%20swa%20iam%20commands%20with%20inappropriate%20permission.png" alt="Execute swa iam commands with inappropriate permission"><br>Hence, we tried to add a role to this instance so that it’a able to do IAM related action:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Adding%20IAM%20read-only%20role%20to%20instance%20step%201.png" alt="Adding IAM read-only role to instance step 1"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Adding%20IAM%20read-only%20role%20to%20instance%20step%202.png" alt="Adding IAM read-only role to instance step 2"></p>
+<p>IAM role checking: before V.S after<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Check%20IAM%20role%20of%20instance%20AFTER%20role%20assignment.png" alt="Check IAM role of instance AFTER role assignment"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Check%20IAM%20role%20of%20instance%20before%20role%20assignment.png" alt="Check IAM role of instance before role assignment"><br>Now rerun the iam command:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/rerun%20the%20iam%20command%20when%20role%20added.png" alt="rerun the iam command when role added"><br>We can also demonstrate that it is the IAM role working by removing the permission of that role like:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Proof%20of%20IAM%20role.png" alt="Proof of IAM role"><br>And then we rerun the iam command again:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/rerun%20the%20iam%20command%20when%20role%20added%20but%20permission%20removed%20from%20role.png" alt="rerun the iam command when role added but permission removed from role"><br>But if we delete the inbound rule of the security group of this specific instance, and try to connect again It will fail because of below error:<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/When%20connection%20without%20proper%20security%20group%20attached%20to%20the%20instance.png" alt="When connection without proper security group attached to the instance"><br>If we selected the SSH connection, the instructions shown below is exactly what we did in last step of the SSH connection section.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/try%20connect%20EC2%20instance%20via%20SSH%20client.png" alt="try connect EC2 instance via SSH client"></p>
+<h3 id="EC2-instance-purchasing"><a href="#EC2-instance-purchasing" class="headerlink" title="EC2 instance purchasing"></a>EC2 instance purchasing</h3><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Instances%20Purchasing%20Options.png" alt="EC2 Instances Purchasing Options"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20On%20Demand%20instance%20properties.png" alt="EC2 On Demand instance properties"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Reserved%20instance%20properties.png" alt="EC2 Reserved instance properties"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Saving%20Plan%20properties.png" alt="EC2 Saving Plan properties"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Spot%20instance%20properties.png" alt="EC2 Spot instance properties"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Dedicated%20Hosts%20properties.png" alt="EC2 Dedicated Hosts properties"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Dedicated%20instance%20properties.png" alt="EC2 Dedicated instance properties"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Capacity%20Reservations.png" alt="EC2 Capacity Reservations"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/A%20glimpse%20of%20comparison%20of%20various%20pricing.png" alt="A glimpse of comparison of various pricing"></p>
+<h2 id="Shared-Responsibility-Model-for-EC2"><a href="#Shared-Responsibility-Model-for-EC2" class="headerlink" title="Shared Responsibility Model for EC2"></a>Shared Responsibility Model for EC2</h2><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Shared%20Responsibility%20Model%20for%20EC2.png" alt="Shared Responsibility Model for EC2"></p>
+<h2 id="Summary-on-EC2"><a href="#Summary-on-EC2" class="headerlink" title="Summary on EC2"></a>Summary on EC2</h2><p>Let’s do a summary on what we learned for EC2.</p>
+<blockquote>
+<ol>
+<li>So we have created an <strong>EC2 instance</strong>, composed of an AMI, which was defining the operating system. Then we defined an instance size where we defined how much CPU power we want and how much RAM we want. We described the storage for our EC2 instance.</li>
+<li>We defined the firewall on our EC2 instance with the <strong>security groups</strong>.</li>
+<li>And finally, a bootstrap script called the <strong>EC2 User Data</strong> that was started when the EC2 instance was started. So the security groups are attached to EC2 instances, and they are a firewall outside your instance.<br>And you can define rules to allow which ports and which IP can access your EC2 instance. For EC2 user data, this was a script that we launched at the first start of an instance that we used to set up our EC2 instance to be a web server and say, “Hello, world.”</li>
+<li><strong>SSH</strong> was our way for us to start a terminal from our computers into our EC2 instances to start issuing commands on port 22.</li>
+<li>And once we did it, we were able to leverage an <strong>EC2 instance role</strong> that was similar to an IAM role to have our EC2 instance issue commands against IAM.</li>
+<li>In terms of purchasing options, you have multiple options you need to know for the exam. You have on-demand, spot instances, reserved instances for standard or convertible, dedicated host, dedicated instance, and that’s it.</li>
+</ol>
+</blockquote>
+
     </div>
 
 
@@ -445,6 +617,7 @@ listPostUrl.forEach(changeBanner);
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Billing-Setup"><span class="nav-number">1.</span> <span class="nav-text">Billing Setup</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#enable-IAM-user-to-check-billing-info"><span class="nav-number">1.1.</span> <span class="nav-text">enable IAM user to check billing info</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#budget-creation"><span class="nav-number">2.</span> <span class="nav-text">budget creation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EC2-User-Data"><span class="nav-number">3.</span> <span class="nav-text">EC2 User Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EC2-instance-example"><span class="nav-number">4.</span> <span class="nav-text">EC2 instance example</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EC2-instance-launch"><span class="nav-number">5.</span> <span class="nav-text">EC2 instance launch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Instance-Types"><span class="nav-number">6.</span> <span class="nav-text">Instance Types</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#General-Type"><span class="nav-number">6.1.</span> <span class="nav-text">General Type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Compute-Optimized"><span class="nav-number">6.2.</span> <span class="nav-text">Compute Optimized</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Memory-Optimized"><span class="nav-number">6.3.</span> <span class="nav-text">Memory Optimized</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Storage-Optimized"><span class="nav-number">6.4.</span> <span class="nav-text">Storage Optimized</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Security-Groups-amp-Classic-Ports-Overview"><span class="nav-number">7.</span> <span class="nav-text">Security Groups &amp; Classic Ports Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Illustration-of-Security-Groups"><span class="nav-number">7.1.</span> <span class="nav-text">Illustration of Security Groups</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Security-Groups-Hands-on"><span class="nav-number">7.2.</span> <span class="nav-text">Security Groups Hands-on</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH"><span class="nav-number">8.</span> <span class="nav-text">SSH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Overview"><span class="nav-number">8.1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-to-SSH-into-your-EC2-instance-from-Mac-Linux"><span class="nav-number">8.2.</span> <span class="nav-text">How to SSH into your EC2 instance from Mac &#x2F; Linux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH-troubleshooting"><span class="nav-number">8.3.</span> <span class="nav-text">SSH troubleshooting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EC2-Instance-Connect"><span class="nav-number">8.4.</span> <span class="nav-text">EC2 Instance Connect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EC2-instance-purchasing"><span class="nav-number">8.5.</span> <span class="nav-text">EC2 instance purchasing</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shared-Responsibility-Model-for-EC2"><span class="nav-number">9.</span> <span class="nav-text">Shared Responsibility Model for EC2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary-on-EC2"><span class="nav-number">10.</span> <span class="nav-text">Summary on EC2</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -569,7 +742,7 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">16:37</span>
+    <span title="Reading time total">16:50</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>

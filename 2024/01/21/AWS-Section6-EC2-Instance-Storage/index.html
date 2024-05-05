@@ -33,18 +33,50 @@
     var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Less Is More">
+  <meta name="description" content="Analogy:Think of them as a “network USB stick” Free tier: 30 GB of free EBS storage of type General Purpose (SSD) or Magnetic per month multi-attach feature of EBS You can create a EBS and then attach">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AWS-Section6-EC2-Instance-Storage">
 <meta property="og:url" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/index.html">
 <meta property="og:site_name" content="Eloise&#39;s Paradise">
-<meta property="og:description" content="Less Is More">
+<meta property="og:description" content="Analogy:Think of them as a “network USB stick” Free tier: 30 GB of free EBS storage of type General Purpose (SSD) or Magnetic per month multi-attach feature of EBS You can create a EBS and then attach">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-03-31.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-04-23.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-04-46.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-18-35.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-23-24.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-18-59.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-19-41.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-21-53.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-45-03.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-46-27.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-48-27.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-50-03.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-51-57.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-55-12.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-56-39.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-58-13.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-59-57.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-03-52.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-05-27.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-05-48.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-08-05.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-09-04.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-09-13.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-09-29.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-12-00.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-12-08.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-12-15.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-14-06.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-14-14.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-14-43.png">
+<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-19-35.png">
 <meta property="article:published_time" content="2024-01-21T00:11:20.000Z">
-<meta property="article:modified_time" content="2024-01-21T00:24:39.589Z">
+<meta property="article:modified_time" content="2024-03-17T17:21:06.214Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="AWS">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-03-31.png">
 
 <link rel="canonical" href="https://52zhongneng.cn/2024/01/21/AWS-Section6-EC2-Instance-Storage/">
 
@@ -275,10 +307,16 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-01-21 08:11:20 / Modified: 08:24:39" itemprop="dateCreated datePublished" datetime="2024-01-21T08:11:20+08:00">2024-01-21</time>
+              <time title="Created: 2024-01-21 08:11:20" itemprop="dateCreated datePublished" datetime="2024-01-21T08:11:20+08:00">2024-01-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-18 01:21:06" itemprop="dateModified" datetime="2024-03-18T01:21:06+08:00">2024-03-18</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -297,14 +335,14 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
+              <span>3.5k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>3 mins.</span>
             </span>
 
 
@@ -324,7 +362,33 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p>Analogy:Think of them as a “network USB stick”</p>
+<p>Free tier: 30 GB of free EBS storage of type General Purpose (SSD) or Magnetic per month</p>
+<p><a href="https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes-multi.html" target="_blank" rel="noopener">multi-attach feature of EBS</a></p>
+<p>You can create a EBS and then attach it to an EC2 instance. But making it available for Linux servers is out of the CCP exam scope.<br>EBS is indeed in bound of availability zone, meaning that an EBS created, let’s say <strong>us-east-1a</strong>, can not be attached to an EC2 instance from another availability zone: <strong>us-east-1b</strong>.</p>
+<p>Even though EBS is available zone bounded, but snapshots of EBS can be copied to another availability zone.<br>EBS SNAPSHOT archive tier is 75% cheaper, but it takes 24 ~ 72 hours to restore. So it’s suitable for those data that not you are not so hurry to use.</p>
+<p>You can delete the snapshot, and set the retention policy(1 day ~ 1 year). Within the duration of the retention, you can recover the accidentally deleted snapshot.</p>
+<p>Copying snapshots to another availability zone is very often the usecase of disaster recovery.<br>With snapshots, you can also create EBS volume from it. Similarly, the newly created EBS volume doens’t have to be in the same availability zone.   And from the volume list menu of the portal, you can<br>recognize the origin snapshot of the volume from the “snapshot” column.</p>
+<p>Recycle Bin<br>Protect your Amazon EBS Snapshots and Amazon Machine Images (AMls) from accidental deletion.<br>Use Recycle Bin to protect your business-critical EBS Snapshots and AMIs from accidental deletion. With Recycle Bin, you specify a configurable retention period within which you can recover these resources after they have been deleted.</p>
+<p>Lock setting of retention rule:<br>• Unlock<br>The retention rule can be modified or deleted at any time by a user with the required permissions.<br>• Lock<br>The retention rule can’t be modified or deleted until it is unlocked by a user with the required permissions, and the specified delay period has expired.</p>
+<h2 id="AMIs"><a href="#AMIs" class="headerlink" title="AMIs"></a>AMIs</h2><h3 id="Hands-on"><a href="#Hands-on" class="headerlink" title="Hands-on"></a>Hands-on</h3><ol>
+<li>Launch an EC2 instance<br>when launching this EC2 instance, we just put below lines into the user data: and it takes 1 ~ 2 minutes to launch because of the initialization and http installation.<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Use this <span class="keyword">for</span> your user data (script from top to bottom)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> install httpd (Linux 2 version)</span></span><br><span class="line">yum update -y</span><br><span class="line">yum install -y httpd</span><br><span class="line">systemctl start httpd</span><br><span class="line">systemctl enable httpd</span><br></pre></td></tr></table></figure></li>
+<li>create an AMI from the instance<br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-03-31.png" alt="Xnip2024-03-18_00-03-31.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-04-23.png" alt="Xnip2024-03-18_00-04-23.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-04-46.png" alt="Xnip2024-03-18_00-04-46.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-18-35.png" alt="Xnip2024-03-18_00-18-35.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-23-24.png" alt="Xnip2024-03-18_00-23-24.png"></li>
+<li>Launch an EC2 instance from the AMI just created.<br>This time we chose the AMI that created and owned by myself and put only this line: <code>shell echo &quot;&lt;h1&gt;Hello World from $(hostname -f)&lt;/h1&gt;&quot; &gt; /var/www/html/index.html</code> into the user data<br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-18-59.png" alt="Xnip2024-03-18_00-18-59.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-19-41.png" alt="Xnip2024-03-18_00-19-41.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-21-53.png" alt="Xnip2024-03-18_00-21-53.png"><br>You can feel that it’s much quicker for this 3rd instance to be available than the 2nd one, because the http is already installed back then and when we create AMI from 2nd instance, it’s also encapsulated into it.</li>
+</ol>
+<h3 id="Image-builder-overview"><a href="#Image-builder-overview" class="headerlink" title="Image builder overview"></a>Image builder overview</h3><h3 id="EC2-Instance-Store"><a href="#EC2-Instance-Store" class="headerlink" title="EC2 Instance Store"></a>EC2 Instance Store</h3><p><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-45-03.png" alt="Xnip2024-03-18_00-45-03.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-46-27.png" alt="Xnip2024-03-18_00-46-27.png"></p>
+<h2 id="EFS"><a href="#EFS" class="headerlink" title="EFS"></a>EFS</h2><p><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-48-27.png" alt="Xnip2024-03-18_00-48-27.png"></p>
+<h3 id="EFS-V-S-EBS"><a href="#EFS-V-S-EBS" class="headerlink" title="EFS V.S EBS"></a>EFS V.S EBS</h3><p><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-50-03.png" alt="Xnip2024-03-18_00-50-03.png"></p>
+<h3 id="EFS-IA"><a href="#EFS-IA" class="headerlink" title="EFS IA"></a>EFS IA</h3><p><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-51-57.png" alt="Xnip2024-03-18_00-51-57.png"></p>
+<h2 id="Shared-Responsibility-Model-for-EC2-Storage"><a href="#Shared-Responsibility-Model-for-EC2-Storage" class="headerlink" title="Shared Responsibility Model for EC2 Storage"></a>Shared Responsibility Model for EC2 Storage</h2><p><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-55-12.png" alt="Xnip2024-03-18_00-55-12.png"></p>
+<h2 id="Amazon-FSx"><a href="#Amazon-FSx" class="headerlink" title="Amazon FSx"></a>Amazon FSx</h2><p><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-56-39.png" alt="Xnip2024-03-18_00-56-39.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-58-13.png" alt="Xnip2024-03-18_00-58-13.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_00-59-57.png" alt="Xnip2024-03-18_00-59-57.png"></p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>• EBS volumes:<br>• network drives attached to one EC2 instance at a time<br>• Mapped to an Availability Zones<br>• Can use EBS Snapshots for backups / transferring EBS volumes across AZ • AMI: create ready-to-use EC2 instances with our customizations • EC2 Image Builder: automatically build, test and distribute AMls • EC2 Instance Store:<br>• High performance hardware disk attached to our EC2 instance • Lost if our instance is stopped / terminated<br>• EFS: network file system, can be attached to 100s of instances in a region • EFS-IA: cost-optimized storage class for infrequent accessed files • FSx for Windows: Network File System for Windows servers • FSx for Lustre: High Performance Computing Linux file system</p>
+<h2 id="Cleanup"><a href="#Cleanup" class="headerlink" title="Cleanup"></a>Cleanup</h2><p>Before move on, we need to check the services that might cause a bill.<br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-03-52.png" alt="Xnip2024-03-18_01-03-52.png"><br>We’ve left the Security Group and , because AWS won’t charge us for those two.</p>
+<h3 id="Instance-termination"><a href="#Instance-termination" class="headerlink" title="Instance termination:"></a>Instance termination:</h3><p><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-05-27.png" alt="Xnip2024-03-18_01-05-27.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-05-48.png" alt="Xnip2024-03-18_01-05-48.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-08-05.png" alt="Xnip2024-03-18_01-08-05.png"></p>
+<h3 id="SNAPSHOT-deletion"><a href="#SNAPSHOT-deletion" class="headerlink" title="SNAPSHOT deletion"></a>SNAPSHOT deletion</h3><p>When we are trying to delete the snapshot, it failed with a prompt:<br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-09-04.png" alt="Xnip2024-03-18_01-09-04.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-09-13.png" alt="Xnip2024-03-18_01-09-13.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-09-29.png" alt="Xnip2024-03-18_01-09-29.png"><br>Hence, we first, deregister the AMI that’s using the corresponding snapshot, and then remove the snapshot successfully.</p>
+<h3 id="AMIs-deregister"><a href="#AMIs-deregister" class="headerlink" title="AMIs deregister"></a>AMIs deregister</h3><p>You can deregister directly or first disable and then deregister. Here, we’ve shown the latter one.<br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-12-00.png" alt="Xnip2024-03-18_01-12-00.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-12-08.png" alt="Xnip2024-03-18_01-12-08.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-12-15.png" alt="Xnip2024-03-18_01-12-15.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-14-06.png" alt="Xnip2024-03-18_01-14-06.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-14-14.png" alt="Xnip2024-03-18_01-14-14.png"><br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-14-43.png" alt="Xnip2024-03-18_01-14-43.png"></p>
+<p>Everything is cleaned. And we are good to go.<br><img src="/2024/01/21/AWS-Section6-EC2-Instance-Storage/AWS-Section6-EC2-Instance-Storage%2FXnip2024-03-18_01-19-35.png" alt="Xnip2024-03-18_01-19-35.png"></p>
+
     </div>
 
 
@@ -445,6 +509,7 @@ listPostUrl.forEach(changeBanner);
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AMIs"><span class="nav-number">1.</span> <span class="nav-text">AMIs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hands-on"><span class="nav-number">1.1.</span> <span class="nav-text">Hands-on</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Image-builder-overview"><span class="nav-number">1.2.</span> <span class="nav-text">Image builder overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EC2-Instance-Store"><span class="nav-number">1.3.</span> <span class="nav-text">EC2 Instance Store</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EFS"><span class="nav-number">2.</span> <span class="nav-text">EFS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EFS-V-S-EBS"><span class="nav-number">2.1.</span> <span class="nav-text">EFS V.S EBS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EFS-IA"><span class="nav-number">2.2.</span> <span class="nav-text">EFS IA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shared-Responsibility-Model-for-EC2-Storage"><span class="nav-number">3.</span> <span class="nav-text">Shared Responsibility Model for EC2 Storage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Amazon-FSx"><span class="nav-number">4.</span> <span class="nav-text">Amazon FSx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">5.</span> <span class="nav-text">Summary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cleanup"><span class="nav-number">6.</span> <span class="nav-text">Cleanup</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Instance-termination"><span class="nav-number">6.1.</span> <span class="nav-text">Instance termination:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SNAPSHOT-deletion"><span class="nav-number">6.2.</span> <span class="nav-text">SNAPSHOT deletion</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMIs-deregister"><span class="nav-number">6.3.</span> <span class="nav-text">AMIs deregister</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -569,7 +634,7 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">16:37</span>
+    <span title="Reading time total">16:50</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>
