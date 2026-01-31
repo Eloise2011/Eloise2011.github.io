@@ -30,23 +30,69 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Less Is More">
+  <meta name="description" content="So in this Chapter, we will discuss the topics related to AWS Security and compliance and its resolutions provisioned by AWS.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AWS-Section16-Security-and-Compliance">
-<meta property="og:url" content="https://52zhongneng.cn/2024/01/21/AWS-Section16-Security-and-Compliance/index.html">
+<meta property="og:url" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/index.html">
 <meta property="og:site_name" content="Eloise&#39;s Paradise">
-<meta property="og:description" content="Less Is More">
+<meta property="og:description" content="So in this Chapter, we will discuss the topics related to AWS Security and compliance and its resolutions provisioned by AWS.">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-38-14.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-39-37.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-41-03.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-41-22.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_12-40-55.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_12-40-58.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_12-47-03.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_12-47-06.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_13-40-45.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_13-42-03.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_13-42-45.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_13-47-56.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_14-10-46.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_14-33-56.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_14-56-30.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_14-58-07.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-14-27.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-06-31.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-32-49.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-39-17.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-58-17.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-25-27.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-26-09.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-36-36.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-37-45.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-39-08.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-44-05.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-44-20.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-54-46.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-57-18.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_18-01-12.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_18-02-24.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_18-22-27.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_22-02-40.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_22-10-38.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_22-18-33.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_22-50-00.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-02-02.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-08-00.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-08-59.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-10-48.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-28-31.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-28-45.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-36-44.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/AWS-Section16-Security-and-Compliance%2FXnip2024-07-14_23-54-01.png">
 <meta property="article:published_time" content="2024-01-21T00:17:08.000Z">
-<meta property="article:modified_time" content="2024-01-21T00:24:39.572Z">
+<meta property="article:modified_time" content="2024-07-15T14:17:00.523Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="AWS">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-38-14.png">
 
-<link rel="canonical" href="https://52zhongneng.cn/2024/01/21/AWS-Section16-Security-and-Compliance/">
+<link rel="canonical" href="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/">
 
 
 <script id="page-configurations">
@@ -128,7 +174,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">35</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">38</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -138,7 +184,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">106</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">111</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -253,7 +299,7 @@ listPostUrl.forEach(changeBanner);
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2024/01/21/AWS-Section16-Security-and-Compliance/">
+    <link itemprop="mainEntityOfPage" href="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -275,10 +321,16 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-01-21 08:17:08 / Modified: 08:24:39" itemprop="dateCreated datePublished" datetime="2024-01-21T08:17:08+08:00">2024-01-21</time>
+              <time title="Created: 2024-01-21 08:17:08" itemprop="dateCreated datePublished" datetime="2024-01-21T08:17:08+08:00">2024-01-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-07-15 22:17:00" itemprop="dateModified" datetime="2024-07-15T22:17:00+08:00">2024-07-15</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -297,21 +349,21 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
+              <span>19k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>18 mins.</span>
             </span>
 
 
            
           
           <div class="out-img-topic">
-          <img src=/image/JW2.jpeg class="img-topic">
+          <img src=/image/BlogCover_city_Guangzhou_1.jpeg class="img-topic">
           </div>
           
 
@@ -324,7 +376,110 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p>So in this Chapter, we will discuss the topics related to AWS Security and compliance and its resolutions provisioned by AWS.</p>
+<a id="more"></a>
+
+<h1 id="Shared-Responsibility-Model"><a href="#Shared-Responsibility-Model" class="headerlink" title="Shared Responsibility Model"></a>Shared Responsibility Model</h1><p><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-38-14.png" alt="Xnip2024-07-13_23-38-14.png"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-39-37.png" alt="Xnip2024-07-13_23-39-37.png"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-41-03.png" alt="Xnip2024-07-13_23-41-03.png"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-13_23-41-22.png" alt="Xnip2024-07-13_23-41-22.png"></p>
+<h1 id="DDos-Protection-WAF-amp-Shield"><a href="#DDos-Protection-WAF-amp-Shield" class="headerlink" title="DDos Protection: WAF &amp; Shield"></a>DDos Protection: WAF &amp; Shield</h1><h1 id="AWS-Network-Firewall"><a href="#AWS-Network-Firewall" class="headerlink" title="AWS Network Firewall"></a>AWS Network Firewall</h1><h1 id="AWS-Firewall-Manager"><a href="#AWS-Firewall-Manager" class="headerlink" title="AWS Firewall Manager"></a>AWS Firewall Manager</h1><h1 id="Penetration-Testing"><a href="#Penetration-Testing" class="headerlink" title="Penetration Testing"></a>Penetration Testing</h1><h1 id="Encryption-with-KMS-amp-CloudHSM"><a href="#Encryption-with-KMS-amp-CloudHSM" class="headerlink" title="Encryption with KMS &amp; CloudHSM"></a>Encryption with KMS &amp; CloudHSM</h1><h1 id="Encryption-with-KMS-amp-CloudHSM-Hands-On"><a href="#Encryption-with-KMS-amp-CloudHSM-Hands-On" class="headerlink" title="Encryption with KMS &amp; CloudHSM Hands-On"></a>Encryption with KMS &amp; CloudHSM Hands-On</h1><p>From KMS homepage dashboard menu, you can see an AWS managed key is already there of type “aws/sns”, that means you can create an SNS topic with encryption key being set to this key, Like below.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_12-40-55.png" alt="Xnip2024-07-14_12-40-55.png"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_12-40-58.png" alt="Xnip2024-07-14_12-40-58.png"></p>
+<p>You will find the Key ID in the dropdown of below pic is exactly the same as the one in the “AWS menaged Keys” list of above pic.<br>But in services such as CloudTrail or S3 glacier, the encryption is <strong>enabled by default</strong>.<br>So if I go into CloudTrail and try to use a demo-trail as we can see if we go into the encryption <strong>even though it says <em>disabled</em> here</strong>, the encryption is actually enabled in the S3 buckets.<br>So let’s see, and have a look at the S3 bucket itself. So in S3, then we go to CloudTrail, go to EUS1, find this file. So I’ll go down in my buckets. And if you look at this file right here</p>
+<p><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_12-47-03.png" alt="Xnip2024-07-14_12-47-03.png"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_12-47-06.png" alt="Xnip2024-07-14_12-47-06.png"></p>
+<p>if you look at the property for the encryption it says <strong>encryption AES256</strong>, which means that this CloudTrail file, even though it said disabled here for the encryption, it actually was enabled in Amazon S3.<br><br>I won’t go over the details of why, but by default CloudTrail <strong>will encrypt</strong> all the files <strong>by default no matter what</strong>.</p>
+<p>You can create your own key like below, but you need to be noted that this will cost you a buck or 2:<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_13-40-45.png" alt="Xnip2024-07-14_13-40-45.png"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_13-42-03.png" alt="Xnip2024-07-14_13-42-03.png"></p>
+<p>Once it’s created, you can click the key name to check the key details. Scroll down and you will find the Key Rotation tab. By check the checkbox, you can enable the Key rotation feature for this specific key.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_13-42-45.png" alt="Xnip2024-07-14_13-42-45.png"><br>Now, you can create your own EBS or SNS topic and encrypt it with this key.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_13-47-56.png" alt="Example of specifying the encryption key with a CMK when creating an EBS"><br>Once it’s created, you can check the EBS created and scroll to the right most to confrim it’s encrypted with the self-created CMK key.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_14-10-46.png" alt="Xnip2024-07-14_14-10-46.png"></p>
+<h1 id="AWS-Certificate-Manager"><a href="#AWS-Certificate-Manager" class="headerlink" title="AWS Certificate Manager"></a>AWS Certificate Manager</h1><ol>
+<li>Let you easily provision, manage, and deploy your SSL/TLS certificates  </li>
+<li>Used to provide an in-flight encryption for websites (HTTPS)<blockquote>
+<p>So let’s take an example.<br>We have our application load balancer, and it is connected in the backend through HTTP to an auto-scaling group with our EC2 instances.<br>But we want our end users to have HTTPS exposed on our application load balancer. So to do so we’re going to use ACM. And ACM once it’s connected to our domain is going to be allowing us to provision and maintain these TLS certificates.<br>They will be loaded onto our application load balancer and then automatically the load balancer will be able to offer HTTPS as an end point for our clients, which allows us to get in-flight encryption over the public web.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_14-33-56.png" alt="Xnip2024-07-14_14-33-56.png"></p>
+</blockquote>
+</li>
+<li>supports <strong>both</strong> public and private TLS certificates</li>
+<li><strong>Free</strong> of charge for <strong>public</strong> TLS certificates.</li>
+<li>automatic TLS certificate renewal<blockquote>
+<p>There’s also a very nice feature which is <strong>automatic TLS certificate renewal</strong> which is very helpful, I use it all the time.<br>And it has integration, that means that it loads the TLS certificates on different services, It could be your:</p>
+<ul>
+<li>Elastic Load Balancer,</li>
+<li>CloudFront Distributions </li>
+<li>APIs on API gateway</li>
+<li><em>list goes on &amp; on …</em></li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<p>So anytime you see what service can help us do in-flight encryption and generates these certificates then think ACM, that’s it.</p>
+<h1 id="Secrets-Manager-Overview"><a href="#Secrets-Manager-Overview" class="headerlink" title="Secrets Manager Overview"></a>Secrets Manager Overview</h1><p>• Newer service, meant for storing secrets<br>• Capability to force rotation of secrets every X days<br>• Automate generation of secrets on rotation (uses Lambda)<br>• Integration with Amazon RDS (MySQL, PostgreSQL, Aurora)<br>• Secrets are encrypted using KMS<br>• Mostly meant for RDS integration</p>
+<p>Since this is again a charged service, we are not going to do detailed demos. Instead, I will just show the basics, but that’s enough for the CLF exam.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_14-56-30.png" alt="Xnip2024-07-14_14-56-30.png"><br>By clicking the “store a new secret” button and populating the mandates in the upcoming pages from step 1 to 4, you will get your new secret created. In these steps, you will need to specify the secret types, username/password, rotation policy and rotation interval etc. And in the final step, namely step 4, you can review your secret spec and choose to redirect previous steps if anything is wrong or click “store” button to create that secret. </p>
+<p><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_14-58-07.png" alt="Xnip2024-07-14_14-58-07.png"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-14-27.png" alt="Xnip2024-07-14_15-14-27.png"></p>
+<p>And also, you can see some sample code in the review step to retrieve the secrets in our applications:<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-06-31.png" alt="Xnip2024-07-14_15-06-31.png"><br>Below is the dependency for secrets rotation and the Java code for rotation. So similarly, you can write your lambda code snippets to enable the code rotation automation.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>software.amazon.awssdk<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>secretsmanager<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.17.89<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;</span><br><span class="line"><span class="keyword">import</span> software.amazon.awssdk.regions.Region;</span><br><span class="line"><span class="keyword">import</span> software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;</span><br><span class="line"><span class="keyword">import</span> software.amazon.awssdk.services.secretsmanager.model.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecretRotator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SECRET_NAME = <span class="string">"your-secret-name"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String REGION = <span class="string">"us-west-2"</span>; <span class="comment">// Change to your region</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ProfileCredentialsProvider credentialsProvider = ProfileCredentialsProvider.create();</span><br><span class="line"></span><br><span class="line">        Region region = Region.of(REGION);</span><br><span class="line">        SecretsManagerClient secretsClient = SecretsManagerClient.builder()</span><br><span class="line">                .region(region)</span><br><span class="line">                .credentialsProvider(credentialsProvider)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        rotateSecret(secretsClient);</span><br><span class="line">        secretsClient.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">rotateSecret</span><span class="params">(SecretsManagerClient secretsClient)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            RotateSecretRequest rotateSecretRequest = RotateSecretRequest.builder()</span><br><span class="line">                    .secretId(SECRET_NAME)</span><br><span class="line">                    .build();</span><br><span class="line"></span><br><span class="line">            RotateSecretResponse rotateSecretResponse = secretsClient.rotateSecret(rotateSecretRequest);</span><br><span class="line">            System.out.println(<span class="string">"Successfully rotated secret: "</span> + rotateSecretResponse.arn());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SecretsManagerException e) &#123;</span><br><span class="line">            System.err.println(e.awsErrorDetails().errorMessage());</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Artifact-Overview"><a href="#Artifact-Overview" class="headerlink" title="Artifact Overview"></a>Artifact Overview</h1><p>So now let’s talk about AWS Artifacts, which is <strong>NOT</strong> really a service, but it is presented as one in the console.<br>So what is it?<br>It is a portal that will give you, the customer, access on demand to the compliance reports and AWS agreements. So these artifact reports can be downloaded, and they represent a security and compliance documents from third party auditors, such as the alias ISO certifications, the payment card industry and System and Organization Control(PCI reports and the SOC reports).<br>There’s also artifacts agreements which is allowing you to review, accept and track the status of alias arguments such as the Business Associate Addendum (BAA agreements) or the Health Insurance Portability and Accountability Act, which is HIPAA, we’ll see this maybe in exempt, for an individual accounts or in your organization.<br>And so these reports can be used to support internal audits capabilities within your company or complaints needs to show that your compliance by using the AWS cloud.</p>
+<p>So this lecture is just for you to get a glimpse on how and where we can view/download the agreement/reports.<br>Pinpoint the “artifact” from the search bar and redirect to the page below: via clicking on the “view reports”/“view agreements”, you can then select the ones you’re interested in to view or download the agreement.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-32-49.png" alt="Xnip2024-07-14_15-32-49.png"></p>
+<h1 id="GuardDuty-Overview"><a href="#GuardDuty-Overview" class="headerlink" title="GuardDuty Overview"></a>GuardDuty Overview</h1><p>GuardDuty helps you do intelligent threat discovery to protect your AWS accounts.<br>How does it do it?<br>Well, it has machine learning algorithm, performs anomaly detection and uses third party data to find these threats.<br>So to enable it, it’s just one click. Then you have <strong>a 30 days trial</strong>. You don’t need to install any software.<br>So GuardDuty is going to look at a lot of input data, such as your CloudTrail event logs to look for unusual API calls or unauthorized deployments.<br>It’s going to look at your management events and your data events. So for example, on the management side, the create VPC Subnet event and so on, whereas on the S3 data events for example, get object, list objects, delete objects and so on.<br>And then for VPC flow logs, it’s going to look at unusual internet traffic. It’s going to look at unusual IP addresses.<br>As for DNS logs, to look at EC2 instances, sending encoded data within DNS queries, which would mean they’re compromised and optional features to allow you to analyze, for example, other input data sources such as your EKS audit logs, your RDS and Aurora login events, your EBS, your Lambda and your S3 data events.<br>So we can also set up EventBridge rules to be notified automatically in case you have findings. And then these rules can target whatever EventBridge, can target, such as AWS Lambda, or SNS topics.<br>Also, this can come up in the exam.<br>GuardDuty is a very good tool to <strong>protect you against cryptocurrency attacks</strong> because there is a dedicated finding for it. So it knows how to analyze all these input data and find that there is a cryptocurrency attack.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-39-17.png" alt="Xnip2024-07-14_15-39-17.png"></p>
+<p>So to summarize, within GuardDuty, we have several input data. We have the VPC flow logs, the CloudTrail logs, and the DNS logs that will be, no matter what, into GuardDuty as well as some optional features you can enable, such as your S3 logs, your EBS volumes, your Lambda network activity, RDS and Aurora login activity and your EKS logs and runtime monitoring as well as most likely, more features over time that I will not put here because you get the idea of optional features.<br>And so from all these things, then GuardDuty can generate findings and if these findings are detected, an event is created in Amazon EventBridge. And therefore from EventBridge, thanks to rules, we can trigger automations, for example, using Lambda functions or send notifications, for example, using SNS.</p>
+<h1 id="Inspector-Overview"><a href="#Inspector-Overview" class="headerlink" title="Inspector Overview"></a>Inspector Overview</h1><p><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_15-58-17.png" alt="Xnip2024-07-14_15-58-17.png"></p>
+<p>So what does Amazon Inspector evaluate?<br>You have to remember, the Inspector is only for <strong>your running EC2 instances, your Container Images on Amazon ECR and your Lambda functions</strong>.<br>And it’s going to do a continuous scanning of the infrastructure only when needed. So it’s going to look at a database of vulnerabilities, so CVE, for package vulnerability for EC2, ECR and Lambda.<br>And it’s going to look at network reachability on Amazon EC2 and in case the database of CVE gets updated, then Amazon Inspector is going to automatically run again to make sure that all your infrastructure is tested one more time. Every time it runs, a risk score is going to be associated with all the vulnerabilities for prioritization.</p>
+<h1 id="Config-Overview"><a href="#Config-Overview" class="headerlink" title="Config Overview"></a>Config Overview</h1><p>AWS Config provides a detailed view of the resources associated with your AWS account, including how they are configured, how they are related to one another, and how the configurations and their relationships have changed over time.</p>
+<p>So the idea is when you find some resources under your AWS account is non-sompliance, you can pinpoint them and then check the configurations of them and then fix them.<br>For example, Like the screenshots above, if I attach the “restricted-ssh” rule to all resources, and check the compliance stats of them from dashboard, you will find those which are non-compliance by a warning signal.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-25-27.png" alt="First time non-compliant resources checking"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-26-09.png" alt="Full list of resources no matter compliant or not"></p>
+<p>If I click the resource that has this issue to take me to the configuration page of this resource, we will see the ssh configuration is:<br>Since this ssh is open to any inbound connection no matter what the IP is, so the unrestricted ssh disallowing is not in place, which in result trigger the non-compliance.<br>To fix this, we can easily delete that inbound rule or specify its IP range and then go back to the compliance dashboard to check. This might take a few minutes. If you want them to take effect immediately, go to that rule and re-evaluate it like below:<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-36-36.png" alt="How a config rule is re-evaluated"><br>And then you will see the number of non-compliance resources became 2, from 3, which means the one of “restricted ssh” rule compliance issue disappeared.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-37-45.png" alt="non-compliance resources decreased"><br>To confirm this, you can also check the resource Timeline as below:<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-39-08.png" alt="Resource Timeline - Illustrating the result of compliance issue fixing"><br>And if I click on the “Change” hyperlink in the timeline shown in below pic, it will take me to the detailed list of changes made.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-44-05.png" alt="How should we redirect to the change link"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-44-20.png" alt="detailed configuration change list"><br>You might also notice from this list above, the <strong>Configuration.complianceType</strong> became from non-compliant to compliant.<br>Till now, above are the compliance timeline of that specific resource, but if you check the configuration timeline, you will also have a change hyperlink that can take you to the configuration change list, as below:<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-54-46.png" alt="Xnip2024-07-14_17-54-46.png"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_17-57-18.png" alt="Xnip2024-07-14_17-57-18.png"><br>You will obviously see the <strong>Configuration.IpPermissions.0</strong> became from a <strong>JSON String</strong> to <strong>nothing</strong>, which is identically saying this configuration is removed.<br>If you look at the CloudTrail event, you will see an event is there as: showing user <strong>root</strong> Revoked Security Group Ingress once.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_18-01-12.png" alt="Xnip2024-07-14_18-01-12.png"><br>Click on the hyperlink highlighted, you will see the event details:<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_18-02-24.png" alt="Xnip2024-07-14_18-02-24.png"><br>So I hope that’s helpful, I hope you now understand the whole aspect of using Config to track the resource configuration and their compliance over time, and this is very helpful to ensure that all the resources created by your employees within your company are compliant with whatever you have decided for security rules.</p>
+<h1 id="Macie-Overview"><a href="#Macie-Overview" class="headerlink" title="Macie Overview"></a>Macie Overview</h1><p>Macie is a fully managed data security and data privacy service that will use machine learning and pattern matching to discover and protect your sensitive data in AWS.<br>More specifically, it will alert you around sensitive data such as personally identifiable information, which is named PII.<br>So very simply, your PII data will be in your S3 buckets, and it will be analyzed by Macie which will discover what data can be classified as PII. And then will notify you through EventBridge of the discoveries. Then you can have integrations into an SNS topic, Lambda functions and so on.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_18-22-27.png" alt="Xnip2024-07-14_18-22-27.png"><br>So Macie in this instance will be used to find the sensitive data in your S3 buckets and that’s the only thing it will do.<br>It’s just one click to enable it. You just specify the S3 buckets you want to have and that will be it.</p>
+<h1 id="Security-Hub-Overview"><a href="#Security-Hub-Overview" class="headerlink" title="Security Hub Overview"></a>Security Hub Overview</h1><p>From the homepage of the Security Hub, we can see the charging model of it as shown below:<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_22-02-40.png" alt="Security Hub Homepage with pricing highlighted"><br>Additionally, from the screenshot, we can also see the enablement of security hub including: <strong>automated security checks, consolidated &amp; prioritized security findings and actions to be taken</strong>, under each of which there are some specific tools to make it happen.<br>So if we go to Security Hub and enable the trial, we’ll see that first we need to enable <strong>AWS Config</strong> to make sure that Security Hub can work. And then we need to choose the security standards we want to adhere to so that we can have three different options. And finally, the integrations based on the services that we have enabled. And then you click on Enable Security Hub, and you’ll be good to go.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_22-10-38.png" alt="Xnip2024-07-14_22-10-38.png"></p>
+<h1 id="Amazon-Detective-Overview"><a href="#Amazon-Detective-Overview" class="headerlink" title="Amazon Detective Overview"></a>Amazon Detective Overview</h1><p>So, when you have all these services such as <strong>GuardDuty, Macie, and Security Hub</strong> that are used to identify potential security issues or findings, you need to find how these happen and get to the root cause.<br>And so, sometimes the deeper analysis to isolate the root cause can be long and complicated. It’s a complex process to analyze data from different places and link it together.<br>It could be quite long and when you’re dealing with security, you want to get to the root cause as quickly as possible because there may be a security hole in your architecture.<br>And so, <strong>this is the purpose of Amazon Detective. The name is quite explicit.</strong><br>Detective is going to analyze, investigate, and quickly identify the root cause of security issues or suspicious activities using machine learning and graphs in the backend to really allow you to quickly get down to where the issue is coming from.<br>And to do so, it’s going to <strong>automatically collect and process events</strong> from your VPC Flow Logs, your CloudTrail trails, and GuardDuty to create this unified view. And it will, in turn, give you visualizations with details and context, so you can get to the root cause.</p>
+<h1 id="AWS-Abuse"><a href="#AWS-Abuse" class="headerlink" title="AWS Abuse"></a>AWS Abuse</h1><p>All you need to know about AWS abuse for the CLF02 exam is to contact AWS by reporting to them via email address shown below when you find something similar to the list:<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_22-18-33.png" alt="Abusive or prohibited behaviours need reporting to AWS official"></p>
+<h1 id="Root-User-Privileges"><a href="#Root-User-Privileges" class="headerlink" title="Root User Privileges"></a>Root User Privileges</h1><ol>
+<li>Root user = Account Owner (created when the account is created) </li>
+<li>Has complete access to all AWS services and resources • Lock away your AWS account root user access keys!</li>
+<li>Do not use the root account for everyday tasks, even administrative tasks </li>
+<li>Actions that can be performed only by the root user:<ul>
+<li><strong>Change account settings</strong> (account name, email address, root user password, root user access keys) </li>
+<li>View certain tax invoices</li>
+<li><strong>Close your AWS account</strong></li>
+<li>Restore IAM user permissions</li>
+<li><strong>Change or cancel your AWS Support plan</strong></li>
+<li><span style="color:red"><strong>Register as a seller in the Reserved Instance Marketplace</strong></span> </li>
+<li>Configure an Amazon S3 bucket to enable MFA </li>
+<li>Edit or delete an Amazon S3 bucket policy that includes an invalid VPC ID or VPC endpoint ID </li>
+<li>Sign up for GovCloud.</li>
+</ul>
+</li>
+</ol>
+<p>Above list is quite important because in exam, there is question asking you: <code>Which action in below list can be done only by root user?</code> So you’d better memorize them all.<br>And amongst them, as for the one <strong>in red</strong> , I’ll give you a use case for it.<br>For example, say you are buying a Reserved Instance for three years, but after two years, you realize you don’t need to have it anymore,<br>so what you can do is that there is a marketplace in which you can sell back your Reserved Instance and so to do so, you need to register as a seller first and <strong>only the root user can do it</strong>.</p>
+<h1 id="IAM-Access-Analyzer"><a href="#IAM-Access-Analyzer" class="headerlink" title="IAM Access Analyzer"></a>IAM Access Analyzer</h1><p>So now let’s discuss <strong>IAM Access Analyzer</strong>, and this is a service within the IAM console that is used to find out which resources are going to be <strong>shared externally</strong>.</p>
+<ul>
+<li>S3 buckets</li>
+<li>IAM Roles</li>
+<li>KMS Keys</li>
+<li>Lambda Functions and Layers</li>
+<li>SQS Queues </li>
+<li>Secrets Manager Secrets</li>
+</ul>
+<p><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_22-50-00.png" alt="Zone of Trust Illustration"></p>
+<p>So, the idea is that some of these obviously can have resource policies attached with them, or they can be shared with other accounts.<br>But sometimes you forget about sharing these items, and it can be a security risk for your company because some of the app may be accessible by external sources.<br>And so you define a <strong>zone of trust</strong>, which is going to correspond to your AWS accounts or your entire AWS organization, and then anything outside your zone of trust that has access to the resources said above are going to be reported as <strong>findings</strong> of security risk / issue.<br>So for example, we have an S3 buckets, we can share it with <strong>a specific role, a user, an account, an external client by IP or VPC endpoint</strong>.<br><strong>But</strong> if we define the zone of trust to be: only the role, the user and the VPC endpoints are within the zone, then the accounts and the external clients are going to be flagged as a finding.<br>And you can look at it and then decide to take action if you think this is a security risk.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-02-02.png" alt="IAM Access Analyzer"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-08-00.png" alt="How an IAM Access Analyzer is created"><br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-08-59.png" alt="Analyzer successfully created"><br>By the way, this is free of charge. By clicking on the “create analyzer” button and populating the properties properly, you will get an analyzer.<br>For my case, there is no findings, but still I will show you how it looks like when there is a finding.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-10-48.png" alt="Finding Examples"><br>The reason why above is a finding is because that the resource, namely the SQS / S3 Bucket, is accessible from all principals that some of which might <span style="color:red"><strong>NOT</strong></span> be the current account. And the current account is the <strong>Zone of Trust</strong> when the analyzer was created. Hence, this is a finding.<br>Once a finding is detected, what we should do is click the finding to check the details and then scroll down to the bottom of the details page. And the archive it as “Intended Access” or confirm it as “Unintended Access” and then go to the console of corresponding service to rectify the configuration of it. In the SQS case, a principal resetting of the resource policy is all it takes to remediate it.<br>And then go to the finding details page to invoke a rescan to check the outcome of the change.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-28-31.png" alt="Finding Status before SQS reconfiguration and Rescan"><br>Then, you will find the status of the finding <strong>becomes Resolved from Active</strong>.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-28-45.png" alt="Finding Status changed to Resolved after resolution and rescan"><br>Now, go back to the finding list to check again, you will see the number of findings decreased by 1, which is the one we just resolved.<br>Similarly, you can resolve the remaining two. Or you can archive them as intended access if you are sure they are desirable or not going to do any harm to the existing resources that in the Zone of Trust. By doing this, it can let you focus on the potential security risks.<br>If you do so, the finding will disappear from the list, I mean the active finding list, and the Finding Status will change to “Archived”. PFB for your demonstration.<br><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/Xnip2024-07-14_23-36-44.png" alt="Archived Findings"></p>
+<h1 id="Security-amp-Compliance-Summary"><a href="#Security-amp-Compliance-Summary" class="headerlink" title="Security &amp; Compliance Summary"></a>Security &amp; Compliance Summary</h1><ol>
+<li>Shared responsibility model on AWS, we’ve seen it at length in this course so that you know about it.</li>
+<li>Shield is a way for you to get automatic DDoS protection and then if you use Shield <strong>Advanced</strong>, you get <strong>24/7 support</strong>.</li>
+<li>WAF, a firewall to filter incoming requests, based on specific rules. It’s also known as <strong>Web Application Firewall</strong></li>
+<li>KMS to manage your encryption keys on AWS </li>
+<li>CloudHSM to have hardware encryption And this time, it’s <strong>not AWS</strong> that manages the keys,<strong>it is ourselves</strong> that manages the encryption keys. AWS will only manage the hardware behind it.</li>
+<li>ACM, short for AWS Certificate Manager, is a way for you to <strong>provision, manage, and deploy SSL and TLS certificates</strong> and to get <strong>in-flight encryption</strong>. </li>
+<li>Artifact, giving you access to complaints reports, such as PCI, ISQ, etc.</li>
+<li>GuardDuty is a way for you to find malicious behavior automatically by analyzing VPC logs, DNS logs, and CloudTrail logs </li>
+<li>Inspector you’ll find software vulnerabilities in EC2, ECR container images and Lambda functions. </li>
+<li>Network Firewall, which allows you to protect your VPC against network attacks.</li>
+<li>AWS Config, which is allowing us for compliance to track configuration changes and also create rules to check compliance of these resources configuration over time.</li>
+<li>Macie is a way for us to find sensitive data. For example, PII data. So personal information in Amazon S3 buckets.</li>
+<li>CloudTrail is a way for us to track API calls made by users within the accounts. </li>
+<li>Security Hub is a way for us to gather all the security findings from so many different services, from multiple AWS accounts into one place and really act on these security findings directly from there.</li>
+<li>AWS Detective is in case we have a security finding, how do we get to the root cause very quickly, and this is with Detective, which is going to link up all these services together and help you with that.</li>
+<li>The Abuse team is a team that you report to when you see abusive behavior by using AWS resources for abusive or illegal purposes. And you either have a form or email them. </li>
+<li>And then you have to remember, I think the four most important things that a root user can do in your accounts. It can change the account settings, it can close your AWS accounts, it can change or cancel your support plan, or it can register as a seller in the Reserved Instances marketplace.</li>
+<li>IAM Access Analyzer, used to identify which resources are going to be shared externally, so outside your zone of trust. </li>
+<li>Firewall Manager that is used to manage the security rules across an organization, that is for your security groups, but also for WAF and Shield and so on.</li>
+</ol>
+<h1 id="Quiz-14"><a href="#Quiz-14" class="headerlink" title="Quiz 14"></a>Quiz 14</h1><h2 id><a href="#" class="headerlink" title></a></h2><p><img src="/2024/01/21/AWS-Section16-Security-and-Compliance/AWS-Section16-Security-and-Compliance%2FXnip2024-07-14_23-54-01.png" alt="Question 1"></p>
+<p>Readings:<br>Macie, has both French and English (UK) based origin, it is typically a girl name, has various meanings. The first meaning of Macie that was found, said that that name meant “weapon”.  The second meaning noted the name was representative of a person that is bold, sporty, and sweet.<br><a href="https://aws.amazon.com/blogs/aws/new-enhanced-amazon-macie-now-available/" target="_blank" rel="noopener">New – Enhanced Amazon Macie Now Available with Substantially Reduced Pricing</a></p>
+
     </div>
 
 
@@ -356,7 +511,7 @@ listPostUrl.forEach(changeBanner);
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://52zhongneng.cn/2024/01/21/AWS-Section16-Security-and-Compliance/" title="AWS-Section16-Security-and-Compliance">https://52zhongneng.cn/2024/01/21/AWS-Section16-Security-and-Compliance/</a>
+    <a href="https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/" title="AWS-Section16-Security-and-Compliance">https://hexo.eloiseli.cn/2024/01/21/AWS-Section16-Security-and-Compliance/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -445,6 +600,7 @@ listPostUrl.forEach(changeBanner);
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Shared-Responsibility-Model"><span class="nav-number">1.</span> <span class="nav-text">Shared Responsibility Model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDos-Protection-WAF-amp-Shield"><span class="nav-number">2.</span> <span class="nav-text">DDos Protection: WAF &amp; Shield</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AWS-Network-Firewall"><span class="nav-number">3.</span> <span class="nav-text">AWS Network Firewall</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AWS-Firewall-Manager"><span class="nav-number">4.</span> <span class="nav-text">AWS Firewall Manager</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Penetration-Testing"><span class="nav-number">5.</span> <span class="nav-text">Penetration Testing</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Encryption-with-KMS-amp-CloudHSM"><span class="nav-number">6.</span> <span class="nav-text">Encryption with KMS &amp; CloudHSM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Encryption-with-KMS-amp-CloudHSM-Hands-On"><span class="nav-number">7.</span> <span class="nav-text">Encryption with KMS &amp; CloudHSM Hands-On</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AWS-Certificate-Manager"><span class="nav-number">8.</span> <span class="nav-text">AWS Certificate Manager</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Secrets-Manager-Overview"><span class="nav-number">9.</span> <span class="nav-text">Secrets Manager Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Artifact-Overview"><span class="nav-number">10.</span> <span class="nav-text">Artifact Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GuardDuty-Overview"><span class="nav-number">11.</span> <span class="nav-text">GuardDuty Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Inspector-Overview"><span class="nav-number">12.</span> <span class="nav-text">Inspector Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Config-Overview"><span class="nav-number">13.</span> <span class="nav-text">Config Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Macie-Overview"><span class="nav-number">14.</span> <span class="nav-text">Macie Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Security-Hub-Overview"><span class="nav-number">15.</span> <span class="nav-text">Security Hub Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Amazon-Detective-Overview"><span class="nav-number">16.</span> <span class="nav-text">Amazon Detective Overview</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AWS-Abuse"><span class="nav-number">17.</span> <span class="nav-text">AWS Abuse</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Root-User-Privileges"><span class="nav-number">18.</span> <span class="nav-text">Root User Privileges</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IAM-Access-Analyzer"><span class="nav-number">19.</span> <span class="nav-text">IAM Access Analyzer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Security-amp-Compliance-Summary"><span class="nav-number">20.</span> <span class="nav-text">Security &amp; Compliance Summary</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Quiz-14"><span class="nav-number">21.</span> <span class="nav-text">Quiz 14</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">21.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -462,7 +618,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-count">111</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -475,7 +631,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">38</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -553,7 +709,7 @@ listPostUrl.forEach(changeBanner);
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -563,13 +719,13 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">1.1m</span>
+    <span title="Symbols count total">1.2m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">16:50</span>
+    <span title="Reading time total">17:41</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>

@@ -30,54 +30,54 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”. We take an opinionated view of the Spring platform and third-party libraries so you">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring Boot Part.1  简介与入门">
-<meta property="og:url" content="https://52zhongneng.cn/2020/02/14/springboot-01/index.html">
+<meta property="og:url" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/index.html">
 <meta property="og:site_name" content="Eloise&#39;s Paradise">
 <meta property="og:description" content="Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can “just run”. We take an opinionated view of the Spring platform and third-party libraries so you">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129151045.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129151112.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129224104.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180130161620.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/concrete-bindings.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/legacy.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180131220946.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180131221411.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180203181751.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/template-engine.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/2018-02-04_123955.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180211130721.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180211134506.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180226173408.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180226180347.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180226173527.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180226180504.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180228135513.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180301142915.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180302114401.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180302144835.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180302144910.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180302221835.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180303145450.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180303145531.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180303165113.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180305194443.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180306105412.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180306145727.png">
-<meta property="og:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180306145855.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129151045.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129151112.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129224104.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180130161620.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/concrete-bindings.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/legacy.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180131220946.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180131221411.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180203181751.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/template-engine.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/2018-02-04_123955.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180211130721.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180211134506.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180226173408.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180226180347.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180226173527.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180226180504.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180228135513.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180301142915.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180302114401.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180302144835.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180302144910.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180302221835.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180303145450.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180303145531.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180303165113.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180305194443.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180306105412.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180306145727.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180306145855.png">
 <meta property="article:published_time" content="2020-02-14T10:37:35.000Z">
 <meta property="article:modified_time" content="2022-07-07T01:54:13.888Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="Spring-Boot">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://52zhongneng.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129151045.png">
+<meta name="twitter:image" content="https://hexo.eloiseli.cn/2020/02/14/springboot-01/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180129151045.png">
 
-<link rel="canonical" href="https://52zhongneng.cn/2020/02/14/springboot-01/">
+<link rel="canonical" href="https://hexo.eloiseli.cn/2020/02/14/springboot-01/">
 
 
 <script id="page-configurations">
@@ -159,7 +159,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">35</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">38</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -169,7 +169,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">106</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">111</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -284,7 +284,7 @@ listPostUrl.forEach(changeBanner);
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2020/02/14/springboot-01/">
+    <link itemprop="mainEntityOfPage" href="https://hexo.eloiseli.cn/2020/02/14/springboot-01/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1609,7 +1609,7 @@ listPostUrl.forEach(changeBanner);
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://52zhongneng.cn/2020/02/14/springboot-01/" title="Spring Boot Part.1  简介与入门">https://52zhongneng.cn/2020/02/14/springboot-01/</a>
+    <a href="https://hexo.eloiseli.cn/2020/02/14/springboot-01/" title="Spring Boot Part.1  简介与入门">https://hexo.eloiseli.cn/2020/02/14/springboot-01/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -1716,7 +1716,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-count">111</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1729,7 +1729,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">38</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -1807,7 +1807,7 @@ listPostUrl.forEach(changeBanner);
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -1817,13 +1817,13 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">1.1m</span>
+    <span title="Symbols count total">1.2m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">16:50</span>
+    <span title="Reading time total">17:41</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>

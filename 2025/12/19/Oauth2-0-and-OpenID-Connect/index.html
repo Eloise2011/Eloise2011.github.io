@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Symmetric encryption： It depends on a secret whihc should be known to both parties of the data transferring. Asymmetric encryption:  Below is the OAuth2 notes taken from UDemy123# 用base64编码文件 e.g.图片 然">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Oauth2.0-and-OpenID-Connect">
+<meta property="og:url" content="https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="Symmetric encryption： It depends on a secret whihc should be known to both parties of the data transferring. Asymmetric encryption:  Below is the OAuth2 notes taken from UDemy123# 用base64编码文件 e.g.图片 然">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/Xnip2025-12-19_10-58-15.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/Xnip2025-12-19_13-02-19.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/process.png">
+<meta property="article:published_time" content="2025-12-19T02:54:04.000Z">
+<meta property="article:modified_time" content="2025-12-19T08:30:09.141Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Keep Moving">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/Xnip2025-12-19_10-58-15.png">
+
+<link rel="canonical" href="https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Oauth2.0-and-OpenID-Connect | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">38</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">16</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">111</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Oauth2.0-and-OpenID-Connect
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2025-12-19 10:54:04 / Modified: 16:30:09" itemprop="dateCreated datePublished" datetime="2025-12-19T10:54:04+08:00">2025-12-19</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>6.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>6 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Symmetric encryption：</p>
+<p>It depends on a secret whihc should be known to both parties of the data transferring.</p>
+<p>Asymmetric encryption: </p>
+<h1 id="Below-is-the-OAuth2-notes-taken-from-UDemy"><a href="#Below-is-the-OAuth2-notes-taken-from-UDemy" class="headerlink" title="Below is the OAuth2 notes taken from UDemy"></a>Below is the OAuth2 notes taken from UDemy</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 用base64编码文件 e.g.图片 然后输出到到文件 txt</span></span><br><span class="line">base64 -i Xnip2022-07-20_13-05-30.png -o Xnip2022-07-20_13-05-30-encoded.txt                                                   # 用base64解码编码过的文件 得到原图片，可以看见其内容大小都与原图片一致                                                               </span><br><span class="line">base64 -d -i Xnip2022-07-20_13-05-30-encoded.txt -o Xnip2022-07-20_13-05-30-decoded.png</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> dgst 代表 digest</span></span><br><span class="line">openssl dgst Xnip2022-07-20_13-05-30.png</span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="keyword">if</span> you want to use sanother algo, just add it <span class="keyword">in</span> the <span class="built_in">command</span></span></span><br><span class="line">openssl dgst -sha512 Xnip2022-07-20_13-05-30.png</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/12/19/Oauth2-0-and-OpenID-Connect/Xnip2025-12-19_10-58-15.png" alt></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span></span><br><span class="line">echo -n abc | openssl dgst -sha512</span><br></pre></td></tr></table></figure>
+
+
+
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> openssl passwd 会在生成<span class="built_in">hash</span>前默认加盐， -6 表示使用sha512</span></span><br><span class="line">openssl passwd -6</span><br><span class="line"></span><br><span class="line">openssl passwd -6 -salt ThisIsMyOwnSalt1234</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意⚠️： </p>
+<p>Mac 系统有些可以在Linux正常执行并返回结果的openssl命令不生效的原因：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 为了临时用默认openssl 需要调用全路径。 如果需要永久切换为传统openssl，要改环境变量</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl passwd -6</span><br></pre></td></tr></table></figure>
+
+
+
+<p>用openssl随机提供的salt时，每次生成的hash都不一样， 见下图1&amp;2， 当自己指定salt时，一样，见下图3&amp;4:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo -n "Danger. Run now." | /opt/homebrew/opt/openssl@1.1/bin/openssl enc -aes-256-cbc -k secret -md sha1 -pbkdf2</span><br><span class="line">echo -n "Danger. Run now." | /opt/homebrew/opt/openssl@1.1/bin/openssl enc -aes-256-cbc -k secret -md sha1 -pbkdf2 -base64</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> encrypt</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl enc -aes-256-cbc -k MySecret -md sha1 -pbkdf2 -base64 -in Xnip2025-09-25_23-05-25.png -out Xnip2025-09-25_23-05-25.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> decrypt</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl enc -d -aes-256-cbc -k MySecret -md sha1 -pbkdf2 -base64 -in Xnip2025-09-25_23-05-25.txt -out Xnip2025-09-25_23-05-25-decrypted.png</span><br></pre></td></tr></table></figure>
+
+<p>这个 <code>openssl enc</code>命令是<strong>用 AES-256-CBC 算法加密文件</strong>的操作，结合了 PBKDF2 密钥派生和 Base64 编码，适合将二进制文件（如图片）转为可文本存储的加密结果。以下是<strong>逐参数拆解+整体逻辑</strong>的详细解释：</p>
+<h3 id="一、核心命令结构"><a href="#一、核心命令结构" class="headerlink" title="一、核心命令结构"></a>一、核心命令结构</h3><p><code>openssl enc</code>是 OpenSSL 的<strong>对称加密/解密子命令</strong>（<code>enc</code>= encode/decode），用于对文件进行加密（<code>-in</code>输入、<code>-out</code>输出）或解密（<code>-d</code>选项）。本命令是<strong>加密操作</strong>（无 <code>-d</code>），完整逻辑是：</p>
+<p><strong>用密码派生密钥 → AES-256-CBC 加密 → Base64 编码 → 输出密文</strong></p>
+<h3 id="二、逐参数解释"><a href="#二、逐参数解释" class="headerlink" title="二、逐参数解释"></a>二、逐参数解释</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义与作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>enc</code></td>
+<td>OpenSSL 的子命令，代表“对称加密/解密”（symmetric encryption/decryption）。</td>
+</tr>
+<tr>
+<td><code>-aes-256-cbc</code></td>
+<td><strong>加密算法+模式</strong>： - <code>aes-256</code>：使用 AES 对称加密算法，密钥长度 256 位（高安全性）； - <code>cbc</code>：使用 CBC 模式（密码块链，Chain Block Cipher），需配合<strong>盐（salt）</strong>和<strong>初始化向量（IV）</strong>防止重复加密相同明文。 （注：AES 还有 GCM 等更安全的模式，但 CBC 是经典模式。）</td>
+</tr>
+<tr>
+<td><code>-k secret</code></td>
+<td><strong>指定密码（Passphrase）</strong>：<code>-k</code>后接的字符串 <code>secret</code>是加密用的“原始密码”。OpenSSL 会通过<strong>密钥派生函数（KDF）</strong>将这个密码转为 AES 所需的 256 位密钥。 （⚠️ 注意：密码越复杂越安全，<code>secret</code>是示例，实际需换强密码。）</td>
+</tr>
+<tr>
+<td><code>-md sha1</code></td>
+<td><strong>指定 KDF 的哈希算法</strong>：<code>-md</code>定义密钥派生时使用的<strong>消息摘要算法</strong>（此处为 SHA-1）。结合后面的 <code>-pbkdf2</code>，实际是<strong>PBKDF2-HMAC-SHA1</strong>（PBKDF2 用 HMAC-SHA1 作为伪随机函数）。 （注：现代推荐用 <code>-md sha256</code>，SHA-1 已不够安全，但命令中用了 SHA-1。）</td>
+</tr>
+<tr>
+<td><code>-pbkdf2</code></td>
+<td><strong>启用 PBKDF2 密钥派生</strong>： PBKDF2（Password-Based Key Derivation Function 2）是一种<strong>安全的密钥派生标准</strong>（替代 OpenSSL 旧版的 <code>EVP_BytesToKey</code>方法），通过<strong>盐（salt）+ 多次迭代哈希</strong>将弱密码转为强密钥，抵御暴力破解。 默认迭代次数通常为 10000 次（可通过 <code>-iter</code>自定义）。</td>
+</tr>
+<tr>
+<td><code>-base64</code></td>
+<td><strong>输出 Base64 编码</strong>：加密后的结果是二进制数据，用 <code>-base64</code>转为<strong>可打印的 ASCII 文本</strong>（方便存储/传输，如邮件、配置文件）。 （解密时需用 <code>-base64</code>反向解码，或直接用 <code>-A</code>选项处理单行 Base64。）</td>
+</tr>
+<tr>
+<td><code>-in a.png</code></td>
+<td><strong>输入文件</strong>：指定要加密的原始文件（此处是图片 <code>a.png</code>）。</td>
+</tr>
+<tr>
+<td><code>-out a-enc</code></td>
+<td><strong>输出文件</strong>：指定加密后的结果文件（此处为 <code>a-enc</code>，内容是 Base64 编码的密文）。</td>
+</tr>
+</tbody></table>
+<p><img src="/2025/12/19/Oauth2-0-and-OpenID-Connect/Xnip2025-12-19_13-02-19.png" alt></p>
+<h1 id="Asymmetric-Encryption"><a href="#Asymmetric-Encryption" class="headerlink" title="Asymmetric Encryption"></a>Asymmetric Encryption</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> generate a private key <span class="keyword">in</span> a file called private.key and a self-signed X509 certificate</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl req -x509 -nodes -sha256 -days 3650 -newkey rsa:2048 -keyout private.key -out certificate.crt</span><br><span class="line">-------------------------------------------------------</span><br><span class="line"></span><br><span class="line">作用：生成一个自签名X.509证书（certificate.crt）和配套的未加密RSA私钥（private.key）。</span><br><span class="line">参数：</span><br><span class="line">-x509：直接生成自签名证书（无需CA）；</span><br><span class="line">-nodes：私钥不加密（“No DES”）；</span><br><span class="line">-sha256：用SHA-256签名证书；</span><br><span class="line">-days 3650：有效期10年；</span><br><span class="line">-newkey rsa:2048：生成2048位RSA密钥对；</span><br><span class="line">-keyout private.key：私钥输出到private.key；</span><br><span class="line">-out certificate.crt：证书输出到certificate.crt。</span><br><span class="line">注意：后续命令未使用该证书和私钥，属于冗余步骤（可能是用户误加或示例残留）。</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> generateing private key <span class="keyword">for</span> alice &amp; bob respectively</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl genrsa -out alice-private.pem 2048</span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl genrsa -out bob-private.pem 2048</span><br><span class="line">-------------------------------------------------------</span><br><span class="line">作用：生成Alice的RSA私钥，保存到alice-private.pem。</span><br><span class="line">参数：</span><br><span class="line">genrsa：生成RSA私钥的子命令；</span><br><span class="line">-out alice-private.pem：输出文件名；</span><br><span class="line">2048：密钥长度2048位（安全标准）。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> generateing ENCRYPTED(via aes256) private key <span class="keyword">for</span> alice &amp; bob respectively</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl genrsa -aes256 -out alice-private-enc.pem 2048</span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl genrsa -aes256 -out bob-private-enc.pem 2048</span><br><span class="line">-------------------------------------------------------</span><br></pre></td></tr></table></figure>
+<p>Above are generated with passphrase being <strong>ALICE</strong> &amp; <strong>BOBS</strong> respectively. ()</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> generate the public key with the private key</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl rsa -in alice-private.pem -pubout -out alice-public.pem </span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl rsa -in bob-private.pem -pubout -out bob-public.pem</span><br><span class="line">-------------------------------------------------------</span><br><span class="line">作用：从Alice的私钥中提取公钥，保存到alice-public.pem。</span><br><span class="line">参数：</span><br><span class="line">rsa：RSA密钥处理子命令；</span><br><span class="line">-in alice-private.pem：输入Alice的私钥；</span><br><span class="line">-pubout：输出公钥（而非私钥）；</span><br><span class="line">-out alice-public.pem：公钥输出文件。</span><br><span class="line"></span><br><span class="line">Same for bob's</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> prepare a txt file <span class="keyword">for</span> encryption soon </span></span><br><span class="line">echo -n "Run for your life now."  &gt; important.txt </span><br><span class="line"><span class="meta">#</span><span class="bash"> alice encrypting the file with Bob<span class="string">'s pubkey</span></span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl pkeyutl -encrypt -pubin -inkey bob-public.pem -in important.txt -out important.enc</span><br><span class="line"><span class="meta">#</span><span class="bash"> when bog gets the encrypted file, will decrypt it with his own private key</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl pkeyutl -decrypt -inkey bob-private.pem -in important.enc -out important.txt</span><br><span class="line">-------------------------------------------------------</span><br><span class="line">Line 1:</span><br><span class="line">作用：用echo命令将字符串"Run for your life now."写入文件important.txt。</span><br><span class="line">参数：-n：不添加换行符（确保文件内容与字符串完全一致）。</span><br><span class="line"></span><br><span class="line">Line 2:</span><br><span class="line">作用：用Bob的公钥（bob-public.pem）加密important.txt，输出加密后的文件important.enc。</span><br><span class="line">参数：</span><br><span class="line">pkeyutl：公钥/私钥工具（Public Key Utility）；</span><br><span class="line">-encrypt：执行加密操作；</span><br><span class="line">-pubin：指定输入密钥为公钥（此处为Bob的公钥）；</span><br><span class="line">-inkey bob-public.pem：公钥文件路径；</span><br><span class="line">-in important.txt：待加密的明文文件；</span><br><span class="line">-out important.enc：加密后的密文文件。</span><br><span class="line"></span><br><span class="line">Line 3:</span><br><span class="line">作用：用Bob的私钥（bob-private.pem）解密important.enc，恢复明文到important.txt。</span><br><span class="line">参数：</span><br><span class="line">-decrypt：执行解密操作；</span><br><span class="line">-inkey bob-private.pem：Bob的私钥文件路径（用于解密）；</span><br><span class="line">-in important.enc：待解密的密文文件；</span><br><span class="line">-out important.txt：解密后的明文文件（覆盖原文件）。</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2025/12/19/Oauth2-0-and-OpenID-Connect/process.png" alt></p>
+<h1 id="Hybrid-Encryption"><a href="#Hybrid-Encryption" class="headerlink" title="Hybrid Encryption"></a>Hybrid Encryption</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> RSA key size must NOT greater than 245. that<span class="string">'s the reason why using 245 here</span></span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl rand -out passphrase.key 245</span><br><span class="line"><span class="meta">#</span><span class="bash"> encrypting the image file with AES</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl enc -aes-256-cbc -kfile passphrase.key -md sha1 -base64 -pbkdf2 -in testingImg.png -out testingImg-aes</span><br><span class="line"><span class="meta">#</span><span class="bash"> encrypting the image file with using RSA Bob<span class="string">'s public key</span></span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl pkeyutl -encrypt -inkey bob-public.pem -in passphrase.key -out passphrase_enc.key</span><br><span class="line"><span class="meta">#</span><span class="bash"> decrypt the passphrase</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl pkeyutl -decrypt -inkey bob-private.pem -in passphrase_enc.key -out passphrase.key</span><br><span class="line"><span class="meta">#</span><span class="bash"> decrypt the data</span></span><br><span class="line">/opt/homebrew/opt/openssl@1.1/bin/openssl enc -d -aes-256-cbc -kfile passphrase.key -md sha1 -base64 -pbkdf2 -in testingImg-aes -out testingImg_orignal.png</span><br></pre></td></tr></table></figure>
+
+<h1 id="Digital-Signature-Demo"><a href="#Digital-Signature-Demo" class="headerlink" title="Digital Signature Demo"></a>Digital Signature Demo</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">openssl dgst -sha512 -sign alice-private.pem -out testingImg-digest.sign testingImg.png</span><br><span class="line">base64 -i testingImg-digest.sign -o testingImg-digest.sign.base64</span><br><span class="line">base64 -i testingImg.png -o testingImg.png.base64</span><br><span class="line">base64 -d -i testingImg-digest.sign.base64 -o testingImg-digest.sign.original</span><br><span class="line">base64 -d -i testingImg.png.base64 -o testingImg.png.original</span><br><span class="line">openssl dgst -sha512 -verify alice-public.pem -signature testingImg-digest.sign.original testingImg.png.original</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/" title="Oauth2.0-and-OpenID-Connect">https://hexo.eloiseli.cn/2025/12/19/Oauth2-0-and-OpenID-Connect/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/07/16/Linux-03/" rel="prev" title="Linux-03">
+      <i class="fa fa-chevron-left"></i> Linux-03
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Below-is-the-OAuth2-notes-taken-from-UDemy"><span class="nav-number">1.</span> <span class="nav-text">Below is the OAuth2 notes taken from UDemy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、核心命令结构"><span class="nav-number">1.0.1.</span> <span class="nav-text">一、核心命令结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、逐参数解释"><span class="nav-number">1.0.2.</span> <span class="nav-text">二、逐参数解释</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Asymmetric-Encryption"><span class="nav-number">2.</span> <span class="nav-text">Asymmetric Encryption</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hybrid-Encryption"><span class="nav-number">3.</span> <span class="nav-text">Hybrid Encryption</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Digital-Signature-Demo"><span class="nav-number">4.</span> <span class="nav-text">Digital Signature Demo</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">111</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.2m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">17:41</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>

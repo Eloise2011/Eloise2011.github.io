@@ -30,103 +30,103 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"52zhongneng.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Billing SetupBefore we move on to the next section for this aws course, we need to first set the right budget plan to avoid unnecessary charge.By default, the billing information is inaccessible to IA">
+  <meta name="description" content="So in this Chapter, we will discuss the topics related to AWS ***">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AWS-Section5-EC2-Elastic-Compute-Cloud">
-<meta property="og:url" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/index.html">
+<meta property="og:url" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/index.html">
 <meta property="og:site_name" content="Eloise&#39;s Paradise">
-<meta property="og:description" content="Billing SetupBefore we move on to the next section for this aws course, we need to first set the right budget plan to avoid unnecessary charge.By default, the billing information is inaccessible to IA">
+<meta property="og:description" content="So in this Chapter, we will discuss the topics related to AWS ***">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Directing%20to%20billing%20enablement%20for%20IAM%20user%20from%20root%20account%20setting%20.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/ENable%20IAM%20user%20and%20role%20to%20access%20billing%20information.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Update-IAM-Budget-Setup-Permission.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20can%20see%20billing%20info%20after%20enabled%20by%20root%20account.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budges-1.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-2.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-3.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-4.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Basics.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20configuration.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Top%205%20Typical%20EC2%20types.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Hands-on%20EC2%20introduction.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step1.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step2.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step3.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Joshua%27s-Tutorial_key-Pair%7C-creation.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/storage-configuration.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step4.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step5.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step6.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20Summary.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launching%20in%20progress.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20Success%20and%20logs.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20can%20be%20now%20seen%20in%20the%20instance%20list.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-01-General%20Details.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-02-StatusAlarms.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-03-Monitoring.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-04-security.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-05-Networking.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-06-Storage.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-07-Tags.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/public%20IP%20link.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/What%20you%20see%20when%20open%20public%20IP%20link.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type%20Overview.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/General%20Type%20EC2%20Instance.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Types%20from%20Official%20aws%20doc.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Compute%20Optimized.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Memory%20Optimized.png.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Storage%20Optimized.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Top%205%20Typical%20EC2%20types.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Illustration%20of%20Security%20Groups.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/How%20Security%20Group%20looks%20like%20in%20web%20menagement%20portal.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Groups%20Diagram.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Referencing%20other%20security%20groups%20Diagram.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20dashboard%20menu.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20List.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20Check-details.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20Check-inbound%20rules.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20inbound%20rule%20representation.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Source%20of%20inbound%20rule%20lanuch%20wizard%201%20was%20specified.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/public%20in%20inaccessible%20NOW.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Compatibility%20of%20SSH%20on%20different%20OS.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Choose%20the%20one%20OS-specific%20SSH%20lecture.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/SSH%20Troubleshooting.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/SSH%20into%20EC2%20instance%20step-by-step.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Try%20to%20connect%20instance.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/instance%20connection%20method%20selection.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Executing%20command%20in%20browser-based%20EC2%20instance%20ssh%20session.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Execute%20swa%20iam%20commands%20with%20inappropriate%20permission.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Adding%20IAM%20read-only%20role%20to%20instance%20step%201.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Adding%20IAM%20read-only%20role%20to%20instance%20step%202.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Check%20IAM%20role%20of%20instance%20AFTER%20role%20assignment.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Check%20IAM%20role%20of%20instance%20before%20role%20assignment.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/rerun%20the%20iam%20command%20when%20role%20added.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Proof%20of%20IAM%20role.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/rerun%20the%20iam%20command%20when%20role%20added%20but%20permission%20removed%20from%20role.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/When%20connection%20without%20proper%20security%20group%20attached%20to%20the%20instance.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/try%20connect%20EC2%20instance%20via%20SSH%20client.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Instances%20Purchasing%20Options.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20On%20Demand%20instance%20properties.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Reserved%20instance%20properties.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Saving%20Plan%20properties.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Spot%20instance%20properties.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Dedicated%20Hosts%20properties.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Dedicated%20instance%20properties.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Capacity%20Reservations.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/A%20glimpse%20of%20comparison%20of%20various%20pricing.png">
-<meta property="og:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Shared%20Responsibility%20Model%20for%20EC2.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Directing%20to%20billing%20enablement%20for%20IAM%20user%20from%20root%20account%20setting%20.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/ENable%20IAM%20user%20and%20role%20to%20access%20billing%20information.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Update-IAM-Budget-Setup-Permission.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20can%20see%20billing%20info%20after%20enabled%20by%20root%20account.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budges-1.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-2.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-3.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-4.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Basics.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20configuration.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Top%205%20Typical%20EC2%20types.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Hands-on%20EC2%20introduction.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step1.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step2.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step3.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Joshua%27s-Tutorial_key-Pair%7C-creation.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/storage-configuration.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step4.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step5.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20EC2%20Instance-Step6.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20Summary.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launching%20in%20progress.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Launch%20Success%20and%20logs.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20can%20be%20now%20seen%20in%20the%20instance%20list.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-01-General%20Details.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-02-StatusAlarms.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-03-Monitoring.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-04-security.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-05-Networking.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-06-Storage.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Details-07-Tags.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/public%20IP%20link.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/What%20you%20see%20when%20open%20public%20IP%20link.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type%20Overview.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/General%20Type%20EC2%20Instance.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Types%20from%20Official%20aws%20doc.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Compute%20Optimized.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Memory%20Optimized.png.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Instance%20Type-Storage%20Optimized.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Top%205%20Typical%20EC2%20types.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Illustration%20of%20Security%20Groups.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/How%20Security%20Group%20looks%20like%20in%20web%20menagement%20portal.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Groups%20Diagram.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Referencing%20other%20security%20groups%20Diagram.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20dashboard%20menu.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20List.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20Check-details.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20Check-inbound%20rules.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Security%20Group%20inbound%20rule%20representation.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Source%20of%20inbound%20rule%20lanuch%20wizard%201%20was%20specified.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/public%20in%20inaccessible%20NOW.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Compatibility%20of%20SSH%20on%20different%20OS.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Choose%20the%20one%20OS-specific%20SSH%20lecture.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/SSH%20Troubleshooting.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/SSH%20into%20EC2%20instance%20step-by-step.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Try%20to%20connect%20instance.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/instance%20connection%20method%20selection.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Executing%20command%20in%20browser-based%20EC2%20instance%20ssh%20session.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Execute%20swa%20iam%20commands%20with%20inappropriate%20permission.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Adding%20IAM%20read-only%20role%20to%20instance%20step%201.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Adding%20IAM%20read-only%20role%20to%20instance%20step%202.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Check%20IAM%20role%20of%20instance%20AFTER%20role%20assignment.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Check%20IAM%20role%20of%20instance%20before%20role%20assignment.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/rerun%20the%20iam%20command%20when%20role%20added.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Proof%20of%20IAM%20role.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/rerun%20the%20iam%20command%20when%20role%20added%20but%20permission%20removed%20from%20role.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/When%20connection%20without%20proper%20security%20group%20attached%20to%20the%20instance.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/try%20connect%20EC2%20instance%20via%20SSH%20client.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Instances%20Purchasing%20Options.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20On%20Demand%20instance%20properties.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Reserved%20instance%20properties.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Saving%20Plan%20properties.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Spot%20instance%20properties.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Dedicated%20Hosts%20properties.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Dedicated%20instance%20properties.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Capacity%20Reservations.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/A%20glimpse%20of%20comparison%20of%20various%20pricing.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Shared%20Responsibility%20Model%20for%20EC2.png">
 <meta property="article:published_time" content="2024-01-21T00:10:51.000Z">
-<meta property="article:modified_time" content="2024-03-17T06:14:35.047Z">
+<meta property="article:modified_time" content="2024-07-15T14:20:24.041Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="AWS">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png">
+<meta name="twitter:image" content="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png">
 
-<link rel="canonical" href="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/">
+<link rel="canonical" href="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/">
 
 
 <script id="page-configurations">
@@ -208,7 +208,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">35</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">38</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -218,7 +218,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">106</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">111</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -333,7 +333,7 @@ listPostUrl.forEach(changeBanner);
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/">
+    <link itemprop="mainEntityOfPage" href="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -363,7 +363,7 @@ listPostUrl.forEach(changeBanner);
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-03-17 14:14:35" itemprop="dateModified" datetime="2024-03-17T14:14:35+08:00">2024-03-17</time>
+                <time title="Modified: 2024-07-15 22:20:24" itemprop="dateModified" datetime="2024-07-15T22:20:24+08:00">2024-07-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -406,7 +406,11 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="Billing-Setup"><a href="#Billing-Setup" class="headerlink" title="Billing Setup"></a>Billing Setup</h2><p>Before we move on to the next section for this aws course, we need to first set the right budget plan to avoid unnecessary charge.<br>By default, the billing information is inaccessible to IAM users, hence, you need to enable this via the root account.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png" alt="IAM user was not allowed to check billing info"></p>
+        <p>So in this Chapter, we will discuss the topics related to AWS ***</p>
+<a id="more"></a>
+
+
+<h2 id="Billing-Setup"><a href="#Billing-Setup" class="headerlink" title="Billing Setup"></a>Billing Setup</h2><p>Before we move on to the next section for this aws course, we need to first set the right budget plan to avoid unnecessary charge.<br>By default, the billing information is inaccessible to IAM users, hence, you need to enable this via the root account.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20was%20not%20allowed%20to%20check%20billing%20info.png" alt="IAM user was not allowed to check billing info"></p>
 <h3 id="enable-IAM-user-to-check-billing-info"><a href="#enable-IAM-user-to-check-billing-info" class="headerlink" title="enable IAM user to check billing info"></a>enable IAM user to check billing info</h3><p>Go to the setting menu<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Directing%20to%20billing%20enablement%20for%20IAM%20user%20from%20root%20account%20setting%20.png" alt="Directing to billing enablement for IAM user from root account setting "><br>enable IAM User<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/ENable%20IAM%20user%20and%20role%20to%20access%20billing%20information.png" alt="ENable IAM user and role to access billing information"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Update-IAM-Budget-Setup-Permission.png" alt="Update-IAM-Budget-Setup-Permission"><br>post verification<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/IAM%20user%20can%20see%20billing%20info%20after%20enabled%20by%20root%20account.png" alt="IAM user can see billing info after enabled by root account"><br>But this is just for learning purposes. To follow the best practices, we recommend to keep the IAM user and role access to billing information feature <strong>deactivated</strong>.</p>
 <h2 id="budget-creation"><a href="#budget-creation" class="headerlink" title="budget creation"></a>budget creation</h2><p><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budges-1.png" alt="Budges-1"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-2.png" alt="Budgets-2"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-3.png" alt="Budgets-3"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/Budgets-4.png" alt="Budgets-4"><br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20Basics.png" alt="EC2 Basics"><br>So we have lots and lots of options and as you’ll see in the hands-on, even more options at other certification levels that you need to know in EC2 instances, but at a core of it what you need to remember is that you can choose pretty much how you want your visual machine to be, and you can rent it from AWS. And that is the power of the cloud. You can do this by just in the blink of the eye, really.<br><img src="/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/EC2%20configuration.png" alt="EC2 configuration"></p>
 <h2 id="EC2-User-Data"><a href="#EC2-User-Data" class="headerlink" title="EC2 User Data"></a>EC2 User Data</h2><blockquote>
@@ -528,7 +532,7 @@ listPostUrl.forEach(changeBanner);
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/" title="AWS-Section5-EC2-Elastic-Compute-Cloud">https://52zhongneng.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/</a>
+    <a href="https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/" title="AWS-Section5-EC2-Elastic-Compute-Cloud">https://hexo.eloiseli.cn/2024/01/21/AWS-Section5-EC2-Elastic-Compute-Cloud/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -635,7 +639,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">106</span>
+          <span class="site-state-item-count">111</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -648,7 +652,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-count">38</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -726,7 +730,7 @@ listPostUrl.forEach(changeBanner);
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -736,13 +740,13 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">1.1m</span>
+    <span title="Symbols count total">1.2m</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">16:50</span>
+    <span title="Reading time total">17:41</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>
