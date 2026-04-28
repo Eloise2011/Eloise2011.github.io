@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="referrer" content="no-referrer"/>
+<head>
+
+<!-- 爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+  <link rel="mask-icon" href="/favicon.ico" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis_01">
+<meta property="og:url" content="https://hexo.eloiseli.cn/2020/07/19/redis-01/index.html">
+<meta property="og:site_name" content="Eloise&#39;s Paradise">
+<meta property="og:description" content="Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/07/19/redis-01/String-1.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/07/19/redis-01/String-2.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/07/19/redis-01/String-getbit.png">
+<meta property="og:image" content="https://hexo.eloiseli.cn/2020/07/19/redis-01/String-bitcount.png">
+<meta property="article:published_time" content="2020-07-19T03:55:49.000Z">
+<meta property="article:modified_time" content="2022-06-27T05:47:13.566Z">
+<meta property="article:author" content="Brooks.H.Joshua">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hexo.eloiseli.cn/2020/07/19/redis-01/String-1.png">
+
+<link rel="canonical" href="https://hexo.eloiseli.cn/2020/07/19/redis-01/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Redis_01 | Eloise's Paradise</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div id="id-header-inner"  class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eloise's Paradise</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">39</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories<span class="badge">16</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">115</span></a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+	<!-- 改变css样式 -->
+<script type="text/javascript">
+var url = document.location.pathname;
+var folderName = url.substr(1, url.length - 2)
+console.log(folderName);
+
+var listPostUrl = [
+    "/" + folderName + "/" + "post-banner.png",
+    "/" + folderName + "/" + "post-banner.jpg",
+];
+
+var nSuccessCount = 0;
+var nResponceCount = 0;
+function OnHttpResponse(bSuccess, strUrl) {
+    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
+    nResponceCount++;
+    if(nSuccessCount > 0){
+        return;
+    }
+    if(bSuccess) {
+        nSuccessCount++;
+        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
+    }
+    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
+        // 使用默认图
+        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
+    }
+}
+
+function changeBanner(strPostUrl, nIndex){
+    console.log("try to load" + strPostUrl);
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            OnHttpResponse(true, strPostUrl);
+        } else {
+            OnHttpResponse(false, strPostUrl);
+        }
+    }
+    xmlhttp.open("HEAD",strPostUrl,true);
+    xmlhttp.send();
+}
+
+listPostUrl.forEach(changeBanner);
+</script>
+
+
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hexo.eloiseli.cn/2020/07/19/redis-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis_01
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-07-19 11:55:49" itemprop="dateCreated datePublished" datetime="2020-07-19T11:55:49+08:00">2020-07-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-27 13:47:13" itemprop="dateModified" datetime="2022-06-27T13:47:13+08:00">2022-06-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NoSQL/" itemprop="url" rel="index">
+                    <span itemprop="name">NoSQL</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>2 mins.</span>
+            </span>
+
+
+           
+          
+          <div class="out-img-topic">
+          <img src=/image/post_cover_image_Redis-01.png class="img-topic">
+          </div>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes with radius queries and streams. Redis has built-in replication, Lua scripting, LRU eviction, transactions and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster. <a href="https://redis.io/topics/introduction" target="_blank" rel="noopener">Learn more →</a></p>
+<p>关键字： 内存数据存储结构， 可用于 DB 缓存 消息中间件。</p>
+<a id="more"></a>
+
+
+
+<p><code>redis-cli --raw</code> 解决终端直连redis中文乱码问题。</p>
+<h1 id="String"><a href="#String" class="headerlink" title="String"></a>String</h1><h2 id="set"><a href="#set" class="headerlink" title="set:"></a><code>set</code>:</h2><h2 id="mset"><a href="#mset" class="headerlink" title="mset:"></a><code>mset</code>:</h2><h2 id="get"><a href="#get" class="headerlink" title="get:"></a><code>get</code>:</h2><h2 id="mget"><a href="#mget" class="headerlink" title="mget"></a><code>mget</code></h2><h2 id="getset"><a href="#getset" class="headerlink" title="getset"></a><code>getset</code></h2><h2 id="setex"><a href="#setex" class="headerlink" title="setex:"></a><code>setex</code>:</h2><h2 id="setnx"><a href="#setnx" class="headerlink" title="setnx:"></a><code>setnx</code>:</h2><h2 id="msetnx-批量不存在即设置，批量key中一个存在整个都不会生效。（⚠️注意：-没有msetex）"><a href="#msetnx-批量不存在即设置，批量key中一个存在整个都不会生效。（⚠️注意：-没有msetex）" class="headerlink" title="msetnx: 批量不存在即设置，批量key中一个存在整个都不会生效。（⚠️注意： 没有msetex）"></a><code>msetnx</code>: 批量不存在即设置，批量key中一个存在整个都不会生效。（⚠️注意： 没有msetex）</h2><h2 id="append-如果有则追加，没有则效果等同于set"><a href="#append-如果有则追加，没有则效果等同于set" class="headerlink" title="append: 如果有则追加，没有则效果等同于set"></a><code>append</code>: 如果有则追加，没有则效果等同于set</h2><p><img src="/2020/07/19/redis-01/String-1.png" alt="以上图例"></p>
+<h2 id="incr"><a href="#incr" class="headerlink" title="incr:"></a><code>incr</code>:</h2><h2 id="decr"><a href="#decr" class="headerlink" title="decr"></a><code>decr</code></h2><h2 id="incrby"><a href="#incrby" class="headerlink" title="incrby"></a><code>incrby</code></h2><h2 id="decrby"><a href="#decrby" class="headerlink" title="decrby"></a><code>decrby</code></h2><h2 id="incrbyfloat"><a href="#incrbyfloat" class="headerlink" title="incrbyfloat:"></a><code>incrbyfloat</code>:</h2><p><img src="/2020/07/19/redis-01/String-2.png" alt="以上图例"></p>
+<p> <span style="color:red">redis中字符串都是二进制存储 a对应的ascii码对应为97，对应的二进制则是00110001<strong>BIT</strong>相关的命令就是对二进制进行操作的，下面是Stirng的bit操作相关的命令</span>.</p>
+<h2 id="getbit"><a href="#getbit" class="headerlink" title="getbit"></a><code>getbit</code></h2><p><img src="/2020/07/19/redis-01/String-getbit.png" alt="gitbit图例"></p>
+<h2 id="setbit"><a href="#setbit" class="headerlink" title="setbit:"></a><code>setbit</code>:</h2><p>如果执行 setbit name4 0 1 则get name4: <strong>eickie\X00\X00……\X00</strong></p>
+<h2 id="bitcount"><a href="#bitcount" class="headerlink" title="bitcount:"></a><code>bitcount</code>:</h2><p>计算key对应value的二进制表示里的1的个数。</p>
+<p><img src="/2020/07/19/redis-01/String-bitcount.png" alt="bitcount图例"></p>
+<h1 id="List"><a href="#List" class="headerlink" title="List"></a>List</h1><h1 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h1><h2 id="sadd"><a href="#sadd" class="headerlink" title="sadd"></a><code>sadd</code></h2><h2 id="smembers"><a href="#smembers" class="headerlink" title="smembers"></a><code>smembers</code></h2><h2 id="sismember"><a href="#sismember" class="headerlink" title="sismember"></a><code>sismember</code></h2><h2 id="smismember2"><a href="#smismember2" class="headerlink" title="smismember2:"></a><code>smismember2</code>:</h2><h2 id="sdiff"><a href="#sdiff" class="headerlink" title="sdiff:"></a><code>sdiff</code>:</h2><h2 id="sdiffstore"><a href="#sdiffstore" class="headerlink" title="sdiffstore:"></a><code>sdiffstore</code>:</h2><h2 id="sinter"><a href="#sinter" class="headerlink" title="sinter:"></a><code>sinter</code>:</h2><h2 id="sinterstore"><a href="#sinterstore" class="headerlink" title="sinterstore:"></a><code>sinterstore</code>:</h2><h2 id="sunion"><a href="#sunion" class="headerlink" title="sunion:"></a><code>sunion</code>:</h2><h2 id="sunionstore"><a href="#sunionstore" class="headerlink" title="sunionstore:"></a><code>sunionstore</code>:</h2><h2 id="scard"><a href="#scard" class="headerlink" title="scard:"></a><code>scard</code>:</h2><h2 id="smove"><a href="#smove" class="headerlink" title="smove:"></a><code>smove</code>:</h2><h2 id="spop"><a href="#spop" class="headerlink" title="spop :"></a><code>spop</code> :</h2><h2 id="sscan-参考SCAN"><a href="#sscan-参考SCAN" class="headerlink" title="sscan: 参考SCAN"></a><code>sscan</code>: 参考SCAN</h2><p><code>sintercard</code>:<br><code>sintercard</code> : Version7.*才有的。 只计算k1和k2 两个set的交集元素的个数， 还能与limit关键字一起返回， 如果交集个数为5，超过了limit后面的数3，则直接返回3. sadd a 1 2 3 4 5 6 sadd b 2 3 4 5 6 7 saddintercard a b limit 3 结果： 3.</p>
+<h1 id="hash"><a href="#hash" class="headerlink" title="hash"></a>hash</h1><table>
+<thead>
+<tr>
+<th>–</th>
+<th>–</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>hset</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hmset</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hget</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hmget</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hexists</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hkeys</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hvals</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hgetall</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hlen</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hincrby</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hincrbyfloat</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hsetnx</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hrandfield</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hscan</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h1><table>
+<thead>
+<tr>
+<th>–</th>
+<th>–</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>zadd</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zscore</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zrange</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zrevrange</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zrangeyscore</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zcount</td>
+<td>返回score在某个区间内的元素个数</td>
+<td></td>
+</tr>
+<tr>
+<td>zcard</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zrank / zrevrank</td>
+<td>返回元素排名(正排 / 倒排)</td>
+<td></td>
+</tr>
+<tr>
+<td>zdiff</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zdiffstore</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zinter</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zinterstore</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zunion</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zunionstore</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zmpop</td>
+<td>注意截至目前版本没有zpop</td>
+<td></td>
+</tr>
+<tr>
+<td>zpopmax</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>zpopmin</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>bzpopmax</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>bzpopmin</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>bzmpop</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="官网"><a href="#官网" class="headerlink" title="官网"></a><a href="https://redis.io/commands" target="_blank" rel="noopener">官网</a></h1><h1 id="公共命令-可操作性所有数据类型"><a href="#公共命令-可操作性所有数据类型" class="headerlink" title="公共命令 (可操作性所有数据类型)"></a><a href="https://redis.io/commands/del" target="_blank" rel="noopener">公共命令</a> <font color="red">(可操作性所有数据类型)</font></h1><h2 id="del-删除key"><a href="#del-删除key" class="headerlink" title="del 删除key"></a>del 删除key</h2><p>del 删除某个key</p>
+<p>dump 序列化key</p>
+<p>exists 判断key是否存在</p>
+<p>ttl 查看key的有效期 单位为s</p>
+<p>pttl 查看key的有效期 单位为ms</p>
+<p>expire 设置key的有效期,当key重新set新值后会失效</p>
+<p>persist 移除key的过期时间 </p>
+<p>keys name*  查看所有name开头的key </p>
+<h2 id><a href="#" class="headerlink" title></a></h2><h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><p> 四种数据类型(, 除string外的: list/set/zset/hash) 在第一次使用时, 如果容器不存在, 就自动创建一个. 如果里面没元素了, 就自动删除容器释放内存.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    </div>
+
+
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+
+  
+</div>
+
+
+
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Brooks.H.Joshua
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://hexo.eloiseli.cn/2020/07/19/redis-01/" title="Redis_01">https://hexo.eloiseli.cn/2020/07/19/redis-01/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i>Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/12/jt-day01/" rel="prev" title="Jt_day01">
+      <i class="fa fa-chevron-left"></i> Jt_day01
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/29/redis-02/" rel="next" title="Redis_02">
+      Redis_02 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+ 
+
+
+ <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#String"><span class="nav-number">1.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#set"><span class="nav-number">1.1.</span> <span class="nav-text">set:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mset"><span class="nav-number">1.2.</span> <span class="nav-text">mset:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get"><span class="nav-number">1.3.</span> <span class="nav-text">get:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mget"><span class="nav-number">1.4.</span> <span class="nav-text">mget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getset"><span class="nav-number">1.5.</span> <span class="nav-text">getset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setex"><span class="nav-number">1.6.</span> <span class="nav-text">setex:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setnx"><span class="nav-number">1.7.</span> <span class="nav-text">setnx:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#msetnx-批量不存在即设置，批量key中一个存在整个都不会生效。（⚠️注意：-没有msetex）"><span class="nav-number">1.8.</span> <span class="nav-text">msetnx: 批量不存在即设置，批量key中一个存在整个都不会生效。（⚠️注意： 没有msetex）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#append-如果有则追加，没有则效果等同于set"><span class="nav-number">1.9.</span> <span class="nav-text">append: 如果有则追加，没有则效果等同于set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#incr"><span class="nav-number">1.10.</span> <span class="nav-text">incr:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decr"><span class="nav-number">1.11.</span> <span class="nav-text">decr</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#incrby"><span class="nav-number">1.12.</span> <span class="nav-text">incrby</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decrby"><span class="nav-number">1.13.</span> <span class="nav-text">decrby</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#incrbyfloat"><span class="nav-number">1.14.</span> <span class="nav-text">incrbyfloat:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getbit"><span class="nav-number">1.15.</span> <span class="nav-text">getbit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setbit"><span class="nav-number">1.16.</span> <span class="nav-text">setbit:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bitcount"><span class="nav-number">1.17.</span> <span class="nav-text">bitcount:</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#List"><span class="nav-number">2.</span> <span class="nav-text">List</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Set"><span class="nav-number">3.</span> <span class="nav-text">Set</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sadd"><span class="nav-number">3.1.</span> <span class="nav-text">sadd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#smembers"><span class="nav-number">3.2.</span> <span class="nav-text">smembers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sismember"><span class="nav-number">3.3.</span> <span class="nav-text">sismember</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#smismember2"><span class="nav-number">3.4.</span> <span class="nav-text">smismember2:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sdiff"><span class="nav-number">3.5.</span> <span class="nav-text">sdiff:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sdiffstore"><span class="nav-number">3.6.</span> <span class="nav-text">sdiffstore:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sinter"><span class="nav-number">3.7.</span> <span class="nav-text">sinter:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sinterstore"><span class="nav-number">3.8.</span> <span class="nav-text">sinterstore:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sunion"><span class="nav-number">3.9.</span> <span class="nav-text">sunion:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sunionstore"><span class="nav-number">3.10.</span> <span class="nav-text">sunionstore:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scard"><span class="nav-number">3.11.</span> <span class="nav-text">scard:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#smove"><span class="nav-number">3.12.</span> <span class="nav-text">smove:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spop"><span class="nav-number">3.13.</span> <span class="nav-text">spop :</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sscan-参考SCAN"><span class="nav-number">3.14.</span> <span class="nav-text">sscan: 参考SCAN</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hash"><span class="nav-number">4.</span> <span class="nav-text">hash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Zset"><span class="nav-number">5.</span> <span class="nav-text">Zset</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#官网"><span class="nav-number">6.</span> <span class="nav-text">官网</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#公共命令-可操作性所有数据类型"><span class="nav-number">7.</span> <span class="nav-text">公共命令 (可操作性所有数据类型)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#del-删除key"><span class="nav-number">7.1.</span> <span class="nav-text">del 删除key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">7.2.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#补充"><span class="nav-number">8.</span> <span class="nav-text">补充</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Brooks.H.Joshua"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Brooks.H.Joshua</p>
+  <div class="site-description" itemprop="description">Less Is More</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">115</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://spring.io/blog" title="https:&#x2F;&#x2F;spring.io&#x2F;blog" rel="noopener" target="_blank">Spring官博</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://leetcode-cn.com/" title="https:&#x2F;&#x2F;leetcode-cn.com&#x2F;" rel="noopener" target="_blank">LeetCode</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.itboyhub.com/" title="http:&#x2F;&#x2F;www.itboyhub.com&#x2F;" rel="noopener" target="_blank">JavaBoy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html" title="https:&#x2F;&#x2F;www.cs.usfca.edu&#x2F;~galles&#x2F;visualization&#x2F;Algorithms.html" rel="noopener" target="_blank">DSV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://visualgo.net/zh" title="https:&#x2F;&#x2F;visualgo.net&#x2F;zh" rel="noopener" target="_blank">DV</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.apache.org/index.html#projects-list" title="http:&#x2F;&#x2F;www.apache.org&#x2F;index.html#projects-list" rel="noopener" target="_blank">Apache</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://stackoverflow.com/" title="https:&#x2F;&#x2F;stackoverflow.com&#x2F;" rel="noopener" target="_blank">StackOverflow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://metacademy.org/" title="https:&#x2F;&#x2F;metacademy.org&#x2F;" rel="noopener" target="_blank">Metacademy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.alloyteam.com/nav/" title="http:&#x2F;&#x2F;www.alloyteam.com&#x2F;nav&#x2F;" rel="noopener" target="_blank">WebNav</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.36zhen.com/t?id=3448" title="http:&#x2F;&#x2F;www.36zhen.com&#x2F;t?id&#x3D;3448" rel="noopener" target="_blank">前端书籍资料</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ife.baidu.com/" title="http:&#x2F;&#x2F;ife.baidu.com&#x2F;" rel="noopener" target="_blank">百度前端</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://wf.uisdc.com/cn/" title="http:&#x2F;&#x2F;wf.uisdc.com&#x2F;cn&#x2F;" rel="noopener" target="_blank">G前端开发基础</a>
+        </li>
+    </ul>
+  </div>
+
+     
+	<!--网易云音乐-->
+	  <div id="music163player">
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	  </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Brooks.H.Joshua</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">Symbols count total: </span>
+    <span title="Symbols count total">1.3m</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">Reading time total &asymp;</span>
+    <span title="Reading time total">19:52</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+
+</html>
