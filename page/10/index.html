@@ -25,12 +25,10 @@
 
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="Less Is More">
@@ -90,7 +88,7 @@
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
+  <div class="container">
     <div class="headband"></div>
 
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -126,7 +124,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">40</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">41</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -136,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">116</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">117</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -169,63 +167,7 @@
   </div>
 </div>
     </header>
-	<!-- 改变css样式 -->
-<script type="text/javascript">
-var url = document.location.pathname;
-var folderName = url.substr(1, url.length - 2)
-console.log(folderName);
-
-var listPostUrl = [
-    "/" + folderName + "/" + "post-banner.png",
-    "/" + folderName + "/" + "post-banner.jpg",
-];
-
-var nSuccessCount = 0;
-var nResponceCount = 0;
-function OnHttpResponse(bSuccess, strUrl) {
-    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
-    nResponceCount++;
-    if(nSuccessCount > 0){
-        return;
-    }
-    if(bSuccess) {
-        nSuccessCount++;
-        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
-    }
-    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
-        // 使用默认图
-        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
-    }
-}
-
-function changeBanner(strPostUrl, nIndex){
-    console.log("try to load" + strPostUrl);
-    var xmlhttp;
-    if (window.XMLHttpRequest)
-    {
-        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
-        xmlhttp=new XMLHttpRequest();
-    }
-    else
-    {
-        // IE6, IE5 浏览器执行代码
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange=function()
-    {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200)
-        {
-            OnHttpResponse(true, strPostUrl);
-        } else {
-            OnHttpResponse(false, strPostUrl);
-        }
-    }
-    xmlhttp.open("HEAD",strPostUrl,true);
-    xmlhttp.send();
-}
-
-listPostUrl.forEach(changeBanner);
-</script>
+    <!-- Per-post banner script removed: no post had a post-banner image and its fallback image did not exist -->
 
 
 
@@ -247,6 +189,99 @@ listPostUrl.forEach(changeBanner);
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hexo.eloiseli.cn/2026/06/03/Spark-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Brooks.H.Joshua">
+      <meta itemprop="description" content="Less Is More">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eloise's Paradise">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2026/06/03/Spark-01/" class="post-title-link" itemprop="url">Spark-01</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2026-06-03 00:24:25 / Modified: 00:30:12" itemprop="dateCreated datePublished" datetime="2026-06-03T00:24:25+08:00">2026-06-03</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>275</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+
+           
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本笔记是马士兵教育的spark课程体系对应的笔记</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/06/03/Spark-01/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+
+
+<div>
+  
+</div>
+
+
+
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -274,10 +309,16 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2026-04-29 10:31:35 / Modified: 13:42:10" itemprop="dateCreated datePublished" datetime="2026-04-29T10:31:35+08:00">2026-04-29</time>
+              <time title="Created: 2026-04-29 10:31:35" itemprop="dateCreated datePublished" datetime="2026-04-29T10:31:35+08:00">2026-04-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-05-05 14:56:26" itemprop="dateModified" datetime="2026-05-05T14:56:26+08:00">2026-05-05</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -285,14 +326,14 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>8.4k</span>
+              <span>3.6k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>8 mins.</span>
+              <span>3 mins.</span>
             </span>
 
 
@@ -308,15 +349,19 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>这个文档用来搜集归纳日常见到的技术细节问题包括：Util code blocks， problem analysis，技术博客/podcasts 书签 etc ，后期可能会因为篇幅受限而将某些部份提炼为新的文章并通过<strong>hyperlink</strong>跳转。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/04/29/CodingGoldSource/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <div class="mermaid">
+<svg id="mermaid-svg-153cfb7a5a78fd76" width="100%" xmlns="http://www.w3.org/2000/svg" height="100%" viewbox="0 0 498.2734375 335.265625"><style>
+  .mermaid .label{font-family:trebuchet ms,verdana,arial;color:#333}.node circle,.node ellipse,.node polygon,.node rect{fill:#cde498;stroke:#13540c;stroke-width:1px}.node.clickable{cursor:pointer}.arrowheadPath{fill:green}.edgePath .path{stroke:green;stroke-width:1.5px}.edgeLabel{background-color:#e8e8e8}.cluster rect{fill:#cdffb2!important;rx:4!important;stroke:#6eaa49!important;stroke-width:1px!important}.cluster text{fill:#333}.actor{stroke:#13540c;fill:#cde498}text.actor{fill:#000;stroke:none}.actor-line{stroke:grey}.messageLine0{marker-end:"url(#arrowhead)"}.messageLine0,.messageLine1{stroke-width:1.5;stroke-dasharray:"2 2";stroke:#333}#arrowhead{fill:#333}#crosshead path{fill:#333!important;stroke:#333!important}.messageText{fill:#333;stroke:none}.labelBox{stroke:#326932;fill:#cde498}.labelText,.loopText{fill:#000;stroke:none}.loopLine{stroke-width:2;stroke-dasharray:"2 2";marker-end:"url(#arrowhead)";stroke:#326932}.note{stroke:#6eaa49;fill:#fff5ad}.noteText{fill:#000;stroke:none;font-family:trebuchet ms,verdana,arial;font-size:14px}.section{stroke:none;opacity:.2}.section0,.section2{fill:#6eaa49}.section1,.section3{fill:#fff;opacity:.2}.sectionTitle0,.sectionTitle1,.sectionTitle2,.sectionTitle3{fill:#333}.sectionTitle{text-anchor:start;font-size:11px;text-height:14px}.grid .tick{stroke:#d3d3d3;opacity:.3;shape-rendering:crispEdges}.grid path{stroke-width:0}.today{fill:none;stroke:red;stroke-width:2px}.task{stroke-width:2}.taskText{text-anchor:middle;font-size:11px}.taskTextOutsideRight{fill:#000;text-anchor:start;font-size:11px}.taskTextOutsideLeft{fill:#000;text-anchor:end;font-size:11px}.taskText0,.taskText1,.taskText2,.taskText3{fill:#fff}.task0,.task1,.task2,.task3{fill:#487e3a;stroke:#13540c}.taskTextOutside0,.taskTextOutside1,.taskTextOutside2,.taskTextOutside3{fill:#000}.active0,.active1,.active2,.active3{fill:#cde498;stroke:#13540c}.activeText0,.activeText1,.activeText2,.activeText3{fill:#000!important}.done0,.done1,.done2,.done3{stroke:grey;fill:#d3d3d3;stroke-width:2}.doneText0,.doneText1,.doneText2,.doneText3{fill:#000!important}.crit0,.crit1,.crit2,.crit3{stroke:#f88;fill:red;stroke-width:2}.activeCrit0,.activeCrit1,.activeCrit2,.activeCrit3{stroke:#f88;fill:#cde498;stroke-width:2}.doneCrit0,.doneCrit1,.doneCrit2,.doneCrit3{stroke:#f88;fill:#d3d3d3;stroke-width:2;cursor:pointer;shape-rendering:crispEdges}.activeCritText0,.activeCritText1,.activeCritText2,.activeCritText3,.doneCritText0,.doneCritText1,.doneCritText2,.doneCritText3{fill:#000!important}.titleText{text-anchor:middle;font-size:18px;fill:#000}g.classGroup text{fill:#13540c;stroke:none;font-family:trebuchet ms,verdana,arial;font-size:10px}g.classGroup rect{fill:#cde498;stroke:#13540c}g.classGroup line{stroke:#13540c;stroke-width:1}svg .classLabel .box{stroke:none;stroke-width:0;fill:#cde498;opacity:.5}svg .classLabel .label{fill:#13540c;font-size:10px}.relation{stroke:#13540c;stroke-width:1;fill:none}#compositionEnd,#compositionStart,.composition{fill:#13540c;stroke:#13540c;stroke-width:1}#aggregationEnd,#aggregationStart,.aggregation{fill:#cde498;stroke:#13540c;stroke-width:1}#dependencyEnd,#dependencyStart,#extensionEnd,#extensionStart{fill:#13540c;stroke:#13540c;stroke-width:1}.node text{font-size:14px}.node text,div.mermaidTooltip{font-family:trebuchet ms,verdana,arial}div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-size:12px;background:#cdffb2;border:1px solid #6eaa49;border-radius:2px;pointer-events:none;z-index:100}
+svg {
+  color: rgb(0, 0, 0);
+  font: normal normal 400 normal 16px / normal "Times New Roman";
+}
+  </style><g/><defs><marker id="extensionStart" class="extension" refx="0" refy="7" markerwidth="190" markerheight="240" orient="auto"><path d="M 1,7 L18,13 V 1 Z"/></marker></defs><defs><marker id="extensionEnd" refx="19" refy="7" markerwidth="20" markerheight="28" orient="auto"><path d="M 1,1 V 13 L18,7 Z"/></marker></defs><defs><marker id="compositionStart" class="extension" refx="0" refy="7" markerwidth="190" markerheight="240" orient="auto"><path d="M 18,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="compositionEnd" refx="19" refy="7" markerwidth="20" markerheight="28" orient="auto"><path d="M 18,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="aggregationStart" class="extension" refx="0" refy="7" markerwidth="190" markerheight="240" orient="auto"><path d="M 18,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="aggregationEnd" refx="19" refy="7" markerwidth="20" markerheight="28" orient="auto"><path d="M 18,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="dependencyStart" class="extension" refx="0" refy="7" markerwidth="190" markerheight="240" orient="auto"><path d="M 5,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="dependencyEnd" refx="19" refy="7" markerwidth="20" markerheight="28" orient="auto"><path d="M 18,7 L9,13 L14,7 L9,1 Z"/></marker></defs><g id="classId0" class="classGroup" transform="translate(143.79296875,0 )"><rect x="0" y="0" width="84.3125" height="41"/><text x="5" y="15">Throwable</text><line x1="0" y1="27" y2="27" x2="84.3125"/><text x="5" y="37" fill="white" class="classText"/><line x1="0" y1="32" y2="32" x2="84.3125"/><text x="5" y="47" fill="white" class="classText"/></g><g id="classId1" class="classGroup" transform="translate(104.3359375,91.2109375 )"><rect x="0" y="0" width="48.859375" height="41"/><text x="5" y="15">Error</text><line x1="0" y1="27" y2="27" x2="48.859375"/><text x="5" y="37" fill="white" class="classText"/><line x1="0" y1="32" y2="32" x2="48.859375"/><text x="5" y="47" fill="white" class="classText"/></g><g id="classId2" class="classGroup" transform="translate(203.1953125,91 )"><rect x="0" y="0" width="79.875" height="41.421875"/><text x="5" y="15">Exception</text><line x1="0" y1="27.421875" y2="27.421875" x2="79.875"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="79.875"/><text x="5" y="47.421875" fill="white" class="classText"/></g><g id="classId3" class="classGroup" transform="translate(9.7734375,182.421875 )"><rect x="0" y="0" width="134.984375" height="41.421875"/><text x="5" y="15">RuntimeException</text><line x1="0" y1="27.421875" y2="27.421875" x2="134.984375"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="134.984375"/><text x="5" y="47.421875" fill="white" class="classText"/></g><g id="classId4" class="classGroup" transform="translate(194.7578125,182.421875 )"><rect x="0" y="0" width="96.75" height="41.421875"/><text x="5" y="15">IOException</text><line x1="0" y1="27.421875" y2="27.421875" x2="96.75"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="96.75"/><text x="5" y="47.421875" fill="white" class="classText"/></g><g id="classId5" class="classGroup" transform="translate(0,273.84375 )"><rect x="0" y="0" width="154.53125" height="41.421875"/><text x="5" y="15">NullPointerException</text><line x1="0" y1="27.421875" y2="27.421875" x2="154.53125"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="154.53125"/><text x="5" y="47.421875" fill="white" class="classText"/></g><g id="classId6" class="classGroup" transform="translate(341.5078125,182.421875 )"><rect x="0" y="0" width="136.765625" height="41.421875"/><text x="5" y="15">BusinessException</text><line x1="0" y1="27.421875" y2="27.421875" x2="136.765625"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="136.765625"/><text x="5" y="47.421875" fill="white" class="classText"/></g><path d="M160.1851820054945,41L154.94858917124543,45.166666666666664C149.71199633699632,49.33333333333333,139.23881066849816,57.666666666666664,134.00221783424908,66.03515625C128.765625,74.40364583333333,128.765625,82.80729166666666,128.765625,87.00911458333333L128.765625,91.2109375" id="edge0" class="relation" marker-start="url(#extensionStart)"/><path d="M211.7132554945055,41L216.94984832875454,45.166666666666664C222.18644116300362,49.33333333333333,232.6596268315018,57.666666666666664,237.8962196657509,66C243.1328125,74.33333333333333,243.1328125,82.66666666666666,243.13281249999997,86.83333333333333L243.1328125,91" id="edge1" class="relation" marker-start="url(#extensionStart)"/><path d="M203.1953125,122.71721664370496L182.20703124999997,128.5013263697541C161.21875,134.28543609580328,119.2421875,145.85365554790164,98.25390625,155.8044319406175C77.265625,165.75520833333331,77.265625,174.08854166666666,77.265625,178.25520833333334L77.265625,182.421875" id="edge2" class="relation" marker-start="url(#extensionStart)"/><path d="M243.1328125,132.421875L243.13281249999997,136.58854166666666C243.1328125,140.75520833333331,243.1328125,149.08854166666666,243.13281249999997,157.421875C243.1328125,165.75520833333331,243.1328125,174.08854166666666,243.13281249999997,178.25520833333334L243.1328125,182.421875" id="edge3" class="relation" marker-start="url(#extensionStart)"/><path d="M77.265625,223.84375L77.265625,228.01041666666663C77.265625,232.17708333333331,77.265625,240.51041666666663,77.265625,248.84374999999997C77.265625,257.1770833333333,77.265625,265.51041666666663,77.265625,269.6770833333333L77.265625,273.84375" id="edge4" class="relation" marker-start="url(#extensionStart)"/><path d="M283.0703125,122.65843398629656L304.20703125,128.4523408219138C325.34375,134.24624765753103,367.61718749999994,145.8340613287655,388.75390625,155.79463483104942C409.89062499999994,165.75520833333331,409.89062499999994,174.08854166666666,409.8906249999999,178.25520833333334L409.890625,182.421875" id="edge5" class="relation" marker-start="url(#extensionStart)"/></svg>
+</div>
+
+
+
+
       
     </div>
 
@@ -1150,99 +1195,6 @@ listPostUrl.forEach(changeBanner);
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://hexo.eloiseli.cn/2024/02/21/Chapter04-Apache-NiFi-Logging-Explained/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Brooks.H.Joshua">
-      <meta itemprop="description" content="Less Is More">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Eloise's Paradise">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/02/21/Chapter04-Apache-NiFi-Logging-Explained/" class="post-title-link" itemprop="url">Chapter04-Apache_NiFi_Logging_Explained</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2024-02-21 22:56:38 / Modified: 23:41:56" itemprop="dateCreated datePublished" datetime="2024-02-21T22:56:38+08:00">2024-02-21</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.1k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-
-           
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>All that discussed in this chapter can be found here in <a href="https://nifi.apache.org/documentation/nifi-2.0.0-M2/html/administration-guide.html#logging_configuration" target="_blank" rel="noopener">official doc</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/02/21/Chapter04-Apache-NiFi-Logging-Explained/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-
-
-<div>
-  
-</div>
-
-
-
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1320,7 +1272,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-count">117</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1333,7 +1285,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -1389,10 +1341,48 @@ listPostUrl.forEach(changeBanner);
   </div>
 
      
-	<!--网易云音乐-->
-	  <div id="music163player">
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	<!--网易云音乐: plays on load (or on the visitor's first click/key if the browser blocks autoplay); the button stops it -->
+	  <div id="music163player" class="bg-music">
+	    <audio id="bg-music-audio" src="https://music.163.com/song/media/outer/url?id=512168839.mp3" loop preload="auto"></audio>
+	    <button type="button" id="bg-music-toggle" class="bg-music-toggle" aria-label="Play music"><i class="fa fa-play"></i></button>
+	    <span class="bg-music-title">Why Don't You Do Right? · Peggy Lee</span>
 	  </div>
+	  <script>
+	  (function () {
+	    var audio = document.getElementById('bg-music-audio');
+	    var btn = document.getElementById('bg-music-toggle');
+	    var KEY = 'bgMusicPaused';
+	    var gestures = ['pointerdown', 'keydown', 'touchend'];
+	    function wasPaused() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+	    function remember(paused) { try { localStorage.setItem(KEY, paused ? '1' : '0'); } catch (e) {} }
+	    function render() {
+	      var playing = !audio.paused;
+	      btn.innerHTML = playing ? '<i class="fa fa-pause"></i>' : '<i class="fa fa-play"></i>';
+	      btn.setAttribute('aria-label', playing ? 'Stop music' : 'Play music');
+	    }
+	    function stopWaiting() { gestures.forEach(function (t) { document.removeEventListener(t, onFirstGesture, true); }); }
+	    function onFirstGesture(e) {
+	      if (btn.contains(e.target)) return;
+	      stopWaiting();
+	      audio.play().catch(function () {});
+	    }
+	    btn.addEventListener('click', function () {
+	      stopWaiting();
+	      if (audio.paused) { remember(false); audio.play().catch(function () {}); }
+	      else { remember(true); audio.pause(); }
+	    });
+	    audio.addEventListener('play', render);
+	    audio.addEventListener('pause', render);
+	    // Phones: Gemini hides the sidebar, so float the player where it can still be stopped
+	    var player = document.getElementById('music163player');
+	    if (getComputedStyle(document.querySelector('.sidebar')).display === 'none') { player.classList.add('bg-music-floating'); document.body.appendChild(player); }
+	    if (!wasPaused()) {
+	      audio.play().catch(function () {
+	        gestures.forEach(function (t) { document.addEventListener(t, onFirstGesture, true); });
+	      });
+	    }
+	  })();
+	  </script>
       </div>
 
     </div>
@@ -1427,12 +1417,12 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">20:01</span>
+    <span title="Reading time total">19:52</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
   </div>
 
 
@@ -1453,15 +1443,11 @@ listPostUrl.forEach(changeBanner);
   <script src="/lib/anime.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
   <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
-<script src="/js/motion.js"></script>
 
-
-<script src="/js/schemes/muse.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
@@ -1495,9 +1481,30 @@ listPostUrl.forEach(changeBanner);
 
   
 
+  <!-- Orange pixel mascot, bottom right of every page (replaces the live2d girl) -->
+<div class="site-mascot" aria-hidden="true">
+  <svg viewBox="0 0 16 11" width="72" height="50" shape-rendering="crispEdges">
+    <g class="site-mascot-body">
+      <rect x="2" y="0" width="12" height="7" fill="#D97757"/>
+      <rect x="0" y="3" width="2" height="2" fill="#D97757"/>
+      <rect x="14" y="3" width="2" height="2" fill="#D97757"/>
+      <g class="site-mascot-eyes" fill="#1F1E1D">
+        <rect x="4" y="2" width="1" height="2"/>
+        <rect x="11" y="2" width="1" height="2"/>
+      </g>
+    </g>
+    <g fill="#D97757">
+      <rect class="site-mascot-leg-a" x="3" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-b" x="5" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-a" x="10" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-b" x="12" y="7" width="1" height="3"/>
+    </g>
+  </svg>
+</div>
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</body>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
 

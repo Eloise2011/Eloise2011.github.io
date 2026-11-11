@@ -25,12 +25,10 @@
 
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="Less Is More">
@@ -90,7 +88,7 @@
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
+  <div class="container">
     <div class="headband"></div>
 
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -126,7 +124,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">40</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">41</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -136,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">116</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">117</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -169,63 +167,7 @@
   </div>
 </div>
     </header>
-	<!-- 改变css样式 -->
-<script type="text/javascript">
-var url = document.location.pathname;
-var folderName = url.substr(1, url.length - 2)
-console.log(folderName);
-
-var listPostUrl = [
-    "/" + folderName + "/" + "post-banner.png",
-    "/" + folderName + "/" + "post-banner.jpg",
-];
-
-var nSuccessCount = 0;
-var nResponceCount = 0;
-function OnHttpResponse(bSuccess, strUrl) {
-    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
-    nResponceCount++;
-    if(nSuccessCount > 0){
-        return;
-    }
-    if(bSuccess) {
-        nSuccessCount++;
-        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
-    }
-    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
-        // 使用默认图
-        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
-    }
-}
-
-function changeBanner(strPostUrl, nIndex){
-    console.log("try to load" + strPostUrl);
-    var xmlhttp;
-    if (window.XMLHttpRequest)
-    {
-        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
-        xmlhttp=new XMLHttpRequest();
-    }
-    else
-    {
-        // IE6, IE5 浏览器执行代码
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange=function()
-    {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200)
-        {
-            OnHttpResponse(true, strPostUrl);
-        } else {
-            OnHttpResponse(false, strPostUrl);
-        }
-    }
-    xmlhttp.open("HEAD",strPostUrl,true);
-    xmlhttp.send();
-}
-
-listPostUrl.forEach(changeBanner);
-</script>
+    <!-- Per-post banner script removed: no post had a post-banner image and its fallback image did not exist -->
 
 
 
@@ -253,10 +195,33 @@ listPostUrl.forEach(changeBanner);
     <div class="posts-collapse">
       <div class="collection-title">
         
-        <span class="collection-header">Good! 116 posts in total. Keep on posting.</span>
+        <span class="collection-header">Good! 117 posts in total. Keep on posting.</span>
       </div>
 
       
+    <div class="collection-year">
+      <h1 class="collection-header">2022</h1>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2022-05-07T12:22:01+08:00"
+              content="2022-05-07">
+          05-07
+        </time>
+      </div>
+
+      <h2 class="post-title">
+          <a class="post-title-link" href="/2022/05/07/%E5%A4%9A%E7%BA%BF%E7%A8%8B-Part04/" itemprop="url">
+            <span itemprop="name">多线程-Part04</span>
+          </a>
+      </h2>
+
+    </header>
+  </article>
     <div class="collection-year">
       <h1 class="collection-header">2021</h1>
     </div>
@@ -444,26 +409,6 @@ listPostUrl.forEach(changeBanner);
     </header>
   </article>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-09-28T20:06:04+08:00"
-              content="2020-09-28">
-          09-28
-        </time>
-      </div>
-
-      <h2 class="post-title">
-          <a class="post-title-link" href="/2020/09/28/SpringBoot-Chapter3-AOP/" itemprop="url">
-            <span itemprop="name">SpringBoot_Chapter3_AOP</span>
-          </a>
-      </h2>
-
-    </header>
-  </article>
-
 
     </div>
   </div>
@@ -546,7 +491,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-count">117</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -559,7 +504,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -615,10 +560,48 @@ listPostUrl.forEach(changeBanner);
   </div>
 
      
-	<!--网易云音乐-->
-	  <div id="music163player">
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	<!--网易云音乐: plays on load (or on the visitor's first click/key if the browser blocks autoplay); the button stops it -->
+	  <div id="music163player" class="bg-music">
+	    <audio id="bg-music-audio" src="https://music.163.com/song/media/outer/url?id=512168839.mp3" loop preload="auto"></audio>
+	    <button type="button" id="bg-music-toggle" class="bg-music-toggle" aria-label="Play music"><i class="fa fa-play"></i></button>
+	    <span class="bg-music-title">Why Don't You Do Right? · Peggy Lee</span>
 	  </div>
+	  <script>
+	  (function () {
+	    var audio = document.getElementById('bg-music-audio');
+	    var btn = document.getElementById('bg-music-toggle');
+	    var KEY = 'bgMusicPaused';
+	    var gestures = ['pointerdown', 'keydown', 'touchend'];
+	    function wasPaused() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+	    function remember(paused) { try { localStorage.setItem(KEY, paused ? '1' : '0'); } catch (e) {} }
+	    function render() {
+	      var playing = !audio.paused;
+	      btn.innerHTML = playing ? '<i class="fa fa-pause"></i>' : '<i class="fa fa-play"></i>';
+	      btn.setAttribute('aria-label', playing ? 'Stop music' : 'Play music');
+	    }
+	    function stopWaiting() { gestures.forEach(function (t) { document.removeEventListener(t, onFirstGesture, true); }); }
+	    function onFirstGesture(e) {
+	      if (btn.contains(e.target)) return;
+	      stopWaiting();
+	      audio.play().catch(function () {});
+	    }
+	    btn.addEventListener('click', function () {
+	      stopWaiting();
+	      if (audio.paused) { remember(false); audio.play().catch(function () {}); }
+	      else { remember(true); audio.pause(); }
+	    });
+	    audio.addEventListener('play', render);
+	    audio.addEventListener('pause', render);
+	    // Phones: Gemini hides the sidebar, so float the player where it can still be stopped
+	    var player = document.getElementById('music163player');
+	    if (getComputedStyle(document.querySelector('.sidebar')).display === 'none') { player.classList.add('bg-music-floating'); document.body.appendChild(player); }
+	    if (!wasPaused()) {
+	      audio.play().catch(function () {
+	        gestures.forEach(function (t) { document.addEventListener(t, onFirstGesture, true); });
+	      });
+	    }
+	  })();
+	  </script>
       </div>
 
     </div>
@@ -653,12 +636,12 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">20:01</span>
+    <span title="Reading time total">19:52</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
   </div>
 
 
@@ -679,15 +662,11 @@ listPostUrl.forEach(changeBanner);
   <script src="/lib/anime.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
   <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
-<script src="/js/motion.js"></script>
 
-
-<script src="/js/schemes/muse.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
@@ -721,9 +700,30 @@ listPostUrl.forEach(changeBanner);
 
   
 
+  <!-- Orange pixel mascot, bottom right of every page (replaces the live2d girl) -->
+<div class="site-mascot" aria-hidden="true">
+  <svg viewBox="0 0 16 11" width="72" height="50" shape-rendering="crispEdges">
+    <g class="site-mascot-body">
+      <rect x="2" y="0" width="12" height="7" fill="#D97757"/>
+      <rect x="0" y="3" width="2" height="2" fill="#D97757"/>
+      <rect x="14" y="3" width="2" height="2" fill="#D97757"/>
+      <g class="site-mascot-eyes" fill="#1F1E1D">
+        <rect x="4" y="2" width="1" height="2"/>
+        <rect x="11" y="2" width="1" height="2"/>
+      </g>
+    </g>
+    <g fill="#D97757">
+      <rect class="site-mascot-leg-a" x="3" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-b" x="5" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-a" x="10" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-b" x="12" y="7" width="1" height="3"/>
+    </g>
+  </svg>
+</div>
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</body>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
 

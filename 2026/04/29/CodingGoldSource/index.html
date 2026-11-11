@@ -25,23 +25,21 @@
 
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="这个文档用来搜集归纳日常见到的技术细节问题包括：Util code blocks， problem analysis，技术博客&#x2F;podcasts 书签 etc ，后期可能会因为篇幅受限而将某些部份提炼为新的文章并通过hyperlink跳转。">
+  <meta name="description" content=".mermaid .label{font-family:trebuchet ms,verdana,arial;color:#333}.node circle,.node ellipse,.node polygon,.node rect{fill:#cde498;stroke:#13540c;stroke-width:1px}.node.clickable{cursor:pointer}.a">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CodingGoldSource">
 <meta property="og:url" content="https://hexo.eloiseli.cn/2026/04/29/CodingGoldSource/index.html">
 <meta property="og:site_name" content="Eloise&#39;s Paradise">
-<meta property="og:description" content="这个文档用来搜集归纳日常见到的技术细节问题包括：Util code blocks， problem analysis，技术博客&#x2F;podcasts 书签 etc ，后期可能会因为篇幅受限而将某些部份提炼为新的文章并通过hyperlink跳转。">
+<meta property="og:description" content=".mermaid .label{font-family:trebuchet ms,verdana,arial;color:#333}.node circle,.node ellipse,.node polygon,.node rect{fill:#cde498;stroke:#13540c;stroke-width:1px}.node.clickable{cursor:pointer}.a">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-04-29T02:31:35.000Z">
-<meta property="article:modified_time" content="2026-04-29T05:42:10.314Z">
+<meta property="article:modified_time" content="2026-05-05T06:56:26.940Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="Util Codes">
 <meta name="twitter:card" content="summary">
@@ -92,7 +90,7 @@
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
+  <div class="container">
     <div class="headband"></div>
 
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -128,7 +126,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">40</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">41</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -138,7 +136,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">116</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">117</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -171,63 +169,7 @@
   </div>
 </div>
     </header>
-	<!-- 改变css样式 -->
-<script type="text/javascript">
-var url = document.location.pathname;
-var folderName = url.substr(1, url.length - 2)
-console.log(folderName);
-
-var listPostUrl = [
-    "/" + folderName + "/" + "post-banner.png",
-    "/" + folderName + "/" + "post-banner.jpg",
-];
-
-var nSuccessCount = 0;
-var nResponceCount = 0;
-function OnHttpResponse(bSuccess, strUrl) {
-    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
-    nResponceCount++;
-    if(nSuccessCount > 0){
-        return;
-    }
-    if(bSuccess) {
-        nSuccessCount++;
-        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
-    }
-    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
-        // 使用默认图
-        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
-    }
-}
-
-function changeBanner(strPostUrl, nIndex){
-    console.log("try to load" + strPostUrl);
-    var xmlhttp;
-    if (window.XMLHttpRequest)
-    {
-        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
-        xmlhttp=new XMLHttpRequest();
-    }
-    else
-    {
-        // IE6, IE5 浏览器执行代码
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange=function()
-    {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200)
-        {
-            OnHttpResponse(true, strPostUrl);
-        } else {
-            OnHttpResponse(false, strPostUrl);
-        }
-    }
-    xmlhttp.open("HEAD",strPostUrl,true);
-    xmlhttp.send();
-}
-
-listPostUrl.forEach(changeBanner);
-</script>
+    <!-- Per-post banner script removed: no post had a post-banner image and its fallback image did not exist -->
 
 
 
@@ -275,10 +217,16 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2026-04-29 10:31:35 / Modified: 13:42:10" itemprop="dateCreated datePublished" datetime="2026-04-29T10:31:35+08:00">2026-04-29</time>
+              <time title="Created: 2026-04-29 10:31:35" itemprop="dateCreated datePublished" datetime="2026-04-29T10:31:35+08:00">2026-04-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2026-05-05 14:56:26" itemprop="dateModified" datetime="2026-05-05T14:56:26+08:00">2026-05-05</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -286,14 +234,14 @@ listPostUrl.forEach(changeBanner);
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>8.4k</span>
+              <span>3.6k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>8 mins.</span>
+              <span>3 mins.</span>
             </span>
 
 
@@ -309,88 +257,18 @@ listPostUrl.forEach(changeBanner);
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这个文档用来搜集归纳日常见到的技术细节问题包括：Util code blocks， problem analysis，技术博客/podcasts 书签 etc ，后期可能会因为篇幅受限而将某些部份提炼为新的文章并通过<strong>hyperlink</strong>跳转。</p>
-<a id="more"></a>
-
-<h1 id="公共代码块"><a href="#公共代码块" class="headerlink" title="公共代码块"></a>公共代码块</h1><h2 id="AI"><a href="#AI" class="headerlink" title="AI"></a>AI</h2><h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><h2 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h2><h2 id="Nifi"><a href="#Nifi" class="headerlink" title="Nifi"></a>Nifi</h2><h2 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h2><h2 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h2><h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><h3 id="UseCase01"><a href="#UseCase01" class="headerlink" title="UseCase01"></a>UseCase01</h3><p>在坦克大战游戏中，当碰撞检测到子弹击中敌方坦克时，会加载爆炸声音和动图，但是在原方案中声音的加载是阻塞的，也就是说声音加载完之前，爆炸动图的加载和frame的重画(repaint)都会被block，那么就会给用户一种丢帧甚至卡顿的感觉。</p>
-<p>原方案代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExplodeOld</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> WIDTH = ResourceMgr.explosions[<span class="number">0</span>].getWidth(), HEIGHT =  ResourceMgr.explosions[<span class="number">0</span>].getHeight();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> x , y;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> living = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">private</span> TankFrame tf = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用来记录每次加载哪张图片</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> step = <span class="number">0</span> ;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ExplodeOld</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, TankFrame tf)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.x = x;</span><br><span class="line">        <span class="keyword">this</span>.y = y;</span><br><span class="line">        <span class="keyword">this</span>.tf = tf;</span><br><span class="line">        <span class="keyword">new</span> Audio(<span class="string">"audio/explode.wav"</span>).play();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paint</span><span class="params">(Graphics g)</span></span>&#123;</span><br><span class="line">        g.drawImage(ResourceMgr.explosions[step++], x, y, <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">if</span>(step &gt;= ResourceMgr.explosions.length)  &#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * 爆炸结束后要从list移除</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            tf.explodes.remove(<span class="keyword">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getX</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setX</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.x = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> y;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setY</span><span class="params">(<span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.y = y;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isLiving</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> living;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLiving</span><span class="params">(<span class="keyword">boolean</span> living)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.living = living;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TankFrame <span class="title">getTf</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> tf;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTf</span><span class="params">(TankFrame tf)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.tf = tf;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getStep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> step;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStep</span><span class="params">(<span class="keyword">int</span> step)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.step = step;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>The Problem: Single-Threaded Blocking<br>    🎭 Analogy: A Restaurant Kitchen<br>    Imagine your game is a restaurant kitchen with only ONE chef (the Event Dispatch Thread - EDT):<br>    Before the fix (blocking):</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Chef (EDT) Timeline:</span><br><span class="line">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br><span class="line">Time:  0s      1s      2s      3s      4s      5s</span><br><span class="line">       │       │       │       │       │       │</span><br><span class="line">       </span><br><span class="line">Collision happens! 💥</span><br><span class="line">       │</span><br><span class="line">       ├─ 🔊 Play explosion sound (2 seconds)</span><br><span class="line">       │  ┌─────────────────────┐</span><br><span class="line">       │  │ Playing audio...    │ ← Chef is BUSY</span><br><span class="line">       │  │ Can&#39;t do anything   │   making food!</span><br><span class="line">       │  │ else!               │</span><br><span class="line">       │  └─────────────────────┘</span><br><span class="line">       │                               │</span><br><span class="line">                               ┌───────────────┐</span><br><span class="line">                               │ 🎨 Paint      │ ← Customer waits!</span><br><span class="line">                               │    explosion  │   Food arrives late!</span><br><span class="line">                               └───────────────┘</span><br></pre></td></tr></table></figure>
-
-<p>Root Cause Analysis:</p>
-<ul>
-<li>Audio plays in constructor on EDT: The <strong><code>new Audio(&quot;audio/explode.wav&quot;).play()</code></strong> call in the Explode constructor runs on the Event Dispatch Thread (EDT), blocking the paint operations. 单线程阻塞</li>
-<li>GIF animation not properly handled: You’re loading GIF frames as static BufferedImages, but GIFs need special handling to display their animation frames properly.</li>
-<li>Step increment without bounds checking: In Explode.paint(), the step++ increments every time paint is called, but paint might be called multiple times per frame cycle.</li>
-<li>No preloading of explosion images: Although images are loaded in ResourceMgr’s static block, GIF frames need to be extracted properly.</li>
-</ul>
-<p><span style="color:red"><strong>其他的原因我们暂不考虑， 只聚焦线程阻塞问题。</strong></span></p>
-<p>Before (blocking version)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// In Explode constructor - called from paint() method</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Explode</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, TankFrame tf)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.x = x;</span><br><span class="line">    <span class="keyword">this</span>.y = y;</span><br><span class="line">    <span class="keyword">this</span>.tf = tf;</span><br><span class="line">    <span class="keyword">new</span> Audio(<span class="string">"audio/explode.wav"</span>).play(); <span class="comment">// ⚠️ BLOCKS HERE!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Call Stack Visualization:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Main Game <span class="title">Loop</span> <span class="params">(T.java line <span class="number">19</span><span class="number">-22</span>)</span></span></span><br><span class="line"><span class="function">    ↓ calls <span class="title">repaint</span><span class="params">()</span> every 50ms</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">TankFrame.<span class="title">paint</span><span class="params">()</span> <span class="params">(line <span class="number">92</span>)</span></span></span><br><span class="line"><span class="function">    ↓ draws everything</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">Bullet.<span class="title">collidesWith</span><span class="params">()</span> <span class="params">(line <span class="number">97</span>)</span></span></span><br><span class="line"><span class="function">    ↓ detects collision at line 106</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">new <span class="title">Explode</span><span class="params">()</span> at line 111</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">Explode <span class="title">constructor</span> <span class="params">(line <span class="number">15</span>)</span></span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">Audio.<span class="title">play</span><span class="params">()</span> at line 19</span></span><br><span class="line"><span class="function">    ╔═══════════════════════════╗</span></span><br><span class="line"><span class="function">    ║  Reading audio file       ║ ← STUCK HERE!</span></span><br><span class="line"><span class="function">    ║  Writing to speaker       ║   Takes ~1-2 seconds</span></span><br><span class="line"><span class="function">    ║  WHILE LOOP running       ║   ENTIRE GAME FROZEN!</span></span><br><span class="line"><span class="function">    ║  <span class="params">(blocks <span class="number">1000</span>+ ms)</span>        ║</span></span><br><span class="line"><span class="function">    ╚═══════════════════════════╝</span></span><br><span class="line"><span class="function">    ↓ <span class="params">(can<span class="string">'t continue until audio finishes!)</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="string">paint() resumes</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="string">    ↓</span></span></span></span><br><span class="line"><span class="function"><span class="params"><span class="string">next frame renders (2 seconds later!) 😱</span></span></span></span><br></pre></td></tr></table></figure>
+        <div class="mermaid">
+<svg id="mermaid-svg-153cfb7a5a78fd76" width="100%" xmlns="http://www.w3.org/2000/svg" height="100%" viewbox="0 0 498.2734375 335.265625"><style>
+  .mermaid .label{font-family:trebuchet ms,verdana,arial;color:#333}.node circle,.node ellipse,.node polygon,.node rect{fill:#cde498;stroke:#13540c;stroke-width:1px}.node.clickable{cursor:pointer}.arrowheadPath{fill:green}.edgePath .path{stroke:green;stroke-width:1.5px}.edgeLabel{background-color:#e8e8e8}.cluster rect{fill:#cdffb2!important;rx:4!important;stroke:#6eaa49!important;stroke-width:1px!important}.cluster text{fill:#333}.actor{stroke:#13540c;fill:#cde498}text.actor{fill:#000;stroke:none}.actor-line{stroke:grey}.messageLine0{marker-end:"url(#arrowhead)"}.messageLine0,.messageLine1{stroke-width:1.5;stroke-dasharray:"2 2";stroke:#333}#arrowhead{fill:#333}#crosshead path{fill:#333!important;stroke:#333!important}.messageText{fill:#333;stroke:none}.labelBox{stroke:#326932;fill:#cde498}.labelText,.loopText{fill:#000;stroke:none}.loopLine{stroke-width:2;stroke-dasharray:"2 2";marker-end:"url(#arrowhead)";stroke:#326932}.note{stroke:#6eaa49;fill:#fff5ad}.noteText{fill:#000;stroke:none;font-family:trebuchet ms,verdana,arial;font-size:14px}.section{stroke:none;opacity:.2}.section0,.section2{fill:#6eaa49}.section1,.section3{fill:#fff;opacity:.2}.sectionTitle0,.sectionTitle1,.sectionTitle2,.sectionTitle3{fill:#333}.sectionTitle{text-anchor:start;font-size:11px;text-height:14px}.grid .tick{stroke:#d3d3d3;opacity:.3;shape-rendering:crispEdges}.grid path{stroke-width:0}.today{fill:none;stroke:red;stroke-width:2px}.task{stroke-width:2}.taskText{text-anchor:middle;font-size:11px}.taskTextOutsideRight{fill:#000;text-anchor:start;font-size:11px}.taskTextOutsideLeft{fill:#000;text-anchor:end;font-size:11px}.taskText0,.taskText1,.taskText2,.taskText3{fill:#fff}.task0,.task1,.task2,.task3{fill:#487e3a;stroke:#13540c}.taskTextOutside0,.taskTextOutside1,.taskTextOutside2,.taskTextOutside3{fill:#000}.active0,.active1,.active2,.active3{fill:#cde498;stroke:#13540c}.activeText0,.activeText1,.activeText2,.activeText3{fill:#000!important}.done0,.done1,.done2,.done3{stroke:grey;fill:#d3d3d3;stroke-width:2}.doneText0,.doneText1,.doneText2,.doneText3{fill:#000!important}.crit0,.crit1,.crit2,.crit3{stroke:#f88;fill:red;stroke-width:2}.activeCrit0,.activeCrit1,.activeCrit2,.activeCrit3{stroke:#f88;fill:#cde498;stroke-width:2}.doneCrit0,.doneCrit1,.doneCrit2,.doneCrit3{stroke:#f88;fill:#d3d3d3;stroke-width:2;cursor:pointer;shape-rendering:crispEdges}.activeCritText0,.activeCritText1,.activeCritText2,.activeCritText3,.doneCritText0,.doneCritText1,.doneCritText2,.doneCritText3{fill:#000!important}.titleText{text-anchor:middle;font-size:18px;fill:#000}g.classGroup text{fill:#13540c;stroke:none;font-family:trebuchet ms,verdana,arial;font-size:10px}g.classGroup rect{fill:#cde498;stroke:#13540c}g.classGroup line{stroke:#13540c;stroke-width:1}svg .classLabel .box{stroke:none;stroke-width:0;fill:#cde498;opacity:.5}svg .classLabel .label{fill:#13540c;font-size:10px}.relation{stroke:#13540c;stroke-width:1;fill:none}#compositionEnd,#compositionStart,.composition{fill:#13540c;stroke:#13540c;stroke-width:1}#aggregationEnd,#aggregationStart,.aggregation{fill:#cde498;stroke:#13540c;stroke-width:1}#dependencyEnd,#dependencyStart,#extensionEnd,#extensionStart{fill:#13540c;stroke:#13540c;stroke-width:1}.node text{font-size:14px}.node text,div.mermaidTooltip{font-family:trebuchet ms,verdana,arial}div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-size:12px;background:#cdffb2;border:1px solid #6eaa49;border-radius:2px;pointer-events:none;z-index:100}
+svg {
+  color: rgb(0, 0, 0);
+  font: normal normal 400 normal 16px / normal "Times New Roman";
+}
+  </style><g/><defs><marker id="extensionStart" class="extension" refx="0" refy="7" markerwidth="190" markerheight="240" orient="auto"><path d="M 1,7 L18,13 V 1 Z"/></marker></defs><defs><marker id="extensionEnd" refx="19" refy="7" markerwidth="20" markerheight="28" orient="auto"><path d="M 1,1 V 13 L18,7 Z"/></marker></defs><defs><marker id="compositionStart" class="extension" refx="0" refy="7" markerwidth="190" markerheight="240" orient="auto"><path d="M 18,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="compositionEnd" refx="19" refy="7" markerwidth="20" markerheight="28" orient="auto"><path d="M 18,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="aggregationStart" class="extension" refx="0" refy="7" markerwidth="190" markerheight="240" orient="auto"><path d="M 18,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="aggregationEnd" refx="19" refy="7" markerwidth="20" markerheight="28" orient="auto"><path d="M 18,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="dependencyStart" class="extension" refx="0" refy="7" markerwidth="190" markerheight="240" orient="auto"><path d="M 5,7 L9,13 L1,7 L9,1 Z"/></marker></defs><defs><marker id="dependencyEnd" refx="19" refy="7" markerwidth="20" markerheight="28" orient="auto"><path d="M 18,7 L9,13 L14,7 L9,1 Z"/></marker></defs><g id="classId0" class="classGroup" transform="translate(143.79296875,0 )"><rect x="0" y="0" width="84.3125" height="41"/><text x="5" y="15">Throwable</text><line x1="0" y1="27" y2="27" x2="84.3125"/><text x="5" y="37" fill="white" class="classText"/><line x1="0" y1="32" y2="32" x2="84.3125"/><text x="5" y="47" fill="white" class="classText"/></g><g id="classId1" class="classGroup" transform="translate(104.3359375,91.2109375 )"><rect x="0" y="0" width="48.859375" height="41"/><text x="5" y="15">Error</text><line x1="0" y1="27" y2="27" x2="48.859375"/><text x="5" y="37" fill="white" class="classText"/><line x1="0" y1="32" y2="32" x2="48.859375"/><text x="5" y="47" fill="white" class="classText"/></g><g id="classId2" class="classGroup" transform="translate(203.1953125,91 )"><rect x="0" y="0" width="79.875" height="41.421875"/><text x="5" y="15">Exception</text><line x1="0" y1="27.421875" y2="27.421875" x2="79.875"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="79.875"/><text x="5" y="47.421875" fill="white" class="classText"/></g><g id="classId3" class="classGroup" transform="translate(9.7734375,182.421875 )"><rect x="0" y="0" width="134.984375" height="41.421875"/><text x="5" y="15">RuntimeException</text><line x1="0" y1="27.421875" y2="27.421875" x2="134.984375"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="134.984375"/><text x="5" y="47.421875" fill="white" class="classText"/></g><g id="classId4" class="classGroup" transform="translate(194.7578125,182.421875 )"><rect x="0" y="0" width="96.75" height="41.421875"/><text x="5" y="15">IOException</text><line x1="0" y1="27.421875" y2="27.421875" x2="96.75"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="96.75"/><text x="5" y="47.421875" fill="white" class="classText"/></g><g id="classId5" class="classGroup" transform="translate(0,273.84375 )"><rect x="0" y="0" width="154.53125" height="41.421875"/><text x="5" y="15">NullPointerException</text><line x1="0" y1="27.421875" y2="27.421875" x2="154.53125"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="154.53125"/><text x="5" y="47.421875" fill="white" class="classText"/></g><g id="classId6" class="classGroup" transform="translate(341.5078125,182.421875 )"><rect x="0" y="0" width="136.765625" height="41.421875"/><text x="5" y="15">BusinessException</text><line x1="0" y1="27.421875" y2="27.421875" x2="136.765625"/><text x="5" y="37.421875" fill="white" class="classText"/><line x1="0" y1="32.421875" y2="32.421875" x2="136.765625"/><text x="5" y="47.421875" fill="white" class="classText"/></g><path d="M160.1851820054945,41L154.94858917124543,45.166666666666664C149.71199633699632,49.33333333333333,139.23881066849816,57.666666666666664,134.00221783424908,66.03515625C128.765625,74.40364583333333,128.765625,82.80729166666666,128.765625,87.00911458333333L128.765625,91.2109375" id="edge0" class="relation" marker-start="url(#extensionStart)"/><path d="M211.7132554945055,41L216.94984832875454,45.166666666666664C222.18644116300362,49.33333333333333,232.6596268315018,57.666666666666664,237.8962196657509,66C243.1328125,74.33333333333333,243.1328125,82.66666666666666,243.13281249999997,86.83333333333333L243.1328125,91" id="edge1" class="relation" marker-start="url(#extensionStart)"/><path d="M203.1953125,122.71721664370496L182.20703124999997,128.5013263697541C161.21875,134.28543609580328,119.2421875,145.85365554790164,98.25390625,155.8044319406175C77.265625,165.75520833333331,77.265625,174.08854166666666,77.265625,178.25520833333334L77.265625,182.421875" id="edge2" class="relation" marker-start="url(#extensionStart)"/><path d="M243.1328125,132.421875L243.13281249999997,136.58854166666666C243.1328125,140.75520833333331,243.1328125,149.08854166666666,243.13281249999997,157.421875C243.1328125,165.75520833333331,243.1328125,174.08854166666666,243.13281249999997,178.25520833333334L243.1328125,182.421875" id="edge3" class="relation" marker-start="url(#extensionStart)"/><path d="M77.265625,223.84375L77.265625,228.01041666666663C77.265625,232.17708333333331,77.265625,240.51041666666663,77.265625,248.84374999999997C77.265625,257.1770833333333,77.265625,265.51041666666663,77.265625,269.6770833333333L77.265625,273.84375" id="edge4" class="relation" marker-start="url(#extensionStart)"/><path d="M283.0703125,122.65843398629656L304.20703125,128.4523408219138C325.34375,134.24624765753103,367.61718749999994,145.8340613287655,388.75390625,155.79463483104942C409.89062499999994,165.75520833333331,409.89062499999994,174.08854166666666,409.8906249999999,178.25520833333334L409.890625,182.421875" id="edge5" class="relation" marker-start="url(#extensionStart)"/></svg>
+</div>
 
 
 
-<p>Timelines:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Frame <span class="number">1</span> (t=<span class="number">0</span>ms): Collision detected → Create Explode → Play audio starts</span><br><span class="line">                  ████████████████████████████████ (audio blocks <span class="keyword">for</span> <span class="number">1500</span>ms)</span><br><span class="line">                  </span><br><span class="line">Frame <span class="number">2</span> (t=<span class="number">50</span>ms):  SKIPPED! EDT still playing audio ❌</span><br><span class="line">Frame <span class="number">3</span> (t=<span class="number">100</span>ms): SKIPPED! EDT still playing audio ❌</span><br><span class="line">Frame <span class="number">4</span> (t=<span class="number">150</span>ms): SKIPPED! EDT still playing audio ❌</span><br><span class="line">...</span><br><span class="line">Frame <span class="number">30</span> (t=<span class="number">1500</span>ms): Audio finishes → Finally can paint! ✅</span><br><span class="line">                     BUT player saw nothing <span class="keyword">for</span> <span class="number">1.5</span> seconds!</span><br></pre></td></tr></table></figure>
-
-
-
-<p>Enhanced Codes：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Explode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> WIDTH = ResourceMgr.explosions[<span class="number">0</span>].getWidth(), HEIGHT =  ResourceMgr.explosions[<span class="number">0</span>].getHeight();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> x , y;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> living = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">private</span> TankFrame tf = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> step = <span class="number">0</span> ;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> lastUpdate = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> FRAME_DELAY = <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Explode</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, TankFrame tf)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.x = x;</span><br><span class="line">        <span class="keyword">this</span>.y = y;</span><br><span class="line">        <span class="keyword">this</span>.tf = tf;</span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt;&#123;</span><br><span class="line">            System.out.println(<span class="string">"currentThreadName = "</span> + Thread.currentThread().getName());</span><br><span class="line">            <span class="keyword">new</span> Audio(<span class="string">"audio/explode.wav"</span>).play();</span><br><span class="line">        &#125; ).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paint</span><span class="params">(Graphics g)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(step &gt;= ResourceMgr.explosions.length)  &#123;</span><br><span class="line">            tf.explodes.remove(<span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> currentTime = System.currentTimeMillis();</span><br><span class="line">        <span class="keyword">if</span> (currentTime - lastUpdate &gt;= FRAME_DELAY) &#123;</span><br><span class="line">            g.drawImage(ResourceMgr.explosions[step], x, y, <span class="keyword">null</span>);</span><br><span class="line">            lastUpdate = currentTime;</span><br><span class="line">            step++;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (step &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                g.drawImage(ResourceMgr.explosions[step - <span class="number">1</span>], x, y, <span class="keyword">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>After (Non-Blocking version):</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// In Explode constructor</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Explode</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, TankFrame tf)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.x = x;</span><br><span class="line">    <span class="keyword">this</span>.y = y;</span><br><span class="line">    <span class="keyword">this</span>.tf = tf;</span><br><span class="line">    <span class="keyword">new</span> Thread(() -&gt; <span class="keyword">new</span> Audio(<span class="string">"audio/explode.wav"</span>).play()).start(); <span class="comment">// ✨ NEW THREAD!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Call Stack Visualization:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Main Game <span class="title">Loop</span> <span class="params">(T.java line <span class="number">19</span><span class="number">-22</span>)</span></span></span><br><span class="line"><span class="function">    ↓ calls <span class="title">repaint</span><span class="params">()</span> every 50ms</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">TankFrame.<span class="title">paint</span><span class="params">()</span> <span class="params">(line <span class="number">92</span>)</span></span></span><br><span class="line"><span class="function">    ↓ draws everything</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">Bullet.<span class="title">collidesWith</span><span class="params">()</span> <span class="params">(line <span class="number">97</span>)</span></span></span><br><span class="line"><span class="function">    ↓ detects collision at line 106</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">new <span class="title">Explode</span><span class="params">()</span> at line 111</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">Explode <span class="title">constructor</span> <span class="params">(line <span class="number">15</span>)</span></span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">new <span class="title">Thread</span><span class="params">()</span>.<span class="title">start</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">    ╔═══════════════════════════╗    ↗ New thread created!</span></span><br><span class="line"><span class="function">    ║  Thread runs separately   ║   ↗  Doesn't block EDT!</span></span><br><span class="line"><span class="function">    ║  Audio plays in parallel  ║  ↗</span></span><br><span class="line"><span class="function">    ╚═══════════════════════════╝ ↗</span></span><br><span class="line"><span class="function">    ↓ <span class="params">(returns IMMEDIATELY!)</span></span></span><br><span class="line"><span class="function"><span class="title">paint</span><span class="params">()</span> continues immediately ✅</span></span><br><span class="line"><span class="function">    ↓</span></span><br><span class="line"><span class="function">next frame renders in 50ms! 🎉</span></span><br></pre></td></tr></table></figure>
-
-<p>Timeline:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Main <span class="title">Thread</span> <span class="params">(EDT)</span>:</span></span><br><span class="line"><span class="function">Frame 1 <span class="params">(t=<span class="number">0</span>ms)</span>:   Collision → Create Explode → Start audio thread → Paint explosion ✅</span></span><br><span class="line"><span class="function">Frame 2 <span class="params">(t=<span class="number">50</span>ms)</span>:  Paint next animation frame ✅</span></span><br><span class="line"><span class="function">Frame 3 <span class="params">(t=<span class="number">100</span>ms)</span>: Paint next animation frame ✅</span></span><br><span class="line"><span class="function">Frame 4 <span class="params">(t=<span class="number">150</span>ms)</span>: Paint next animation frame ✅</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Audio <span class="title">Thread</span> <span class="params">(separate)</span>:</span></span><br><span class="line"><span class="function">t</span>=<span class="number">0</span>ms:     Start playing audio 🔊</span><br><span class="line">t=<span class="number">50</span>ms:    Still playing... 🔊</span><br><span class="line">t=<span class="number">100</span>ms:   Still playing... 🔊</span><br><span class="line">t=<span class="number">1500</span>ms:  Audio finishes 🔊</span><br></pre></td></tr></table></figure>
-
-<p>🎬 Animation: Thread Execution Flow </p>
-<p>Single Thread (Blocking) - Like a Single-Lane Road:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">🚗 Cars &#x3D; Tasks (paint, audio, input, etc.)</span><br><span class="line">🛣️ Road &#x3D; CPU&#x2F;Thread</span><br><span class="line"></span><br><span class="line">BEFORE FIX:</span><br><span class="line">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br><span class="line">Time →</span><br><span class="line"></span><br><span class="line">Lane 1 (EDT):</span><br><span class="line">🚗🚕🚙🚌 [🔊AUDIO TRUCK 🚚] 🚗🚕🚙</span><br><span class="line">         ^^^^^^^^^^^^^^^^^^</span><br><span class="line">         This HUGE truck blocks </span><br><span class="line">         EVERYTHING behind it!</span><br><span class="line">         </span><br><span class="line">Result: Traffic jam! 🚦</span><br><span class="line">- Paint tasks wait 2 seconds</span><br><span class="line">- Input tasks wait 2 seconds  </span><br><span class="line">- Game appears frozen!</span><br></pre></td></tr></table></figure>
-
-<p>Multi-Thread (Non-Blocking) - Like a Multi-Lane Highway:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">AFTER FIX:</span><br><span class="line">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br><span class="line">Time →</span><br><span class="line"></span><br><span class="line">Lane <span class="number">1</span> (EDT):</span><br><span class="line">🚗🚕🚙🚌     🚗🚕🚙🚌     🚗🚕🚙🚌</span><br><span class="line">  Smooth traffic flow! ✅</span><br><span class="line"></span><br><span class="line">Lane <span class="number">2</span> (Audio Thread):</span><br><span class="line">         [🔊AUDIO TRUCK 🚚]</span><br><span class="line">         Runs in parallel!</span><br><span class="line">         Doesn<span class="string">'t block lane 1!</span></span><br><span class="line"><span class="string">         </span></span><br><span class="line"><span class="string">Result: No traffic jam! 🎉</span></span><br><span class="line"><span class="string">- Paint continues smoothly</span></span><br><span class="line"><span class="string">- Audio plays simultaneously</span></span><br><span class="line"><span class="string">- Game stays responsive!</span></span><br></pre></td></tr></table></figure>
-
-<p>🔍 Why Does Audio.play() Block?</p>
-<p>Let’s look at what happens inside Audio.play():</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">play</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>*<span class="number">5</span>];</span><br><span class="line">    <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">    sourceDataLine.open(audioFormat, <span class="number">1024</span>*<span class="number">5</span>);</span><br><span class="line">    sourceDataLine.start();</span><br><span class="line">    audioInputStream.mark(<span class="number">12358946</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// ⚠️ THIS WHILE LOOP TAKES 1-2 SECONDS!</span></span><br><span class="line">    <span class="keyword">while</span> ((len = audioInputStream.read(b)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        sourceDataLine.write(b, <span class="number">0</span>, len);  <span class="comment">// Writes audio chunks</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    sourceDataLine.drain();  <span class="comment">// Waits for all audio to finish</span></span><br><span class="line">    sourceDataLine.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>What’s happening:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> loop iteration by iteration:</span><br><span class="line">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br><span class="line"></span><br><span class="line">Iteration <span class="number">1</span>:  Read <span class="number">5</span>KB → <span class="function">Write to <span class="title">speaker</span> <span class="params">(takes ~<span class="number">1</span>ms)</span></span></span><br><span class="line"><span class="function">Iteration 2:  Read 5KB → Write to <span class="title">speaker</span> <span class="params">(takes ~<span class="number">1</span>ms)</span></span></span><br><span class="line"><span class="function">Iteration 3:  Read 5KB → Write to <span class="title">speaker</span> <span class="params">(takes ~<span class="number">1</span>ms)</span></span></span><br><span class="line"><span class="function">...</span></span><br><span class="line"><span class="function">Iteration 300: Read 5KB → Write to <span class="title">speaker</span> <span class="params">(takes ~<span class="number">1</span>ms)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Total time: 300 iterations × ~5ms </span>= ~<span class="number">1500</span>ms (<span class="number">1.5</span> seconds!)</span><br><span class="line"></span><br><span class="line">During ALL <span class="keyword">this</span> time, the method doesn<span class="string">'t return!</span></span><br><span class="line"><span class="string">The calling thread is STUCK in this loop!</span></span><br></pre></td></tr></table></figure>
-
-<p>🧠 Key Concept: Thread Independence</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Think of threads like smartphone apps:</span><br><span class="line"></span><br><span class="line">📱 Your Phone = Computer CPU</span><br><span class="line">📲 Apps = Threads</span><br><span class="line"></span><br><span class="line">SCENARIO <span class="number">1</span>: Single-<span class="function">threaded <span class="title">phone</span> <span class="params">(old phones)</span></span></span><br><span class="line"><span class="function">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span></span><br><span class="line"><span class="function">- Open music app → Play song</span></span><br><span class="line"><span class="function">- Try to open camera → WAIT! Music must finish first! ❌</span></span><br><span class="line"><span class="function">- Try to check messages → WAIT! Music must finish first! ❌</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">SCENARIO 2: Multi-threaded <span class="title">phone</span> <span class="params">(modern phones)</span></span></span><br><span class="line"><span class="function">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span></span><br><span class="line"><span class="function">- Open music app → Play song in background ✅</span></span><br><span class="line"><span class="function">- Open camera → Works fine! <span class="params">(separate thread)</span> ✅</span></span><br><span class="line"><span class="function">- Check messages → Works fine! <span class="params">(separate thread)</span> ✅</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Your game is the same!</span></span><br><span class="line"><span class="function">- EDT </span>= <span class="function">Main UI <span class="title">thread</span> <span class="params">(handles painting, input)</span></span></span><br><span class="line"><span class="function">- Audio thread </span>= <span class="function">Background <span class="title">worker</span> <span class="params">(handles sound)</span></span></span><br></pre></td></tr></table></figure>
-
-<p>📈 Performance Comparison</p>
-<p>🎯 Summary<br><strong>The Root Cause:</strong></p>
-<ol>
-<li><p>Java’s paint() method runs on the Event Dispatch Thread (EDT)</p>
-</li>
-<li><p>The EDT is single-threaded - it does ONE thing at a time</p>
-</li>
-<li><p>Audio.play() has a long-running loop (1-2 seconds)</p>
-</li>
-<li><p>When you call play() directly in the constructor, the EDT stops painting to play audio</p>
-</li>
-<li><p>Result: You hear sound but see nothing until audio finishes!</p>
-</li>
-</ol>
-<p><strong>The Solution:</strong></p>
-<ol>
-<li>Create a new thread specifically for audio</li>
-<li>The new thread runs independently from the EDT</li>
-<li>EDT can continue painting while audio plays in parallel</li>
-<li>Result: Sound and visuals happen simultaneously! 🎉</li>
-</ol>
-<p><strong>The Magic:</strong></p>
 
     </div>
 
@@ -446,7 +324,10 @@ listPostUrl.forEach(changeBanner);
     <a href="/2026/03/11/HSP-Java-Chapter-10/" rel="prev" title="HSP-Java-Chapter-10">
       <i class="fa fa-chevron-left"></i> HSP-Java-Chapter-10
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2026/06/03/Spark-01/" rel="next" title="Spark-01">
+      Spark-01 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -509,7 +390,6 @@ listPostUrl.forEach(changeBanner);
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#公共代码块"><span class="nav-number">1.</span> <span class="nav-text">公共代码块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AI"><span class="nav-number">1.1.</span> <span class="nav-text">AI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java"><span class="nav-number">1.2.</span> <span class="nav-text">Java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux"><span class="nav-number">1.3.</span> <span class="nav-text">Linux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL"><span class="nav-number">1.4.</span> <span class="nav-text">SQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nifi"><span class="nav-number">1.5.</span> <span class="nav-text">Nifi</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTML"><span class="nav-number">1.6.</span> <span class="nav-text">HTML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JS"><span class="nav-number">1.7.</span> <span class="nav-text">JS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题分析"><span class="nav-number">2.</span> <span class="nav-text">问题分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设计模式"><span class="nav-number">2.1.</span> <span class="nav-text">设计模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程"><span class="nav-number">2.2.</span> <span class="nav-text">多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UseCase01"><span class="nav-number">2.2.1.</span> <span class="nav-text">UseCase01</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -527,7 +407,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-count">117</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -540,7 +420,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -596,10 +476,48 @@ listPostUrl.forEach(changeBanner);
   </div>
 
      
-	<!--网易云音乐-->
-	  <div id="music163player">
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	<!--网易云音乐: plays on load (or on the visitor's first click/key if the browser blocks autoplay); the button stops it -->
+	  <div id="music163player" class="bg-music">
+	    <audio id="bg-music-audio" src="https://music.163.com/song/media/outer/url?id=512168839.mp3" loop preload="auto"></audio>
+	    <button type="button" id="bg-music-toggle" class="bg-music-toggle" aria-label="Play music"><i class="fa fa-play"></i></button>
+	    <span class="bg-music-title">Why Don't You Do Right? · Peggy Lee</span>
 	  </div>
+	  <script>
+	  (function () {
+	    var audio = document.getElementById('bg-music-audio');
+	    var btn = document.getElementById('bg-music-toggle');
+	    var KEY = 'bgMusicPaused';
+	    var gestures = ['pointerdown', 'keydown', 'touchend'];
+	    function wasPaused() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+	    function remember(paused) { try { localStorage.setItem(KEY, paused ? '1' : '0'); } catch (e) {} }
+	    function render() {
+	      var playing = !audio.paused;
+	      btn.innerHTML = playing ? '<i class="fa fa-pause"></i>' : '<i class="fa fa-play"></i>';
+	      btn.setAttribute('aria-label', playing ? 'Stop music' : 'Play music');
+	    }
+	    function stopWaiting() { gestures.forEach(function (t) { document.removeEventListener(t, onFirstGesture, true); }); }
+	    function onFirstGesture(e) {
+	      if (btn.contains(e.target)) return;
+	      stopWaiting();
+	      audio.play().catch(function () {});
+	    }
+	    btn.addEventListener('click', function () {
+	      stopWaiting();
+	      if (audio.paused) { remember(false); audio.play().catch(function () {}); }
+	      else { remember(true); audio.pause(); }
+	    });
+	    audio.addEventListener('play', render);
+	    audio.addEventListener('pause', render);
+	    // Phones: Gemini hides the sidebar, so float the player where it can still be stopped
+	    var player = document.getElementById('music163player');
+	    if (getComputedStyle(document.querySelector('.sidebar')).display === 'none') { player.classList.add('bg-music-floating'); document.body.appendChild(player); }
+	    if (!wasPaused()) {
+	      audio.play().catch(function () {
+	        gestures.forEach(function (t) { document.addEventListener(t, onFirstGesture, true); });
+	      });
+	    }
+	  })();
+	  </script>
       </div>
 
     </div>
@@ -634,12 +552,12 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">20:01</span>
+    <span title="Reading time total">19:52</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
   </div>
 
 
@@ -660,15 +578,11 @@ listPostUrl.forEach(changeBanner);
   <script src="/lib/anime.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
   <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
-<script src="/js/motion.js"></script>
 
-
-<script src="/js/schemes/muse.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
@@ -702,9 +616,30 @@ listPostUrl.forEach(changeBanner);
 
   
 
+  <!-- Orange pixel mascot, bottom right of every page (replaces the live2d girl) -->
+<div class="site-mascot" aria-hidden="true">
+  <svg viewBox="0 0 16 11" width="72" height="50" shape-rendering="crispEdges">
+    <g class="site-mascot-body">
+      <rect x="2" y="0" width="12" height="7" fill="#D97757"/>
+      <rect x="0" y="3" width="2" height="2" fill="#D97757"/>
+      <rect x="14" y="3" width="2" height="2" fill="#D97757"/>
+      <g class="site-mascot-eyes" fill="#1F1E1D">
+        <rect x="4" y="2" width="1" height="2"/>
+        <rect x="11" y="2" width="1" height="2"/>
+      </g>
+    </g>
+    <g fill="#D97757">
+      <rect class="site-mascot-leg-a" x="3" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-b" x="5" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-a" x="10" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-b" x="12" y="7" width="1" height="3"/>
+    </g>
+  </svg>
+</div>
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</body>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
 

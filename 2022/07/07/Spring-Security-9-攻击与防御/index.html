@@ -25,12 +25,10 @@
 
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Muse","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hexo.eloiseli.cn","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="[Spring Security] 这么麻烦，不如自己写一个 Filter 拦截请求，简单实用。自己写当然也可以实现，但是大部分情况下，大家都不是专业的 Web 安全工程师，所以考虑问题也不过就是认证和授权，这两个问题处理好了，似乎系统就很安全了。 其实不是这样的！各种各样的 Web 攻击每天都在发生，什么固定会话攻击、csrf 攻击等等，如果不了解这些攻击，那么做出来的系统肯定也不能防御这些攻击">
@@ -50,7 +48,7 @@
 <meta property="og:image" content="https://hexo.eloiseli.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/%E8%87%AA%E5%8A%A8%E5%B8%A6%E4%B8%8A%E4%B9%8B%E5%89%8DSet-Cookie%E9%87%8C%E7%9A%84JSESSIONID.png">
 <meta property="og:image" content="https://hexo.eloiseli.cn/2022/07/07/Spring-Security-9-%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1/SessionManagementConfigurer%E6%88%AA%E5%9B%BE.png">
 <meta property="article:published_time" content="2022-07-07T14:33:48.000Z">
-<meta property="article:modified_time" content="2022-08-09T03:31:38.202Z">
+<meta property="article:modified_time" content="2022-08-09T03:31:38.000Z">
 <meta property="article:author" content="Brooks.H.Joshua">
 <meta property="article:tag" content="Spring-Security">
 <meta name="twitter:card" content="summary">
@@ -102,7 +100,7 @@
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
+  <div class="container">
     <div class="headband"></div>
 
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -138,7 +136,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">40</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags<span class="badge">41</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -148,7 +146,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">116</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives<span class="badge">117</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -181,63 +179,7 @@
   </div>
 </div>
     </header>
-	<!-- 改变css样式 -->
-<script type="text/javascript">
-var url = document.location.pathname;
-var folderName = url.substr(1, url.length - 2)
-console.log(folderName);
-
-var listPostUrl = [
-    "/" + folderName + "/" + "post-banner.png",
-    "/" + folderName + "/" + "post-banner.jpg",
-];
-
-var nSuccessCount = 0;
-var nResponceCount = 0;
-function OnHttpResponse(bSuccess, strUrl) {
-    console.log("OnHttpResponse: " + bSuccess + ", " + strUrl);
-    nResponceCount++;
-    if(nSuccessCount > 0){
-        return;
-    }
-    if(bSuccess) {
-        nSuccessCount++;
-        document.getElementById("id-header-inner").style.backgroundImage = "url(" + strUrl + ")";
-    }
-    if(nResponceCount >= listPostUrl.length && nSuccessCount <= 0){
-        // 使用默认图
-        document.getElementById("id-header-inner").style.backgroundImage = "url(/images/background.jpg)";
-    }
-}
-
-function changeBanner(strPostUrl, nIndex){
-    console.log("try to load" + strPostUrl);
-    var xmlhttp;
-    if (window.XMLHttpRequest)
-    {
-        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
-        xmlhttp=new XMLHttpRequest();
-    }
-    else
-    {
-        // IE6, IE5 浏览器执行代码
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange=function()
-    {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200)
-        {
-            OnHttpResponse(true, strPostUrl);
-        } else {
-            OnHttpResponse(false, strPostUrl);
-        }
-    }
-    xmlhttp.open("HEAD",strPostUrl,true);
-    xmlhttp.send();
-}
-
-listPostUrl.forEach(changeBanner);
-</script>
+    <!-- Per-post banner script removed: no post had a post-banner image and its fallback image did not exist -->
 
 
 
@@ -325,6 +267,10 @@ listPostUrl.forEach(changeBanner);
 
 
            
+          
+          <div class="out-img-topic">
+          <img src=/image/post_cover_image_Spring-Security-9.png class="img-topic">
+          </div>
           
 
         </div>
@@ -418,6 +364,7 @@ listPostUrl.forEach(changeBanner);
 <p>具体逻辑可参考<strong><code>org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer</code></strong>源码</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**Specifies that a new session should be created and the session attributes from the original HttpSession should be retained.*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SessionManagementConfigurer&lt;H&gt; <span class="title">migrateSession</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setSessionFixationAuthenticationStrategy(<span class="keyword">new</span> SessionFixationProtectionStrategy());</span><br><span class="line">	<span class="keyword">return</span> SessionManagementConfigurer.<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**Specifies that no session fixation protection should be enabled. This may be useful when utilizing other mechanisms for protecting against session fixation. For example, if application container session fixation protection is already in use. Otherwise, this option is not recommended.*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SessionManagementConfigurer&lt;H&gt; <span class="title">none</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setSessionFixationAuthenticationStrategy(<span class="keyword">new</span> NullAuthenticatedSessionStrategy());</span><br><span class="line">    <span class="keyword">return</span> SessionManagementConfigurer.<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**Specifies that the Servlet container-provided session fixation protection should be used. When a session authenticates, the Servlet method HttpServletRequest#changeSessionId() is called to change the session ID and retain all session attributes.*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SessionManagementConfigurer&lt;H&gt; <span class="title">changeSessionId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    setSessionFixationAuthenticationStrategy(<span class="keyword">new</span> ChangeSessionIdAuthenticationStrategy());</span><br><span class="line">    <span class="keyword">return</span> SessionManagementConfigurer.<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**Specifies that a new session should be created, but the session attributes from the original HttpSession should not be retained.*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SessionManagementConfigurer&lt;H&gt; <span class="title">newSession</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SessionFixationProtectionStrategy sessionFixationProtectionStrategy = <span class="keyword">new</span> SessionFixationProtectionStrategy();</span><br><span class="line">    sessionFixationProtectionStrategy.setMigrateSessionAttributes(<span class="keyword">false</span>);</span><br><span class="line">    setSessionFixationAuthenticationStrategy(sessionFixationProtectionStrategy);</span><br><span class="line">    <span class="keyword">return</span> SessionManagementConfigurer.<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>说了这么多，大家发现，如果你使用了 Spring Security，其实你什么都不用做,因为Spring Security默认已经采用 <a href="###如何防御SFA">如何防御SFA</a>里提到的三点做了防御，Spring Security 之强大，可见一斑。</strong></p>
+<div class="official-doc-link official-doc-link-spring"><i class="fa fa-book"></i> <strong>Spring 官方文档</strong> · <a href="https://docs.spring.io/spring-security/reference/servlet/exploits/firewall.html" target="_blank" rel="noopener">HttpFirewall 防火墙</a></div>
 
     </div>
 
@@ -557,7 +504,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">116</span>
+          <span class="site-state-item-count">117</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -570,7 +517,7 @@ listPostUrl.forEach(changeBanner);
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -626,10 +573,48 @@ listPostUrl.forEach(changeBanner);
   </div>
 
      
-	<!--网易云音乐-->
-	  <div id="music163player">
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=1002994&auto=1&height=66"></iframe>
+	<!--网易云音乐: plays on load (or on the visitor's first click/key if the browser blocks autoplay); the button stops it -->
+	  <div id="music163player" class="bg-music">
+	    <audio id="bg-music-audio" src="https://music.163.com/song/media/outer/url?id=512168839.mp3" loop preload="auto"></audio>
+	    <button type="button" id="bg-music-toggle" class="bg-music-toggle" aria-label="Play music"><i class="fa fa-play"></i></button>
+	    <span class="bg-music-title">Why Don't You Do Right? · Peggy Lee</span>
 	  </div>
+	  <script>
+	  (function () {
+	    var audio = document.getElementById('bg-music-audio');
+	    var btn = document.getElementById('bg-music-toggle');
+	    var KEY = 'bgMusicPaused';
+	    var gestures = ['pointerdown', 'keydown', 'touchend'];
+	    function wasPaused() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+	    function remember(paused) { try { localStorage.setItem(KEY, paused ? '1' : '0'); } catch (e) {} }
+	    function render() {
+	      var playing = !audio.paused;
+	      btn.innerHTML = playing ? '<i class="fa fa-pause"></i>' : '<i class="fa fa-play"></i>';
+	      btn.setAttribute('aria-label', playing ? 'Stop music' : 'Play music');
+	    }
+	    function stopWaiting() { gestures.forEach(function (t) { document.removeEventListener(t, onFirstGesture, true); }); }
+	    function onFirstGesture(e) {
+	      if (btn.contains(e.target)) return;
+	      stopWaiting();
+	      audio.play().catch(function () {});
+	    }
+	    btn.addEventListener('click', function () {
+	      stopWaiting();
+	      if (audio.paused) { remember(false); audio.play().catch(function () {}); }
+	      else { remember(true); audio.pause(); }
+	    });
+	    audio.addEventListener('play', render);
+	    audio.addEventListener('pause', render);
+	    // Phones: Gemini hides the sidebar, so float the player where it can still be stopped
+	    var player = document.getElementById('music163player');
+	    if (getComputedStyle(document.querySelector('.sidebar')).display === 'none') { player.classList.add('bg-music-floating'); document.body.appendChild(player); }
+	    if (!wasPaused()) {
+	      audio.play().catch(function () {
+	        gestures.forEach(function (t) { document.addEventListener(t, onFirstGesture, true); });
+	      });
+	    }
+	  })();
+	  </script>
       </div>
 
     </div>
@@ -664,12 +649,12 @@ listPostUrl.forEach(changeBanner);
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">20:01</span>
+    <span title="Reading time total">19:52</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
   </div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.1
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.1
   </div>
 
 
@@ -690,15 +675,11 @@ listPostUrl.forEach(changeBanner);
   <script src="/lib/anime.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
   <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
 <script src="/js/utils.js"></script>
 
-<script src="/js/motion.js"></script>
 
-
-<script src="/js/schemes/muse.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
@@ -732,9 +713,30 @@ listPostUrl.forEach(changeBanner);
 
   
 
+  <!-- Orange pixel mascot, bottom right of every page (replaces the live2d girl) -->
+<div class="site-mascot" aria-hidden="true">
+  <svg viewBox="0 0 16 11" width="72" height="50" shape-rendering="crispEdges">
+    <g class="site-mascot-body">
+      <rect x="2" y="0" width="12" height="7" fill="#D97757"/>
+      <rect x="0" y="3" width="2" height="2" fill="#D97757"/>
+      <rect x="14" y="3" width="2" height="2" fill="#D97757"/>
+      <g class="site-mascot-eyes" fill="#1F1E1D">
+        <rect x="4" y="2" width="1" height="2"/>
+        <rect x="11" y="2" width="1" height="2"/>
+      </g>
+    </g>
+    <g fill="#D97757">
+      <rect class="site-mascot-leg-a" x="3" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-b" x="5" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-a" x="10" y="7" width="1" height="3"/>
+      <rect class="site-mascot-leg-b" x="12" y="7" width="1" height="3"/>
+    </g>
+  </svg>
+</div>
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+</body>
 <!-- 页面点击小红心 -->
 <script type="text/javascript" src="/js/src/clicklove.js"></script>
 
